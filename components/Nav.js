@@ -70,6 +70,10 @@ const Nav = () => {
           <SettingIcon />
           Configuracion
         </Link>
+        <button className="inactive">
+          <SettingIcon />
+          Cerrar seccion
+        </button>
       </nav>
     </aside>
   );

@@ -4,6 +4,7 @@ import fs from "fs";
 import mime from "mime-types";
 
 const bucketName = "bodero-ecommence-admin";
+const bucketNameBodero = "bodero-ecommence-admin/Bodero";
 
 export default async function handle(req, res) {
   const form = new multiparty.Form();

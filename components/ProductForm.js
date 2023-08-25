@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { UpLoadIcon } from "./Icons";
@@ -10,24 +10,46 @@ const ProductForm = ({
   name: existingName,
   code: existingCode,
   price: exitingPrice,
-  quantity: existingQuantity,
   images: exitingImages,
+  category: assignedCategory,
+  quantity: existingQuantity,
   description: existingDescription,
+  properties: assignedProperties,
 }) => {
   const [name, setName] = useState(existingName || "");
   const [code, setCode] = useState(existingCode || "");
   const [price, setPrice] = useState(exitingPrice || "");
+  const [category, setCategory] = useState(assignedCategory || "");
+  const [productProperties, setProductProperties] = useState(
+    assignedProperties || {}
+  );
+  const [images, setImages] = useState(exitingImages || []);
   const [quantity, setQuantity] = useState(existingQuantity || "");
   const [description, setDescription] = useState(existingDescription || "");
-  const [images, setImages] = useState(exitingImages || []);
+  const [categories, setCategories] = useState([]);
   const [goToProducts, setGoToProducts] = useState(false);
   const [isUpLoanding, setIsUpLoanding] = useState(false);
 
   const router = useRouter();
 
+  useEffect(() => {
+    axios.get("/api/categories").then((res) => {
+      setCategories(res.data);
+    });
+  }, []);
+
   async function saveProduct(e) {
     e.preventDefault();
-    const data = { name, code, price, quantity, images, description };
+    const data = {
+      name,
+      code,
+      price,
+      category,
+      quantity,
+      images,
+      description,
+      properties: productProperties,
+    };
     if (_id) {
       await axios.put("/api/products", { ...data, _id });
     } else {
@@ -35,6 +57,7 @@ const ProductForm = ({
     }
     setGoToProducts(true);
   }
+
   if (goToProducts) {
     router.push("/products");
   }
@@ -57,6 +80,27 @@ const ProductForm = ({
 
   function updateImagesOrder(images) {
     setImages(images);
+  }
+
+  function setProductProp(propName, value) {
+    setProductProperties((prev) => {
+      const newProductProps = { ...prev };
+      newProductProps[propName] = value;
+      return newProductProps;
+    });
+  }
+
+  const propertiesToFill = [];
+  if (categories.length > 0 && category) {
+    let catInfo = categories.find(({ _id }) => _id === category);
+    propertiesToFill.push(...catInfo.properties);
+    while (catInfo?.parent?._id) {
+      const parenCat = categories.find(
+        ({ _id }) => _id === catInfo?.parent?._id
+      );
+      propertiesToFill.push(...parenCat.properties);
+      catInfo = parenCat;
+    }
   }
 
   return (
@@ -83,6 +127,32 @@ const ProductForm = ({
           value={price}
           onChange={(e) => setPrice(e.target.value)}
         />
+        <label>Categoria</label>
+        <select
+          className=""
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        >
+          <option value="">Sin categoria principal</option>
+          {categories.length > 0 &&
+            categories.map((category) => (
+              <option value={category._id}>{category?.name}</option>
+            ))}
+        </select>
+        {propertiesToFill.length > 0 &&
+          propertiesToFill.map((p) => (
+            <div className="flex gap-1">
+              <div>{p.name}</div>
+              <select
+                value={productProperties[p.name]}
+                onChange={(e) => setProductProp(p.name, e.target.value)}
+              >
+                {p.values.map((v) => (
+                  <option value={v}>{v}</option>
+                ))}
+              </select>
+            </div>
+          ))}
         <label>Cantidad</label>
         <input
           type="number"
@@ -125,8 +195,16 @@ const ProductForm = ({
           )}
         </div>
       </div>
-
-      <button type="submit" className="btn-primary">
+      <button
+        type="button"
+        className="btn-default mx-1"
+        onClick={() => {
+          setGoToProducts(true);
+        }}
+      >
+        Cancelar
+      </button>
+      <button type="submit" className="btn-primary mx-1">
         Guardar
       </button>
     </form>

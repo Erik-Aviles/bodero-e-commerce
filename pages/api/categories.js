@@ -14,36 +14,33 @@ export default async function handle(req, res) {
   }
 
   if (method === "POST") {
-    const { name, parentCategory, images, description } = req.body;
+    const { name, parentCategory, properties } = req.body;
     const categoryDoc = await Category.create({
       name,
-      parent: parentCategory,
-      images,
-      description,
+      parent: parentCategory || undefined,
+      properties,
     });
     res.json(categoryDoc);
   }
 
   //Editar
   if (method === "PUT") {
-    const { name, parentCategory, images, description, _id } = req.body;
+    const { name, parentCategory, properties, _id } = req.body;
     const categoryDoc = await Category.updateOne(
       { _id },
       {
         name,
-        parent: parentCategory,
-        images,
-        description,
+        parent: parentCategory || undefined,
+        properties,
       }
     );
     res.json(categoryDoc);
   }
 
   //Eliminar
-  /*   if (method === "DELETE") {
-    if (req.query?.id) {
-      await Product.deleteOne({ _id: req.query?.id });
-      res.json(true);
-    }
-  } */
+  if (method === "DELETE") {
+    const { _id } = req.query;
+    await Category.deleteOne({ _id });
+    res.json("ok");
+  }
 }
