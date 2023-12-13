@@ -1,18 +1,18 @@
 import { moogoseConnect } from "@/lib/mongoose";
 import { Category } from "@/models/Category";
+import { isAdminRequest } from "@/pages/api/auth/[...nextauth]";
 
 export default async function handle(req, res) {
   const { method } = req;
   await moogoseConnect();
+  // await isAdminRequest(req, res);
 
+  //Obtener
   if (method === "GET") {
-    if (req.query?.id) {
-      res.json(await Category.findOne({ _id: req.query.id }));
-    } else {
-      res.json(await Category.find().populate("parent"));
-    }
+    res.json(await Category.find().populate("parent"));
   }
 
+  //Enviar-Guardar
   if (method === "POST") {
     const { name, parentCategory, properties } = req.body;
     const categoryDoc = await Category.create({

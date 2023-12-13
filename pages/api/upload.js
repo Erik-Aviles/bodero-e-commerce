@@ -2,11 +2,16 @@ import multiparty from "multiparty";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3"; //AWS
 import fs from "fs";
 import mime from "mime-types";
+import { moogoseConnect } from "@/lib/mongoose";
+import { isAdminRequest } from "./auth/[...nextauth]";
 
 const bucketName = "bodero-ecommence-admin";
-const bucketNameBodero = "bodero-ecommence-admin/Bodero";
+// const bucketNameBodero = "bodero-ecommence-admin/Bodero";
 
 export default async function handle(req, res) {
+  await moogoseConnect();
+  // await isAdminRequest(req, res);
+
   const form = new multiparty.Form();
   const { fields, files } = await new Promise((resolve, reject) => {
     form.parse(req, (err, fields, files) => {

@@ -1,9 +1,11 @@
 import { moogoseConnect } from "@/lib/mongoose";
 import { Product } from "@/models/Product";
+import { isAdminRequest } from "./auth/[...nextauth]";
 
 export default async function handle(req, res) {
   const { method } = req;
   await moogoseConnect();
+  // await isAdminRequest(req, res);
 
   //Obtener
   if (method === "GET") {

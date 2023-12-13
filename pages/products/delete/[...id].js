@@ -19,8 +19,8 @@ const DeleteProductPage = ({}) => {
   function goBack() {
     router.push("/products");
   }
-  async function deteteProduct() {
-    await axios.delete("api/products?id=" + id);
+  async function deleteProduct() {
+    await axios.delete("/api/products?id=" + id);
     goBack();
   }
   return (
@@ -30,7 +30,7 @@ const DeleteProductPage = ({}) => {
         de datos?
       </p>
       <div className="flex justify-center gap-2 mt-4">
-        <button onClick={deteteProduct} className="btn-red">
+        <button onClick={deleteProduct} className="btn-red">
           YES
         </button>
         <button className="btn-default" onClick={goBack}>

@@ -13,30 +13,41 @@ const Products = () => {
   }, []);
   return (
     <Layout>
-      <Link className="btn-primary" href={"/products/new"}>
+      <Link className="btn-primary " href={"/products/new"}>
         Agregar producto
       </Link>
-      <table className="basic mt-2">
+      <table className="basic">
         <thead>
           <tr>
-            <td>Articulo</td>
-            <td></td>
+            <td>No</td>
+            <td>Nombre del Producto</td>
+            <td className="tb-group">Opciones</td>
           </tr>
         </thead>
         <tbody>
-          {products.map((product) => (
-            <tr key={product?._id}>
-              <td>{product?.name}</td>
-              <td>
-                <Link href={"/products/edit/" + product._id}>
-                  <EditIcon />
-                </Link>
-                <Link href={"/products/delete/" + product._id}>
-                  <DeleteIcon />
-                </Link>
-              </td>
-            </tr>
-          ))}
+          {products.length > 0 &&
+            products.map((product, index) => (
+              <tr key={product?._id}>
+                <td>{index + 1}</td>
+                <td>{product?.name}</td>
+                <td className="tb-group">
+                  <Link
+                    className="btn-primary"
+                    href={"/products/edit/" + product._id}
+                  >
+                    <EditIcon />
+                    <span className="hidden sm:block">Editar</span>
+                  </Link>
+                  <Link
+                    className="btn-delete"
+                    href={"/products/delete/" + product._id}
+                  >
+                    <DeleteIcon />
+                    <span className="hidden sm:block">Eliminar</span>
+                  </Link>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </Layout>

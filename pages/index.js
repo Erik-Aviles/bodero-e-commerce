@@ -5,11 +5,11 @@ export default function Home() {
   const { data: session } = useSession();
   return (
     <Layout>
-      <div className="text-red-600 flex items-center justify-between">
+      <div className="text-secundary flex items-center justify-between">
         <h2>
           Hola, <b>{session?.user?.name}</b>
         </h2>
-        <figure className="flex bg-gray-300 gap-1 text-black rounded-lg overflow-hidden">
+        <figure className="flex bg-secundaryLight_X gap-1 text-black rounded-lg overflow-hidden">
           <img
             src={session?.user?.image}
             alt={`Foto de ${session?.user?.name}`}

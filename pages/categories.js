@@ -63,7 +63,7 @@ function Categories({ swal }) {
         text: `Quires eliminar "${category.name}"?`,
         showCancelButton: true,
         cancelButtonText: "Cancelar",
-        confirmButtonColor: "#d55",
+        confirmButtonColor: "#fe0000",
         confirmButtonText: "Si, Eliminar",
         reverseButtons: true,
       })
@@ -166,7 +166,7 @@ function Categories({ swal }) {
                 />
                 <button
                   type="button"
-                  className="btn-default"
+                  className="btn-delete"
                   onClick={() => removerProperty(index)}
                 >
                   Remover
@@ -178,7 +178,7 @@ function Categories({ swal }) {
           {editedCategory && (
             <button
               type="button"
-              className="btn-default"
+              className="btn-delete"
               onClick={() => {
                 setEditedCategory(null);
                 setName("");
@@ -211,18 +211,20 @@ function Categories({ swal }) {
                   <td>{index + 1}</td>
                   <td>{category?.name}</td>
                   <td>{category?.parent?.name}</td>
-                  <td className="flex">
+                  <td className="tb-group">
                     <button
                       onClick={() => editCategory(category)}
-                      className="btn-primary mr-1"
+                      className="btn-primary"
                     >
                       <EditIcon />
+                      <span className="hidden sm:block">Editar</span>
                     </button>
                     <button
                       onClick={(e) => deleteCaterory(category)}
-                      className="btn-primary "
+                      className="btn-delete "
                     >
                       <DeleteIcon />
+                      <span className="hidden sm:block">Eliminar</span>
                     </button>
                   </td>
                 </tr>

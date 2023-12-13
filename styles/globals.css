@@ -5,43 +5,61 @@
 img{
   max-height: 100%;
 }
+textarea{
+  @apply h-28;
+}
 input, textarea, select{
-  @apply border-2 border-gray-400 rounded-md px-1 w-full;
+  @apply border border-grayDark rounded-sm py-1 px-2 w-full ;
   @apply mb-2;
 }
 input:focus, textarea:focus, select:focus{
-  @apply border-red-600;
+  @apply border-primary;
 }
 h3{
-  @apply text-red-900 font-semibold mb-2 text-xl;
+  @apply text-secundary font-semibold mb-2 text-2xl;
 }
 label {
-  @apply text-red-900;
+  @apply text-primary text-sm;
+}
+
+table.basic {
+@apply w-full md:max-w-[1000px] bg-white rounded-sm shadow-md mt-8;
+}
+table.basic tr td,
+table.basic tr th
+{
+@apply   pl-4 py-[2px] text-xs sm:text-sm;
+}
+table.basic thead tr td,
+table.basic thead tr th
+{
+@apply text-sm text-grayDark uppercase border-b border-secundaryLight py-2;
+}
+table.basic a, table.basic button{
+@apply   rounded-sm inline-flex mx-1 items-center gap-1;
+
+}
+.tb-group{
+  @apply flex flex-grow justify-end md:justify-center gap-1 pr-2 px-4 ;
+}
+.btn-primary,
+.btn-red,
+.btn-default,
+.btn-delete{
+  @apply text-white px-4 py-1 rounded-sm;
+
 }
 .btn-primary{
-  @apply bg-red-900  text-white px-4 py-1 rounded-lg;
-}
-table.basic {
-@apply w-full
-}
-table.basic tr td{
-@apply  border border-red-200 p-1
-}
-table.basic thead tr td{
-@apply  bg-red-100 
-}
-table.basic a{
-@apply  bg-red-900 text-white text-sm py-1 px-2 rounded-md inline-flex gap-1 mr-1
-}
-.btn-red,
-.btn-default{
-  @apply px-4 py-1 rounded-md
+  @apply bg-primary;
 }
 .btn-red{
-  @apply bg-green-700 text-white
+  @apply bg-red;
+}
+.btn-delete{
+  @apply bg-secundary;
 }
 .btn-default {
-  @apply bg-gray-500 text-white
+  @apply bg-gray-700;  
 }
 
 /* redLight: #fc4537; */
