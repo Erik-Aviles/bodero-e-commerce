@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+img{
+  max-height: 100%;
+}
+textarea {
+  @apply h-36  py-2;
+}
+.text-xs {
+  @apply text-[10px] leading-4;
+}
+::placeholder{
+  @apply text-sm
+}
+
+textarea, select{
+  @apply relative w-full inline-flex tap-highlight-transparent flex-row items-center shadow-sm px-3 gap-3 bg-default-100 hover:bg-default-200 focus:bg-default-100 h-unit-10 min-h-unit-10 rounded-medium transition-background motion-reduce:transition-none !duration-150 outline-none focus:ring-2 focus:ring-focus focus:ring-offset-1 ;
+}
+/* textarea, select{
+  @apply border border-grayDark/75 rounded-sm py-1 px-2 w-full text-[14px] sm:text-[16px];
+  @apply lg:mb-0;
+} */
+.flex-center{
+  @apply flex justify-center items-center;
+}
+.card{
+  @apply flex-center whitespace-nowrap w-full h-32 rounded-lg bg-green-100;
+}
+label {
+  @apply  text-[#495057]
+}
+
+.container-select,
+.container-form
+{
+  @apply  text-[#495057] ;
+}
+.container-select{
+  @apply lg:w-80 capitalize;
+}
+.container-form{
+  @apply w-full lg:order-1 border-0 ;
+}
+.border-container{
+  @apply border border-grayDark/50 rounded-md p-4 mb-2 ;
+}
+
+h3{
+  @apply text-secundary uppercase font-semibold mb-2 text-2xl;
+}
+h4{
+  @apply text-primary whitespace-nowrap font-semibold mb-2 text-xl;
+}
+label {
+  @apply text-primary text-sm mb-1 ;
+}
+
+table.basic {
+@apply w-full bg-white rounded-sm shadow-md  sm:mt-0 mb-3;
+} 
+table.basic tr td,
+table.basic tr th
+{
+@apply whitespace-nowrap text-ellipsis overflow-hidden pl-4 py-[2px] text-xs sm:text-sm;
+}
+table.basic thead tr td,
+table.basic thead tr th
+{
+@apply text-sm text-secundary uppercase border-b border-secundaryLight py-2;
+}
+table.basic a, table.basic button{
+@apply rounded-sm inline-flex mx-1 items-center gap-1;
+
+}
+.tb-group{
+  @apply  text-center gap-1 pr-2 px-4 ;
+} 
+.btn-primary,
+.btn-red,
+.btn-default
+{
+  @apply whitespace-nowrap text-white px-2  md:px-4 py-1 rounded-sm;
+
+}
+.btn-primary{
+  @apply bg-primary;
+}
+.btn-red{
+  @apply bg-red;
+}
+.btn-delete{
+  @apply bg-secundary;
+}
+.btn-default {
+  @apply bg-gray-700;  
+}
+
+.animated-button
+{
+  @apply  shadow-md cursor-pointer transition duration-300 ease-in-out transform hover:scale-105;
+}
+
+.animated-button:hover {
+  animation: bounce 0.5s infinite;
+}
+
+/* //////////////////////// */
+
+
+/* //////////////////////// */
+
+
+
+@keyframes bounce {
+  0%, 100% {
+      transform: translateY(0);
+  }
+  50% {
+      transform: translateY(-20px);
+  }
+}
+
+/* redLight: #fc4537; */
+/* grayLight: #e9ebea; */
+/* grayDark: #9f9f9f; */
+/* blue: #3d56ee; */
+
+/* ----------- Loading ------------- */
+@import url("./loading.css");
