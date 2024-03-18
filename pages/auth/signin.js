@@ -1,9 +1,11 @@
-import { signIn } from "next-auth/react";
 import React from "react";
+import { signIn } from "next-auth/react";
 import { GooglegIcon } from "@/components/Icons";
-import logo from "/public/assets/logo.jpg";
 import Image from "next/image";
 import Head from "next/head";
+import logo from "@/public/images/logo.jpg";
+
+const baseURL = process.env.NEXTAUTH_URL;
 
 export default function SignIn() {
   return (
@@ -17,6 +19,7 @@ export default function SignIn() {
             <Image
               width={500}
               height={500}
+              priority
               alt="Imagen de cuadricula azul"
               src="https://images.unsplash.com/photo-1605106702734-205df224ecce?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
               className="absolute inset-0 h-full w-full object-cover"
@@ -29,6 +32,7 @@ export default function SignIn() {
                 width={252}
                 height={252}
                 src={logo}
+                priority
                 alt="Logo B.R.D."
                 className={"m-auto"}
               />

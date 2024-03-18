@@ -10,9 +10,9 @@ export function Notification({ status, msj }) {
       <div className="flex items-start gap-4 text-sm">
         <span>
           {status === "success" ? (
-            <CheckIcon fill="#a3f958" width="1.5rem" height="2rem" />
+            <CheckIcon fill="#a3f958" width="2rem" height="2rem" />
           ) : (
-            <WarningIcon fill="#f50b0c" width="1.5rem" height="2rem" />
+            <WarningIcon fill="#f50b0c" width="2rem" height="2rem" />
           )}
         </span>
 

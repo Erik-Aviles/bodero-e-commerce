@@ -1,7 +1,7 @@
 const taxToChoose = [
   { id: "a1", value: "0", tax: "0%" },
   { id: "b1", value: "12", tax: "12%" },
-  { id: "c1", value: "16", tax: "16%" },
+  { id: "c1", value: "15", tax: "15%" },
 ];
 
 const profitabilityToChoose = [

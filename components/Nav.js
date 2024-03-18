@@ -2,6 +2,7 @@ import React from "react";
 import { HomeIcon, ListCategoryIcon, LogoutIcon, ProductIcon } from "./Icons";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import logo from "@/public/images/logo.jpg";
 import { useRouter } from "next/router";
 
 const Nav = ({ show, setShowNav }) => {
@@ -36,11 +37,7 @@ const Nav = ({ show, setShowNav }) => {
       >
         <div className="w-full py-4  flex justify-center">
           <Link href="/" className="w-48 ">
-            <img
-              className={`object-cover "w-48`}
-              alt="Logo B.D.R"
-              src="/assets/logo.jpg"
-            />
+            <img className={`object-cover "w-48`} alt="Logo B.D.R" src={logo} />
           </Link>
         </div>
         <nav className=" flex flex-col gap-2">

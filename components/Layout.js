@@ -1,11 +1,12 @@
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
-import Nav from "./Nav";
-import { HamburguerIcon } from "./Icons";
-import Header from "./Header";
 import Link from "next/link";
 import Image from "next/image";
+import Nav from "@/components/Nav";
+import { HamburguerIcon } from "@/components/Icons";
+import Header from "@/components/Header";
 import SignIn from "@/pages/auth/signin";
+import logo from "@/public/images/logo.jpg";
 
 export default function Layout({ children }) {
   const { data: session, status } = useSession();
@@ -26,7 +27,7 @@ export default function Layout({ children }) {
                 height={192}
                 alt="Logo"
                 className="w-48"
-                src="/assets/logo.jpg"
+                src={logo}
               />
             </Link>
           </div>

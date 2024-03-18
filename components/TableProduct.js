@@ -23,8 +23,8 @@ import {
 } from "@/components/Icons";
 
 import { columnsProduct } from "@/resources/data";
-import { capitalize } from "@/utils/utils";
 import Link from "next/link";
+import { capitalize } from "@/utils/utils";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "title",
@@ -48,6 +48,7 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
     column: "age",
     direction: "ascending",
   });
+
   const [page, setPage] = useState(1);
 
   const hasSearchFilter = Boolean(filterValue);
@@ -67,8 +68,11 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
       filteredProducts = filteredProducts.filter(
         (product) =>
           product.title.toLowerCase().includes(filterValue.toLowerCase()) ||
-          product.code.includes(filterValue.toLowerCase()) ||
-          product.codeWeb.includes(filterValue.toLowerCase())
+          product.code.toLowerCase().includes(filterValue.toLowerCase()) ||
+          product.codeWeb.toLowerCase().includes(filterValue.toLowerCase()) ||
+          product.codeEnterprise
+            .toLowerCase()
+            .includes(filterValue.toLowerCase())
       );
     }
 
@@ -127,10 +131,10 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
             {cellValue.length > 0 &&
               cellValue.map((item, index) => (
                 <div
-                  key={index + item.title}
+                  key={index}
                   className="min-w-[250px] max-w-[280px] flex gap-1 items-center"
                 >
-                  <p className="text-bold text-small pr-1 capitalize ">
+                  <p className="text-bold text-small pr-1 capitalize">
                     {item.title + ":"}
                   </p>
                   <span className="text-bold text-tiny text-default-400 break-all capitalize">

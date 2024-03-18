@@ -1,3 +1,6 @@
+import Head from "next/head";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 import CartDashboard from "@/components/CartDashboard";
 import { PlusIcon } from "@/components/Icons";
 import Layout from "@/components/Layout";
@@ -6,9 +9,9 @@ import { moogoseConnect } from "@/lib/mongoose";
 import { Category } from "@/models/Category";
 import { Product } from "@/models/Product";
 import { Button } from "@nextui-org/react";
-import { useSession } from "next-auth/react";
-import Head from "next/head";
-import Link from "next/link";
+import productImage from "@/public/images/manitos-caja.png";
+import categoryImage from "@/public/images/categorias.png";
+import userImage from "@/public/images/usuarios.png";
 
 export default function Home({ products, categories }) {
   const { data: session, status } = useSession();
@@ -50,21 +53,21 @@ export default function Home({ products, categories }) {
                 <CartDashboard
                   href={"/products"}
                   title={"Productos"}
-                  imageSrc={"/assets/manitos-caja.png"}
+                  imageSrc={productImage}
                   altText={"cajita de productos"}
                   itemCount={products?.length}
                 />
                 <CartDashboard
                   href={"/categories"}
                   title={"Categorias"}
-                  imageSrc={"/assets/categorias.png"}
+                  imageSrc={categoryImage}
                   altText={"cajita de productos"}
                   itemCount={categories?.length}
                 />
                 <CartDashboard
                   href={"#"}
                   title={"Usuarios"}
-                  imageSrc={"/assets/usuarios.png"}
+                  imageSrc={userImage}
                   altText={"cajita de usuarios"}
                   itemCount={"1"}
                 />
