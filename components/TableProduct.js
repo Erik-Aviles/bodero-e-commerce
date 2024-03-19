@@ -177,9 +177,9 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
         );
       case "quantity":
         return (
-          <div className="flex flex-col">
+          <div className="">
             <p
-              className={`text-bold text-small  ${
+              className={`text-bold w-full text-small ${
                 cellValue < 3
                   ? "text-error"
                   : cellValue <= 5
@@ -195,7 +195,9 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
       case "offerPrice":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-small ">{formatPrice(cellValue)}</p>
+            <p className="text-bold text-success text-small ">
+              {formatPrice(cellValue)}
+            </p>
           </div>
         );
       case "color":

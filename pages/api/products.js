@@ -51,17 +51,6 @@ export default async function handle(req, res) {
       if (!title || !code || !price || !profitability || !brand || !description)
         return res.status(400).json({ message: messages.error.needProps });
 
-      const codeFind = await Product.findOne({ code });
-      const codeWebFind = await Product.findOne({ codeWeb });
-      const codeEnterpriseFind = await Product.findOne({ codeEnterprise });
-
-      // validar si ya existe el email en la base de datos
-      if (codeFind || codeWebFind || codeEnterpriseFind) {
-        return res.status(400).json({
-          message: messages.error.codeExist,
-        });
-      }
-
       const newProduct = await Product.create({
         title: title.toLowerCase(),
         code,

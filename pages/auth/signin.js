@@ -6,6 +6,7 @@ import Head from "next/head";
 import logo from "@/public/images/logo.jpg";
 
 const baseURL = process.env.NEXTAUTH_URL;
+// const baseURL = "https://bodero-e-commerce.vercel.app/";
 
 export default function SignIn() {
   return (
@@ -42,7 +43,7 @@ export default function SignIn() {
                 <button
                   onClick={() =>
                     signIn("google", {
-                      callbackUrl: "https://bodero-e-commerce.vercel.app/",
+                      callbackUrl: baseURL,
                     })
                   }
                   className="flex items-center whitespace-nowrap justify-between gap-2 shrink-0 rounded-md border border-[#424CF8] bg-[#424CF8] px-12 py-3 text-lg font-medium text-white transition hover:bg-transparent hover:text-[#424CF8] focus:outline-none focus:ring active:text-[#424CF8]"

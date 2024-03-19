@@ -16,7 +16,7 @@ export function Notification({ status, msj }) {
           )}
         </span>
 
-        <strong className="block font-medium text-gray-900  ml:text-2xl">
+        <strong className="block text-center font-medium text-gray-900 ml:text-2xl ">
           {msj}
         </strong>
       </div>

@@ -38,7 +38,7 @@ const ProductForm = ({
   const router = useRouter();
 
   const [codeVerify, setCodeVerify] = useState("");
-  const [codeWebVerify, setCodeWebVerify] = useState(0);
+  const [codeWebVerify, setCodeWebVerify] = useState("");
   const [codeEnterpriseVerify, setCodeEnterpriseVerify] = useState("");
 
   const [title, setTitle] = useState(existingTitle || "");
@@ -213,6 +213,7 @@ const ProductForm = ({
         setProfitability(0);
         setNetPrice("");
         setSalePrice("");
+        setOfferPrice("");
         setProfit("");
         setBrand("");
         setCategory("");
@@ -322,6 +323,10 @@ const ProductForm = ({
     const newProfitability = parseInt(event.target.value);
     setProfitability(newProfitability);
     calcularPrecioVenta(netPrice, newProfitability);
+  };
+  const handleOfferPriceChange = (event) => {
+    const newOfferPrice = parseFloat(event.target.value);
+    setOfferPrice(newOfferPrice);
   };
 
   function calcularPorcentaje(valor, porc) {
@@ -639,6 +644,7 @@ const ProductForm = ({
               <div className="basis-2/6 mr-1 sm:mr-0">
                 <label className="my-1 block">P. Venta</label>
                 <Input
+                  title="No editable"
                   type="number"
                   labelPlacement="outside"
                   style={{ cursor: "no-drop" }}
@@ -654,6 +660,7 @@ const ProductForm = ({
               <div className="basis-2/6">
                 <label className="my-1 block">Utilidad</label>
                 <Input
+                  title="No editable"
                   type="number"
                   labelPlacement="outside"
                   style={{ cursor: "no-drop" }}
@@ -667,6 +674,31 @@ const ProductForm = ({
                 />
               </div>
             </div>
+            <div className="flex sm:gap-2 ">
+              <div className="basis-2/6 mr-1 sm:mr-0">
+                <label className="my-1 block">P. Oferta</label>
+                <Input
+                  title="Debe ser (>) a costo"
+                  type="number"
+                  labelPlacement="outside"
+                  startContent={
+                    <div className="pointer-events-none flex items-center">
+                      <span className="text-default-400 text-small">$</span>
+                    </div>
+                  }
+                  value={offerPrice}
+                  onChange={handleOfferPriceChange}
+                  placeholder="0.00"
+                />
+              </div>
+            </div>
+            {offerPrice <= netPrice ? (
+              <span className="text-error text-small">
+                Valor no recomendado
+              </span>
+            ) : (
+              <span></span>
+            )}
           </div>
 
           <div>

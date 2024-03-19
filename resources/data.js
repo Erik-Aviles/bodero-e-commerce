@@ -42,6 +42,8 @@ const columnsProduct = [
   { name: "P. Neto", uid: "netPrice", sortable: true },
   { name: "Tasa Ren.", uid: "profitability", sortable: true },
   { name: "P. Venta", uid: "salePrice", sortable: true },
+  // { name: "Utilidad", uid: "",  },
+  { name: "P. oferta", uid: "offerPrice" },
   { name: "Color", uid: "color" },
   { name: "Tamaño", uid: "size" },
   { name: "Utilidad", uid: "profit" },
