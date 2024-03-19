@@ -193,13 +193,15 @@ function Categories({ swal }) {
             </div>
           </div>
           {!editedCategory && (
-            <div className="overflow-auto">
-              <TableCategory
-                categories={resultadoFiltrado}
-                deleteCaterory={deleteCaterory}
-                editCategory={editCategory}
-              />
-            </div>
+            <section className="">
+              <div className="overflow-auto mx-auto max-w-[500px] ">
+                <TableCategory
+                  categories={resultadoFiltrado}
+                  deleteCaterory={deleteCaterory}
+                  editCategory={editCategory}
+                />
+              </div>
+            </section>
           )}
         </div>
       </Layout>

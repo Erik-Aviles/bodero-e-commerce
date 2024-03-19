@@ -11,14 +11,17 @@ const ProductShema = new Schema(
       type: String,
       required: true,
       trim: true,
+      unique: true,
     },
     codeEnterprise: {
       type: String,
       trim: true,
+      unique: true,
     },
     codeWeb: {
       type: String,
       trim: true,
+      unique: true,
     },
     price: {
       type: Number,

@@ -37,6 +37,10 @@ const ProductForm = ({
   const { showNotification } = useContext(NotificationContext);
   const router = useRouter();
 
+  const [codeVerify, setCodeVerify] = useState("");
+  const [codeWebVerify, setCodeWebVerify] = useState(0);
+  const [codeEnterpriseVerify, setCodeEnterpriseVerify] = useState("");
+
   const [title, setTitle] = useState(existingTitle || "");
   const [code, setCode] = useState(existingCode || "");
   const [codeEnterprise, setCodeEnterprise] = useState(
@@ -72,10 +76,26 @@ const ProductForm = ({
   const [categories, setCategories] = useState([]);
   const [goToProducts, setGoToProducts] = useState(false);
   const [isUpLoanding, setIsUpLoanding] = useState(false);
+  const [verify, setVerify] = useState(false);
+  const [verifyWeb, setWebVerify] = useState(false);
+  const [verifyEnterprise, setEnterpriseVerify] = useState(false);
 
   useEffect(() => {
     axios.get("/api/categories").then((res) => {
       setCategories(res.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    axios.get("/api/products").then((res) => {
+      const data = res.data;
+      const code = data.map((item) => item.code);
+      const codeWeb = data.map((item) => item.codeWeb);
+      const codeEnterprise = data.map((item) => item.codeEnterprise);
+
+      setCodeVerify(code);
+      setCodeWebVerify(codeWeb);
+      setCodeEnterpriseVerify(codeEnterprise);
     });
   }, []);
 
@@ -94,6 +114,45 @@ const ProductForm = ({
   useEffect(() => {
     calcularProfit(salePrice, netPrice);
   }, [salePrice]);
+
+  const handleChangeCode = (e) => {
+    const { value } = e.target;
+    setCode(value);
+    const exists = codeVerify.some(
+      (item) => item.toLowerCase() === value.toLowerCase() && item !== ""
+    );
+    if (exists) {
+      setVerify(true);
+    } else {
+      setVerify(false);
+    }
+  };
+
+  const handleChangeCodeWeb = (e) => {
+    const { value } = e.target;
+    setCodeWeb(value);
+    const exists = codeWebVerify.some(
+      (item) => item.toLowerCase() === value.toLowerCase() && item !== ""
+    );
+    if (exists) {
+      setWebVerify(true);
+    } else {
+      setWebVerify(false);
+    }
+  };
+
+  const handleChangeCodeEnterprise = (e) => {
+    const { value } = e.target;
+    setCodeEnterprise(value);
+    const exists = codeEnterpriseVerify.some(
+      (item) => item.toLowerCase() === value.toLowerCase() && item !== ""
+    );
+    if (exists) {
+      setEnterpriseVerify(true);
+    } else {
+      setEnterpriseVerify(false);
+    }
+  };
 
   async function saveProduct(e) {
     e.preventDefault();
@@ -311,97 +370,147 @@ const ProductForm = ({
         className="w-fit lg:grid lg:gap-6 lg:grid-cols-2 border-container "
       >
         <div className="col-span-1 flex flex-col gap-3 max-w-sm">
-          <p className="text-sm text-red/60">
+          <p className="text-sm text-warning">
             Los campos con (*) son obligatorios.
             <br />
           </p>
-          <div>
-            <label className="my-1 block">Nombre (*)</label>
+          <div className="flex flex-col gap-3 border-container mt-4">
+            <p className="hidden md:block text-center text-secondary">
+              {"CÓDIGOS "}
+            </p>
             <Input
               type="text"
-              value={title}
-              placeholder="Nombre"
+              value={code}
+              label="Código"
+              placeholder="Código principal (*)"
               labelPlacement="outside"
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={handleChangeCode}
+              // onChange={(e) => setCode(e.target.value)}
             />
+            {!verify ? (
+              <span></span>
+            ) : (
+              <span className="text-error text-small">Código ya existe!</span>
+            )}
+            <Input
+              type="text"
+              value={codeWeb}
+              label="Código web"
+              placeholder="Código"
+              labelPlacement="outside"
+              onChange={handleChangeCodeWeb}
+            />
+            {!verifyWeb ? (
+              <span></span>
+            ) : (
+              <span className="text-error text-small">
+                Código Web ya existe!
+              </span>
+            )}
+            <Input
+              type="text"
+              value={codeEnterprise}
+              label="Código empresa"
+              placeholder="Código"
+              labelPlacement="outside"
+              onChange={handleChangeCodeEnterprise}
+            />
+            {!verifyEnterprise ? (
+              <span></span>
+            ) : (
+              <span className="text-error text-small">
+                Código Empresarial ya existe!
+              </span>
+            )}
           </div>
 
-          <div className="xs:flex sm:gap-2 ">
-            <div className="basis-3/5 mr-1 sm:mr-0">
-              <label className="my-1 block">Marca (*)</label>
+          <div className="border-container">
+            <div>
+              <label className="my-1 block">Nombre (*)</label>
               <Input
                 type="text"
-                value={brand}
-                placeholder="Marca"
+                value={title}
+                placeholder="Nombre"
                 labelPlacement="outside"
-                className="mb-3.5 xs:mb-0"
-                onChange={(e) => setBrand(e.target.value)}
+                onChange={(e) => setTitle(e.target.value)}
               />
             </div>
+            <div className="xs:flex sm:gap-2 ">
+              <div className="basis-3/5 mr-1 sm:mr-0">
+                <label className="my-1 block">Marca (*)</label>
+                <Input
+                  type="text"
+                  value={brand}
+                  placeholder="Marca"
+                  labelPlacement="outside"
+                  className="mb-3.5 xs:mb-0"
+                  onChange={(e) => setBrand(e.target.value)}
+                />
+              </div>
 
-            <div className="basis-2/5 ">
-              <label className="my-1 block">Categoria</label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              >
-                <option key={"sincategory"} value="">
-                  Sin categoria
-                </option>
-                {categories.length > 0 &&
-                  categories.map((category, index) => (
-                    <option key={category._id} value={category._id}>
-                      {category?.name}
-                    </option>
-                  ))}
-              </select>
+              <div className="basis-2/5 ">
+                <label className="my-1 block">Categoria</label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  <option key={"sincategory"} value="">
+                    Sin categoria
+                  </option>
+                  {categories.length > 0 &&
+                    categories.map((category, index) => (
+                      <option key={category._id} value={category._id}>
+                        {category?.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
             </div>
-          </div>
-
-          <div className="xs:flex sm:gap-2 ">
-            <div className="basis-3/5 mr-1 sm:mr-0">
-              <label className="my-1 block">Ubicación</label>
-              <Input
-                type="text"
-                value={location}
-                placeholder="Ubicación"
-                labelPlacement="outside"
-                className="mb-3.5 xs:mb-0"
-                onChange={(e) => setLocation(e.target.value)}
-              />
+            <div className="xs:flex sm:gap-2 ">
+              <div className="basis-3/5 mr-1 sm:mr-0">
+                <label className="my-1 block">Ubicación</label>
+                <Input
+                  type="text"
+                  value={location}
+                  placeholder="Ubicación"
+                  labelPlacement="outside"
+                  className="mb-3.5 xs:mb-0"
+                  onChange={(e) => setLocation(e.target.value)}
+                />
+              </div>
+              <div className="basis-2/5">
+                <label className="my-1 block">Cantidad</label>
+                <Input
+                  type="number"
+                  value={quantity}
+                  placeholder="Cantidad"
+                  labelPlacement="outside"
+                  onChange={(e) => setQuantity(e.target.value)}
+                />
+              </div>
             </div>
-            <div className="basis-2/5">
-              <label className="my-1 block">Cantidad</label>
-              <Input
-                type="number"
-                value={quantity}
-                placeholder="Cantidad"
-                labelPlacement="outside"
-                onChange={(e) => setQuantity(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="xs:flex sm:gap-2 ">
-            <div className="basis-1/2 mr-1 sm:mr-0">
-              <label className="my-1 block">Tamaño/s</label>
-              <Input
-                type="text"
-                value={size}
-                placeholder="Valores separados por (,)"
-                labelPlacement="outside"
-                className="mb-3.5 xs:mb-0"
-                onChange={handleSizeChange}
-              />
-            </div>
-            <div className="basis-1/2">
-              <label className="my-1  block">Color/es</label>
-              <Input
-                type="text"
-                value={color}
-                placeholder="Valores separados por (,)"
-                labelPlacement="outside"
-                onChange={handleColorChange}
-              />
+            <div className="xs:flex sm:gap-2 ">
+              <div className="basis-1/2 mr-1 sm:mr-0">
+                <label className="my-1 block">Tamaño/s</label>
+                <Input
+                  type="text"
+                  value={size}
+                  placeholder="Separados por (,)"
+                  labelPlacement="outside"
+                  className="mb-3.5 xs:mb-0"
+                  onChange={handleSizeChange}
+                />
+              </div>
+              <div className="basis-1/2">
+                <label className="my-1  block">Color/es</label>
+                <Input
+                  type="text"
+                  value={color}
+                  placeholder="Separados por (,)"
+                  labelPlacement="outside"
+                  onChange={handleColorChange}
+                />
+              </div>
             </div>
           </div>
 
@@ -454,36 +563,6 @@ const ProductForm = ({
                   </button>
                 </div>
               ))}
-          </div>
-
-          <div className="flex flex-col gap-3 border-container mt-4">
-            <p className="hidden md:block text-center text-secondary">
-              {"CÓDIGOS "}
-            </p>
-            <Input
-              type="text"
-              value={code}
-              label="Código"
-              placeholder="Código principal (*)"
-              labelPlacement="outside"
-              onChange={(e) => setCode(e.target.value)}
-            />
-            <Input
-              type="text"
-              value={codeWeb}
-              label="Código web"
-              placeholder="Código"
-              labelPlacement="outside"
-              onChange={(e) => setCodeWeb(e.target.value)}
-            />
-            <Input
-              type="text"
-              value={codeEnterprise}
-              label="Código empresa"
-              placeholder="Código"
-              labelPlacement="outside"
-              onChange={(e) => setCodeEnterprise(e.target.value)}
-            />
           </div>
         </div>
 

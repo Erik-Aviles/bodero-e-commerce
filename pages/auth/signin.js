@@ -29,8 +29,6 @@ export default function SignIn() {
           <main className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
             <div className="max-w-xl lg:max-w-3xl">
               <Image
-                width={252}
-                height={252}
                 src={logo}
                 priority
                 alt="Logo B.R.D."

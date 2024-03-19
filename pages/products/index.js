@@ -2,14 +2,13 @@ import React, { useContext } from "react";
 import NotificationContext from "@/context/NotificationContext";
 import { moogoseConnect } from "@/lib/mongoose";
 import { withSwal } from "react-sweetalert2";
-import { Category } from "@/models/Category";
-import { getData } from "@/utils/fetchData";
 import Layout from "@/components/Layout";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import axios from "axios";
 import TableProduct from "@/components/TableProduct";
 import { capitalize } from "@/utils/utils";
+import { Product } from "@/models/Product";
 
 export default withSwal((props, ref) => {
   const router = useRouter();
@@ -76,24 +75,13 @@ export default withSwal((props, ref) => {
   );
 });
 
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps() {
   await moogoseConnect();
-
-  const category = query.category || "all";
-  const sort = query.sort || "";
-  const search = query.search || "all";
-  const searchCode = query.searchCode || "all";
-
-  const categories = await Category.find({}, null, { sort: { _id: -1 } });
-  const res = await getData(
-    `products?category=${category}&sort=${sort}&title=${search}&code=${searchCode}`
-  );
+  const products = await Product.find({}, null, { sort: { _id: -1 } });
 
   return {
     props: {
-      products: res.products,
-      result: res.result,
-      categories: JSON.parse(JSON.stringify(categories)),
+      products: JSON.parse(JSON.stringify(products)),
     },
   };
 }

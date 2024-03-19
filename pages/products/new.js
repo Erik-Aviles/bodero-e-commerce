@@ -15,7 +15,7 @@ export default function NewProducto() {
           name="description"
           content="Registro de nuevos productos a la plataforma"
         />
-      </Head>{" "}
+      </Head>
       <Layout>
         <div className="h-fit max-w-screen-xl pb-4 ">
           <div className="sm:flex sm:items-center sm:justify-between sm:gap-4">

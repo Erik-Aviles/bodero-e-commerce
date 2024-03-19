@@ -6,60 +6,15 @@ import messages from "@/utils/messages";
 export default async function handle(req, res) {
   const { method } = req;
   await moogoseConnect();
-  // await isAdminRequest(req, res);
-
-  class APIfeatures {
-    constructor(query, queryString) {
-      this.query = query;
-      this.queryString = queryString;
-    }
-    filtering() {
-      const queryObj = { ...this.queryString };
-
-      const excludeFields = ["page", "sort", "limit"];
-      excludeFields.forEach((el) => delete queryObj[el]);
-
-      if (queryObj.category !== "all")
-        this.query.find({ category: queryObj.category });
-
-      if (queryObj.title !== "all" && typeof queryObj.title === "string") {
-        this.query.find({ title: { $regex: queryObj.title } });
-      }
-      if (queryObj.code !== "all" && typeof queryObj.code === "string") {
-        this.query.find({ code: { $regex: queryObj.code } });
-      }
-      this.query.find();
-      return this;
-    }
-
-    sorting() {
-      if (this.queryString.sort) {
-        const sortBy = this.queryString.sort.split(",").join("");
-        this.query = this.query.sort(sortBy);
-      } else {
-        this.query = this.query.sort("-createdAt");
-      }
-
-      return this;
-    }
-  }
 
   if (method === "GET") {
     if (req.query?.id) {
       res.json(await Product.findOne({ _id: req.query.id }));
     } else {
       try {
-        const features = new APIfeatures(Product.find(), req.query)
-          .filtering()
-          .sorting();
-
-        const products = await features.query;
-
-        res.json({
-          status: "success",
-          result: products.length,
-          products,
-        });
+        await moogoseConnect();
+        const product = await Product.find();
+        return res.json(product);
       } catch (err) {
         return res.status(500).json({ err: err.message });
       }
@@ -95,6 +50,17 @@ export default async function handle(req, res) {
 
       if (!title || !code || !price || !profitability || !brand || !description)
         return res.status(400).json({ message: messages.error.needProps });
+
+      const codeFind = await Product.findOne({ code });
+      const codeWebFind = await Product.findOne({ codeWeb });
+      const codeEnterpriseFind = await Product.findOne({ codeEnterprise });
+
+      // validar si ya existe el email en la base de datos
+      if (codeFind || codeWebFind || codeEnterpriseFind) {
+        return res.status(400).json({
+          message: messages.error.codeExist,
+        });
+      }
 
       const newProduct = await Product.create({
         title: title.toLowerCase(),

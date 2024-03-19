@@ -22,13 +22,7 @@ export default function Layout({ children }) {
 
           <div className="m-auto">
             <Link href="/" className="w-48">
-              <Image
-                width={192}
-                height={192}
-                alt="Logo"
-                className="w-48"
-                src={logo}
-              />
+              <Image alt="Logo" className="w-48" src={logo} />
             </Link>
           </div>
         </div>
