@@ -109,7 +109,7 @@ function Categories({ swal }) {
                 onSubmit={EditCategory}
               >
                 <label className="mb-2">
-                  `Editar categoria "${editedCategory.name}"`
+                  {`Editar categoria "${editedCategory.name}"`}
                 </label>
                 <div className="h-auto mb-4 border-container md:bg-white">
                   <div className="flex flex-col lg:flex-row sm:gap-1 w-full ">
