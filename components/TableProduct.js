@@ -32,8 +32,7 @@ const INITIAL_VISIBLE_COLUMNS = [
   "salePrice",
   "quantity",
   "location",
-  "description",
-  "brand",
+  "compatibility",
   "actions",
 ];
 
@@ -364,6 +363,22 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
         </div>
         <div>
           <div className="flex justify-between items-center">
+            <div>
+              <span className="text-default-400 text-small ">
+                <span className="flex items-center gap-1">
+                  Principal:
+                  <article className="w-4 h-4 bg-purple-700 rounded-full"></article>
+                </span>
+                <span className="flex items-center gap-1">
+                  Web:
+                  <article className="w-4 h-4 bg-pink-700 rounded-full"></article>
+                </span>
+                <span className="flex items-center gap-1">
+                  Empresarial:
+                  <article className="w-4 h-4 bg-sky-700 rounded-full"></article>
+                </span>
+              </span>
+            </div>
             <span className="text-default-400 text-small">
               Total, {products.length} Productos
             </span>
@@ -378,22 +393,6 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
                 <option value="15">15</option>
               </select>
             </label>
-          </div>
-          <div>
-            <span className="text-default-400 text-small ">
-              <span className="flex items-center gap-1">
-                Cod. principal:
-                <article className="w-4 h-4 bg-purple-700 rounded-full"></article>
-              </span>
-              <span className="flex items-center gap-1">
-                Cod. web:
-                <article className="w-4 h-4 bg-pink-700 rounded-full"></article>
-              </span>
-              <span className="flex items-center gap-1">
-                Cod. empresarial:
-                <article className="w-4 h-4 bg-sky-700 rounded-full"></article>
-              </span>
-            </span>
           </div>
         </div>
       </div>

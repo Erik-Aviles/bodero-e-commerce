@@ -26,7 +26,8 @@ export default function Layout({ children }) {
             </Link>
           </div>
         </div>
-        <div className="pt-[101.59px] md:pt-0 grid grid-cols-7 divide-y divide-gray-300 lg:grid-cols-10">
+        <div className="pt-[101.59px] md:pt-0 grid grid-cols-7 md:flex divide-y divide-gray-300 ">
+          {/* <div className="pt-[101.59px] flex md:pt-0 divide-y divide-gray-300 "> */}
           <Nav show={showNav} setShowNav={setShowNav} />
           <div className=" flex flex-col items-stretch flex-grow sm:max-h-screen sm:overflow-auto col-span-7 md:col-span-5 lg:col-span-8 bg-grayLight ">
             <Header />

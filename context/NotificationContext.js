@@ -15,7 +15,7 @@ export function NotificationProvider({ children }) {
       setNotification(props);
       setTimeout(() => {
         setNotification({ open: false, msj: null, status: null });
-      }, 3000);
+      }, 2000);
     }
   };
 

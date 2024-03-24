@@ -1,6 +1,6 @@
 const messages = {
   error: {
-    needProps: "Hay campos obligatorios que deben ser llenados",
+    needProps: "Campo obligatorio vacío",
     requireCaracteres: "El contraseña debe de ser minimo de 6 caracteres",
     notProduct: "Producto no encontrado o no se realizó ninguna modificación.",
     errorUpdatedProduct: "Error al actualizar el producto.",
@@ -10,15 +10,17 @@ const messages = {
     emailExist: "Ya existe un usuario con ese correo",
     default: "Ocurrió un error",
     userNotFound: "Usuario no existe",
+    categoryAlreadyExist: "Categoria ya existe",
     userAlreadyExistS: "Usuario ya existe",
     incorrectPassword: "Contraseña no válida",
     notAuthorized: "No autorizado",
     tokenNotValid: "Token no valido",
   },
   success: {
-    addedProduct: "¡Éxito! Ha registrado un producto",
-    upDateProduct: "¡Éxito! Ha actualizado el producto",
-    addedCategory: "¡Éxito! Ha creado una nueva categoria",
+    addedProduct: "¡Producto registrado con exito!",
+    upDateProduct: "¡Producto modificado con exito!",
+    exitEdith: "¡Categoria editada con exito!",
+    addedCategory: "¡Categoria creada con exito",
     userCreated: "Su cuenta ha sido creada",
     userLogged: "Que bueno verte de vuelta",
     emailSend: "Correo enviado con exito",

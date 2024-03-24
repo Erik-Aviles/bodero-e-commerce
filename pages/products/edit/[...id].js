@@ -28,8 +28,9 @@ export default function EditProductPage() {
         />
       </Head>
       <Layout>
-        <h3>Editar producto</h3>
-        {productInfo && <ProductForm {...productInfo} />}
+        {productInfo && (
+          <ProductForm titulo="EDITAR PRODUCTOS" {...productInfo} />
+        )}
       </Layout>
     </>
   );

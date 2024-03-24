@@ -9,6 +9,7 @@ import axios from "axios";
 import { Input } from "@nextui-org/react";
 import { capitalize } from "@/utils/utils";
 import Image from "next/image";
+import ModalCategories from "./ModalCategories";
 
 const ProductForm = ({
   _id,
@@ -33,6 +34,7 @@ const ProductForm = ({
   description: existingDescription,
   descriptionAdditional: existingDescriptionAdditional,
   images: exitingImages,
+  titulo,
 }) => {
   const { showNotification } = useContext(NotificationContext);
   const router = useRouter();
@@ -85,6 +87,12 @@ const ProductForm = ({
       setCategories(res.data);
     });
   }, []);
+
+  function fetchCategories() {
+    axios.get("/api/categories").then((res) => {
+      setCategories(res.data);
+    });
+  }
 
   useEffect(() => {
     axios.get("/api/products").then((res) => {
@@ -369,17 +377,25 @@ const ProductForm = ({
   };
 
   return (
-    <div className="relative w-full flex justify-center ">
+    <div className="relative w-full flex flex-col justify-center ">
+      <div className=" sm:pb-4 sm:flex sm:items-center sm:justify-between sm:gap-4">
+        <h3>{titulo}</h3>
+        <ModalCategories fetchCategories={fetchCategories} />
+      </div>
+      <div className="sm:pb-4 sm:flex sm:items-center sm:justify-between sm:gap-4">
+        <p className="text-sm text-warning">
+          Los campos con (*) son obligatorios.
+          <br />
+        </p>
+      </div>
       <form
         onSubmit={saveProduct}
-        className="w-fit lg:grid lg:gap-6 lg:grid-cols-2 border-container "
+        className="w-fit flex flex-col gap-2 lg:grid lg:gap-5 lg:grid-cols-3 border-container "
       >
-        <div className="col-span-1 flex flex-col gap-3 max-w-sm">
-          <p className="text-sm text-warning">
-            Los campos con (*) son obligatorios.
-            <br />
-          </p>
-          <div className="flex flex-col gap-3 border-container mt-4">
+        {/* Columna de codigos y descripcion*/}
+        <div className="gap-2 flex flex-col">
+          {/* codigos */}
+          <div className="flex flex-col gap-2 border-container ">
             <p className="hidden md:block text-center text-secondary">
               {"CÓDIGOS "}
             </p>
@@ -428,97 +444,7 @@ const ProductForm = ({
               </span>
             )}
           </div>
-
-          <div className="border-container">
-            <div>
-              <label className="my-1 block">Nombre (*)</label>
-              <Input
-                type="text"
-                value={title}
-                placeholder="Nombre"
-                labelPlacement="outside"
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </div>
-            <div className="xs:flex sm:gap-2 ">
-              <div className="basis-3/5 mr-1 sm:mr-0">
-                <label className="my-1 block">Marca (*)</label>
-                <Input
-                  type="text"
-                  value={brand}
-                  placeholder="Marca"
-                  labelPlacement="outside"
-                  className="mb-3.5 xs:mb-0"
-                  onChange={(e) => setBrand(e.target.value)}
-                />
-              </div>
-
-              <div className="basis-2/5 ">
-                <label className="my-1 block">Categoria</label>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                >
-                  <option key={"sincategory"} value="">
-                    Sin categoria
-                  </option>
-                  {categories.length > 0 &&
-                    categories.map((category, index) => (
-                      <option key={category._id} value={category._id}>
-                        {category?.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
-            </div>
-            <div className="xs:flex sm:gap-2 ">
-              <div className="basis-3/5 mr-1 sm:mr-0">
-                <label className="my-1 block">Ubicación</label>
-                <Input
-                  type="text"
-                  value={location}
-                  placeholder="Ubicación"
-                  labelPlacement="outside"
-                  className="mb-3.5 xs:mb-0"
-                  onChange={(e) => setLocation(e.target.value)}
-                />
-              </div>
-              <div className="basis-2/5">
-                <label className="my-1 block">Cantidad</label>
-                <Input
-                  type="number"
-                  value={quantity}
-                  placeholder="Cantidad"
-                  labelPlacement="outside"
-                  onChange={(e) => setQuantity(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="xs:flex sm:gap-2 ">
-              <div className="basis-1/2 mr-1 sm:mr-0">
-                <label className="my-1 block">Tamaño/s</label>
-                <Input
-                  type="text"
-                  value={size}
-                  placeholder="Separados por (,)"
-                  labelPlacement="outside"
-                  className="mb-3.5 xs:mb-0"
-                  onChange={handleSizeChange}
-                />
-              </div>
-              <div className="basis-1/2">
-                <label className="my-1  block">Color/es</label>
-                <Input
-                  type="text"
-                  value={color}
-                  placeholder="Separados por (,)"
-                  labelPlacement="outside"
-                  onChange={handleColorChange}
-                />
-              </div>
-            </div>
-          </div>
-
+          {/* compatibilidad */}
           <div className="border-container ">
             <button
               type="button"
@@ -570,9 +496,129 @@ const ProductForm = ({
               ))}
           </div>
         </div>
+        {/* Columna de nombre y imagenes*/}
+        <div className="gap-2 flex flex-col">
+          <div className=" border-container">
+            {/* nombre*/}
+            <div>
+              <label className="my-1 block">Nombre (*)</label>
+              <Input
+                type="text"
+                value={title}
+                placeholder="Nombre"
+                labelPlacement="outside"
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+            {/* marca y categoria*/}
+            <div className="xs:flex sm:gap-2 ">
+              <div className="basis-3/5 mr-1 sm:mr-0">
+                <label className="my-1 block">Marca (*)</label>
+                <Input
+                  type="text"
+                  value={brand}
+                  placeholder="Marca"
+                  labelPlacement="outside"
+                  className="mb-3.5 xs:mb-0"
+                  onChange={(e) => setBrand(e.target.value)}
+                />
+              </div>
 
-        <div className="col-span-1 max-w-sm flex flex-col">
-          <div className="flex flex-col gap-3 border-container mt-2">
+              <div className="basis-2/5 ">
+                <label className="my-1 block">Categoria</label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  <option key={"sincategory"} value="">
+                    Sin categoria
+                  </option>
+                  {categories.length > 0 &&
+                    categories.map((category, index) => (
+                      <option key={category._id} value={category._id}>
+                        {category?.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+            </div>
+            {/* ubicacion y cantidad*/}
+            <div className="xs:flex sm:gap-2 ">
+              <div className="basis-3/5 mr-1 sm:mr-0">
+                <label className="my-1 block">Ubicación</label>
+                <Input
+                  type="text"
+                  value={location}
+                  placeholder="Ubicación"
+                  labelPlacement="outside"
+                  className="mb-3.5 xs:mb-0"
+                  onChange={(e) => setLocation(e.target.value)}
+                />
+              </div>
+              <div className="basis-2/5">
+                <label className="my-1 block">Cantidad</label>
+                <Input
+                  type="number"
+                  value={quantity}
+                  placeholder="Cantidad"
+                  labelPlacement="outside"
+                  onChange={(e) => setQuantity(e.target.value)}
+                />
+              </div>
+            </div>
+            {/* tamaño y color*/}
+            <div className="xs:flex sm:gap-2 ">
+              <div className="basis-1/2 mr-1 sm:mr-0">
+                <label className="my-1 block">Tamaño/s</label>
+                <Input
+                  type="text"
+                  value={size}
+                  placeholder="Separados por (,)"
+                  labelPlacement="outside"
+                  className="mb-3.5 xs:mb-0"
+                  onChange={handleSizeChange}
+                />
+              </div>
+              <div className="basis-1/2">
+                <label className="my-1  block">Color/es</label>
+                <Input
+                  type="text"
+                  value={color}
+                  placeholder="Separados por (,)"
+                  labelPlacement="outside"
+                  onChange={handleColorChange}
+                />
+              </div>
+            </div>
+          </div>
+          {/* descripciones*/}
+          <div className="border-container">
+            <div>
+              <label className="my-1 block">Descripción (*)</label>
+              <textarea
+                rows={5}
+                placeholder="Escribir descripción"
+                value={description}
+                className="min-h-[70px] "
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="my-1 block">Descripción adicional</label>
+              <textarea
+                rows={5}
+                placeholder="Escribir observación"
+                value={descriptionAdditional}
+                className="min-h-[70px] "
+                onChange={(e) => setDescriptionAdditional(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>{" "}
+        {/* Columna de valores y compatibilidad*/}
+        <div className="gap-2 flex flex-col">
+          {/* valores */}
+          <div className="flex flex-col gap-2 border-container">
             <p className="hidden md:block text-center text-secondary">
               {"CÁLCULO DE VALORES"}
             </p>
@@ -701,78 +747,67 @@ const ProductForm = ({
             )}
           </div>
 
+          {/* imagenes*/}
           <div>
-            <label className="my-1 block">Descripción (*)</label>
-            <textarea
-              rows={5}
-              placeholder="Escribir descripción"
-              value={description}
-              className="h-[120px] mb-3.5 xs:mb-0"
-              onChange={(e) => setDescription(e.target.value)}
-            />
-            <label className="my-1 block">Descripción adicional</label>
-            <textarea
-              rows={5}
-              placeholder="Escribir observación"
-              value={descriptionAdditional}
-              className="h-[120px]"
-              onChange={(e) => setDescriptionAdditional(e.target.value)}
-            />
-          </div>
-
-          <label className="my-1 block">Imagen(es)</label>
-          <div className="h-fit mb-[12px] border-2 border-secundary rounded-sm flex justify-center items-center flex-wrap gap-3 p-2 ">
-            <ReactSortable
-              // list={images}
-              list={Array.isArray(images) ? images : []}
-              className="flex flex-wrap gap-1"
-              setList={updateImagesOrder}
-            >
-              {!!images?.length &&
-                images.map((link, index) => (
-                  <div
-                    key={link._id}
-                    className="relative group w-24 h-24 flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md"
-                  >
-                    <img
-                      src={link}
-                      alt="imagen"
-                      className="rounded-md object-contain h-32 w-44 p-1"
-                    />
-                    <div className="absolute top-2 right-2 cursor-pointer opacity-0  group-hover:opacity-100 ">
-                      <button onClick={() => handeDeleteImage(index)}>
-                        <DeleteIcon className="w-6 h-6 text-red stroke-2 bg-white rounded-full" />
-                      </button>
+            <label className="my-1 block">Imagen(es)</label>
+            <div className="h-fit mb-[12px] border-2 border-secundary rounded-sm flex justify-center items-center flex-wrap gap-3 p-2 ">
+              <ReactSortable
+                // list={images}
+                list={Array.isArray(images) ? images : []}
+                className="flex flex-wrap gap-1"
+                setList={updateImagesOrder}
+              >
+                {!!images?.length &&
+                  images.map((link, index) => (
+                    <div
+                      key={link._id}
+                      className="relative group w-24 h-24 flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md"
+                    >
+                      <img
+                        src={link}
+                        alt="imagen"
+                        className="rounded-md object-contain h-32 w-44 p-1"
+                      />
+                      <div className="absolute top-2 right-2 cursor-pointer opacity-0  group-hover:opacity-100 ">
+                        <button onClick={() => handeDeleteImage(index)}>
+                          <DeleteIcon className="w-6 h-6 text-red stroke-2 bg-white rounded-full" />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
-            </ReactSortable>
-            {isUpLoanding ? (
-              <div className="w-24 h-24 text-center flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
-                <Spinner />
-              </div>
-            ) : (
-              <label className="w-24 h-24 text-center flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
-                <UpLoadIcon />
-                <span>Cargar imagen</span>
-                <input onChange={upLoadImages} type="file" className="hidden" />
-              </label>
-            )}
+                  ))}
+              </ReactSortable>
+              {isUpLoanding ? (
+                <div className="w-24 h-24 text-center flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
+                  <Spinner />
+                </div>
+              ) : (
+                <label className="w-24 h-24 text-center flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
+                  <UpLoadIcon />
+                  <span>Cargar imagen</span>
+                  <input
+                    onChange={upLoadImages}
+                    type="file"
+                    className="hidden"
+                  />
+                </label>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="col-span-2 gap-4 flex justify-center">
-          <button
-            type="button"
-            className="btn-delete whitespace-nowrap text-white px-2  md:px-4 py-1 rounded-sm mx-1"
-            onClick={() => {
-              setGoToProducts(true);
-            }}
-          >
-            Cancelar
-          </button>
-          <button type="submit" className="btn-primary mx-1">
-            Guardar
-          </button>
+          {/* botones */}
+          <div className="gap-2 flex justify-center my-2">
+            <button
+              type="button"
+              className="btn-delete whitespace-nowrap text-white px-2  md:px-4 py-1 rounded-sm mx-1"
+              onClick={() => {
+                setGoToProducts(true);
+              }}
+            >
+              Cancelar
+            </button>
+            <button type="submit" className="btn-primary mx-1">
+              Guardar
+            </button>
+          </div>
         </div>
       </form>
     </div>

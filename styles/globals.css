@@ -7,7 +7,7 @@ img{
   max-height: 100%;
 }
 textarea {
-  @apply h-36  py-2;
+  @apply py-2 text-[12px];
 }
 .text-xs {
   @apply text-[10px] leading-4;
@@ -45,7 +45,7 @@ label {
   @apply w-full lg:order-1 border-0 ;
 }
 .border-container{
-  @apply border border-grayDark/50 rounded-md p-4 mb-2 ;
+  @apply border border-grayDark/50 rounded-md p-4 ;
 }
 
 h3{

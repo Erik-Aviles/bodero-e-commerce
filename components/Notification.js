@@ -5,7 +5,7 @@ export function Notification({ status, msj }) {
     <div
       role="alert"
       className="fixed min-w-[260px] border rounded-xl border-gray-300 bg-white p-4  
-       top-1/2 left-1/2 lg:top-[10%] lg:left-[60%] transform -translate-x-1/2 -translate-y-1/2 z-20 duration-[2000ms]"
+       top-1/2 left-1/2 lg:top-[10%] lg:left-[60%] transform -translate-x-1/2 -translate-y-1/2 z-50 duration-[2000ms]"
     >
       <div className="flex flex-col justify-center items-center gap-2">
         <span>
