@@ -12,13 +12,16 @@ import { Button } from "@nextui-org/react";
 import productImage from "@/public/images/manitos-caja.png";
 import categoryImage from "@/public/images/categorias.png";
 import userImage from "@/public/images/usuarios.png";
+import orderImage from "@/public/images/pedidos.png";
+import { Order } from "@/models/Order";
 
-export default function Home({ products, categories }) {
+export default function Home({ sizeProducts, sizeCategories, sizeOrders }) {
   const { data: session, status } = useSession();
 
   if (status === "loading") {
     return <Loading />;
   }
+
   return (
     <>
       <Head>
@@ -41,9 +44,9 @@ export default function Home({ products, categories }) {
                 href={"/products/new"}
                 as={Link}
                 color="primary"
-                endContent={<PlusIcon />}
+                startContent={<PlusIcon />}
               >
-                Agregar producto
+                Producto
               </Button>
             </div>
           </div>
@@ -55,14 +58,14 @@ export default function Home({ products, categories }) {
                   title={"Productos"}
                   imageSrc={productImage}
                   altText={"cajita de productos"}
-                  itemCount={products?.length}
+                  itemCount={sizeProducts}
                 />
                 <CartDashboard
                   href={"/categories"}
                   title={"Categorias"}
                   imageSrc={categoryImage}
                   altText={"cajita de productos"}
-                  itemCount={categories?.length}
+                  itemCount={sizeCategories}
                 />
                 <CartDashboard
                   href={"#"}
@@ -70,6 +73,13 @@ export default function Home({ products, categories }) {
                   imageSrc={userImage}
                   altText={"cajita de usuarios"}
                   itemCount={"1"}
+                />
+                <CartDashboard
+                  href={"/orders"}
+                  title={"Pedidos"}
+                  imageSrc={orderImage}
+                  altText={"una cajita con una lista"}
+                  itemCount={sizeOrders}
                 />
               </div>
             </div>
@@ -82,15 +92,24 @@ export default function Home({ products, categories }) {
 
 export async function getServerSideProps() {
   await moogoseConnect();
-  const categories = await Category.find({}, null, { sort: { _id: -1 } });
+  const categories = await Category.find({}, null, {
+    sort: { _id: -1 },
+  });
   const products = await Product.find({}, null, {
     sort: { _id: -1 },
   });
+  const orders = await Order.find({}, null, {
+    sort: { _id: -1 },
+  });
+  const sizeProducts = products?.length;
+  const sizeCategories = categories?.length;
+  const sizeOrders = orders?.length;
 
   return {
     props: {
-      products: JSON.parse(JSON.stringify(products)),
-      categories: JSON.parse(JSON.stringify(categories)),
+      sizeProducts: sizeProducts,
+      sizeCategories: sizeCategories,
+      sizeOrders: sizeOrders,
     },
   };
 }

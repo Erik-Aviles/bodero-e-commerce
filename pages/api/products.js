@@ -14,7 +14,7 @@ export default async function handle(req, res) {
       try {
         await moogoseConnect();
         const product = await Product.find();
-        return res.json(product);
+        return res.status(200).json(product);
       } catch (err) {
         return res.status(500).json({ err: err.message });
       }
@@ -75,7 +75,9 @@ export default async function handle(req, res) {
         images,
       });
 
-      res.json({ newProduct, message: messages.success.addedProduct });
+      return res
+        .status(200)
+        .json({ newProduct, message: messages.success.addedProduct });
     } catch (err) {
       return res
         .status(500)
@@ -148,7 +150,7 @@ export default async function handle(req, res) {
         }
       );
 
-      res.json(true);
+      return res.status(200).json(true);
     } catch (err) {
       return res.status(500).json({
         message: messages.error.errorUpdatedProduct,
@@ -161,6 +163,6 @@ export default async function handle(req, res) {
   if (method === "DELETE") {
     const { _id } = req.query;
     await Product.deleteOne({ _id });
-    res.json(true);
+    return res.status(200).json(true);
   }
 }

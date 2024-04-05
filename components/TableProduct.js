@@ -355,9 +355,9 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
               href={"/products/new"}
               as={Link}
               color="primary"
-              endContent={<PlusIcon />}
+              startContent={<PlusIcon />}
             >
-              Agregar producto
+              Producto
             </Button>
           </div>
         </div>
