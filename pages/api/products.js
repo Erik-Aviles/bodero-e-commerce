@@ -118,14 +118,11 @@ export default async function handle(req, res) {
         return res.status(400).json({ message: messages.error.idNotValid });
       }
 
-      if (!title || !code || !price || !profitability || !brand || !description)
-        return res.status(400).json({ message: messages.error.needProps });
-
       //Encuentra y actualiza el producto
       await Product.updateOne(
         { _id },
         {
-          title: title.toLowerCase(),
+          title,
           code,
           codeEnterprise,
           codeWeb,

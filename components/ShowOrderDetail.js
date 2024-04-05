@@ -110,7 +110,7 @@ const ShowOrderDetail = ({ order }) => {
                 </div>
 
                 {/* Detalle de la orden*/}
-                <table className="mb-1 md:mb-2 border-collapse border-gray-200 border">
+                <table className="w-full mb-1 md:mb-2 border-collapse border-gray-200 border">
                   <thead>
                     <tr className="bg-gray-200">
                       <th className="p-2 md:py-2 md:px-4 text-left border border-gray-200 text-xs md:text-sm">

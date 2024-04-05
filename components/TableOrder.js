@@ -41,7 +41,12 @@ const INITIAL_VISIBLE_COLUMNS = [
   "actions",
 ];
 
-export default function TableOrder({ verifyOrder, downloadPdf, orders }) {
+export default function TableOrder({
+  disminuirCantidadProductos,
+  downloadPdf,
+  orders,
+  isValidate,
+}) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = useState(
@@ -98,8 +103,6 @@ export default function TableOrder({ verifyOrder, downloadPdf, orders }) {
       });
       return total;
     }
-
-    // Obtener el total
     const quantity = calcularQuantity(order.line_items);
 
     // Obtener el cantidad de producto
@@ -147,7 +150,7 @@ export default function TableOrder({ verifyOrder, downloadPdf, orders }) {
             startContent={cellValue === true ? <VerifyIcon size={18} /> : ""}
             variant="faded"
             color={statusColorMap[order?.paid]}
-            onClick={() => verifyOrder()}
+            onClick={() => disminuirCantidadProductos(order)}
           >
             {cellValue === false ? "No" : "Sí"}
           </Chip>

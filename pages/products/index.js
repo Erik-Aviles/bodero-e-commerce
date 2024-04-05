@@ -44,9 +44,11 @@ export default withSwal((props, ref) => {
         goBack();
       });
   }
+
   function goBack() {
     router.push("/products");
   }
+
   function formatPrice(price) {
     let precioFormateado = new Intl.NumberFormat("es-EC", {
       style: "currency",
@@ -54,6 +56,7 @@ export default withSwal((props, ref) => {
     }).format(price);
     return precioFormateado;
   }
+
   return (
     <>
       <Head>
