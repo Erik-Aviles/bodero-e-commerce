@@ -27,10 +27,20 @@ const profitabilityToChoose = [
   { value: "95", profitability: "95%" },
 ];
 
+const columnsOrder = [
+  { name: "CLIENTE", uid: "name" },
+  { name: "FECHA", uid: "createdAt" },
+  { name: "MONTO", uid: "amount" },
+  { name: "CANTIDAD", uid: "quantity" },
+  { name: "APROBADO", uid: "paid" },
+  { name: "ACCION", uid: "actions" },
+];
+
 const columnsCategory = [
   { name: "NOMBRE", uid: "name" },
   { name: "ACTIONS", uid: "actions" },
 ];
+
 const columnsProduct = [
   { name: "ID", uid: "id" },
   { name: "Articulo", uid: "title", sortable: true },
@@ -55,4 +65,10 @@ const columnsProduct = [
   { name: "Acción", uid: "actions" },
 ];
 
-export { profitabilityToChoose, taxToChoose, columnsProduct, columnsCategory };
+export {
+  profitabilityToChoose,
+  taxToChoose,
+  columnsProduct,
+  columnsCategory,
+  columnsOrder,
+};

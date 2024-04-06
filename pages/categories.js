@@ -1,32 +1,21 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import NotificationContext from "@/context/NotificationContext";
-import { PlusIcon, SearchIcon } from "@/components/Icons";
-import useAuthFetch from "@/hooks/useAuthFetch";
 import { withSwal } from "react-sweetalert2";
 import Layout from "@/components/Layout";
 import Head from "next/head";
 import axios from "axios";
-import { Button, Input } from "@nextui-org/react";
-import Link from "next/link";
+import { Input } from "@nextui-org/react";
 import TableCategory from "@/components/TableCategory";
 import { capitalize } from "@/utils/utils";
-import ModalCategories from "@/components/ModalCategories";
 
 function Categories({ swal }) {
-  const authRouter = useAuthFetch();
   const { showNotification } = useContext(NotificationContext);
   const [name, setName] = useState("");
   const [editedCategory, setEditedCategory] = useState(null);
   const [categories, setCategories] = useState([]);
 
-  function fetchCategories() {
-    axios.get("/api/categories").then((res) => {
+  async function fetchCategories() {
+    await axios.get("/api/categories").then((res) => {
       setCategories(res.data);
     });
   }

@@ -7,7 +7,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="fixed z-30 md:z-10 md:relative bg-white w-full px-4 pb-4  sm:px-6 lg:px-8">
+      <header className="fixed z-30 sm:z-10 md:relative bg-white w-full px-4 pb-4  sm:px-6 lg:px-8">
         <hr className="h-px border-0 bg-gray-300" />
 
         <div className="flex items-center pt-4 sm:justify-between sm:gap-4">

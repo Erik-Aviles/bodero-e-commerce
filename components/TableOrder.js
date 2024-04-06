@@ -11,30 +11,64 @@ import {
   Pagination,
   Button,
   Input,
+  Chip,
 } from "@nextui-org/react";
 
-import { DeleteRIcon, EdithIcon, PlusIcon, SearchIcon } from "./Icons";
-import { columnsCategory } from "@/resources/data";
+import {
+  DeleteRIcon,
+  DownloadIcon,
+  EyeIcon,
+  PlusIcon,
+  SearchIcon,
+  VerifyIcon,
+} from "./Icons";
+import { columnsOrder } from "@/resources/data";
 import { capitalize } from "@/utils/utils";
 import Link from "next/link";
-import ModalCategories from "./ModalCategories";
+import ShowOrderDetail from "./ShowOrderDetail";
+import { formatToCurrency } from "@/utils/formatToCurrency";
 
-export default function TableCategory({
-  deleteCaterory,
-  editCategory,
-  categories,
-  fetchCategories,
+const statusColorMap = {
+  true: "success",
+  false: "danger",
+};
+
+const INITIAL_VISIBLE_COLUMNS = [
+  "name",
+  "createdAt",
+  "amount",
+  "quantity",
+  "paid",
+  "actions",
+];
+
+export default function TableOrder({
+  disminuirCantidadProductos,
+  downloadPdf,
+  orders,
+  deleteOrder,
 }) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [visibleColumns, setVisibleColumns] = useState(
+    new Set(INITIAL_VISIBLE_COLUMNS)
+  );
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const [page, setPage] = useState(1);
 
   const hasSearchFilter = Boolean(filterValue);
 
+  const headerColumns = useMemo(() => {
+    if (visibleColumns === "all") return columns;
+
+    return columnsOrder.filter((column) =>
+      Array.from(visibleColumns).includes(column.uid)
+    );
+  }, [visibleColumns]);
+
   const filteredItems = useMemo(() => {
-    let resultadoFiltrado = [...categories];
+    let resultadoFiltrado = [...orders];
 
     if (hasSearchFilter) {
       resultadoFiltrado = resultadoFiltrado.filter((objeto) =>
@@ -42,7 +76,7 @@ export default function TableCategory({
       );
     }
     return resultadoFiltrado;
-  }, [categories, filterValue]);
+  }, [orders, filterValue]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -53,32 +87,86 @@ export default function TableCategory({
     return filteredItems.slice(start, end);
   }, [page, filteredItems, rowsPerPage]);
 
-  const renderCell = useCallback((category, columnKey) => {
-    const cellValue = category[columnKey];
+  const renderCell = useCallback((order, columnKey) => {
+    const cellValue = order[columnKey];
+
+    function calcularTotal(lineItems) {
+      let total = 0;
+      lineItems.forEach((pro) => {
+        total += pro.info_order.unit_amount;
+      });
+      return total;
+    }
+    function calcularQuantity(lineItems) {
+      let total = 0;
+      lineItems.forEach((pro) => {
+        total += pro.quantity;
+      });
+      return total;
+    }
+    const quantity = calcularQuantity(order.line_items);
+
+    // Obtener el cantidad de producto
+    const total = calcularTotal(order.line_items);
+    console.log(order._id);
 
     switch (columnKey) {
       case "name":
         return (
           <div className="flex flex-col ">
-            <p className=" break-words text-bold text-small capitalize">
-              {capitalize(cellValue)}
+            <p className="text-bold text-tiny text-primary-400">
+              {order?.name}
             </p>
           </div>
         );
+
+      case "amount":
+        return (
+          <div className="flex flex-col">
+            <p className=" break-words text-bold text-tiny capitalize">
+              {formatToCurrency(total)}
+            </p>
+          </div>
+        );
+      case "quantity":
+        return (
+          <div className="flex flex-col">
+            <p className=" break-words text-bold text-tiny capitalize">
+              {quantity}
+              {" ud."}
+            </p>
+          </div>
+        );
+      case "createdAt":
+        return (
+          <div className="flex flex-col">
+            <p className=" break-words text-bold text-tiny capitalize">
+              {new Date(order.createdAt).toLocaleString()}
+            </p>
+          </div>
+        );
+      case "paid":
+        return (
+          <Chip
+            className="text-tiny py-[0.5px] px-1 cursor-pointer"
+            startContent={cellValue === true ? <VerifyIcon size={18} /> : ""}
+            variant="faded"
+            isDisabled={cellValue === true ? true : false}
+            color={statusColorMap[order?.paid]}
+            onClick={() => disminuirCantidadProductos(order)}
+          >
+            {cellValue === false ? "No" : "Sí"}
+          </Chip>
+        );
       case "actions":
         return (
-          <div className="flex items-center justify-around">
-            <Tooltip content="Editar">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                <EdithIcon
-                  onClick={() => editCategory(category)}
-                  fill="secondary"
-                />
-              </span>
-            </Tooltip>
+          <div className="flex items-center justify-between gap-2 ">
+            <div className="flex gap-3 ">
+              <ShowOrderDetail order={order} />
+            </div>
             <Tooltip color="danger" content="Eliminar">
               <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                <DeleteRIcon onClick={(e) => deleteCaterory(category)} />
+                <DeleteRIcon onClick={(e) => deleteOrder(order)} />
               </span>
             </Tooltip>
           </div>
@@ -119,44 +207,30 @@ export default function TableCategory({
       <div className=" flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
-            Total, {categories.length} Categorias
+            Total, {orders.length} Ordenes.
           </span>
         </div>
-        <div className="flex flex-col sm:flex-row justify-between gap-3 items-end">
+        {/*   <div className="flex flex-col sm:flex-row justify-between gap-3 items-end">
           <div className="flex gap-3 ">
-            <Button
-              href={"/products/new"}
-              as={Link}
-              color="primary"
-              startContent={<PlusIcon />}
-            >
-              Producto
-            </Button>
-            <ModalCategories fetchCategories={fetchCategories} />
-          </div>
-          <Input
+       <Input
             isClearable
             className="w-full sm:max-w-[45%] order-1"
-            placeholder="Buscar categorias"
+            placeholder="Buscar orden..."
             startContent={<SearchIcon className="mr-1" />}
             value={filterValue}
             onClear={() => onClear()}
             onValueChange={onSearchChange}
-          />
-        </div>
+          /> 
+        </div> */}
       </div>
     );
-  }, [filterValue, categories.length, onSearchChange, hasSearchFilter]);
+  }, [filterValue, orders.length, onSearchChange, hasSearchFilter]);
 
   const bottomContent = useMemo(() => {
     return (
-      <div className="py-2 px-2 flex justify-between items-center">
-        <span className="w-[30%] text-small text-default-400">
-          {selectedKeys === "all"
-            ? "Todos los elementos seleccionados"
-            : `${selectedKeys.size} de ${categories.length} selección`}
-        </span>
+      <div className="-z-10 py-2 px-2 flex justify-between items-center">
         <Pagination
+          className=""
           isCompact
           showControls
           showShadow
@@ -186,7 +260,6 @@ export default function TableCategory({
       </div>
     );
   }, [selectedKeys, items.length, page, pages]);
-
   return (
     <Table
       aria-label="Es una tabla de categrias"
@@ -194,16 +267,13 @@ export default function TableCategory({
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "min-h-[280px]  ",
+        wrapper: "max-h-[440px]",
         th: "text-warning uppercase",
       }}
-      selectedKeys={selectedKeys}
-      selectionMode="multiple"
       topContent={topContent}
       topContentPlacement="outside"
-      onSelectionChange={setSelectedKeys}
     >
-      <TableHeader columns={columnsCategory}>
+      <TableHeader columns={headerColumns}>
         {(column) => (
           <TableColumn
             key={column.uid}

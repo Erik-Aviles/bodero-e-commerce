@@ -1,5 +1,11 @@
 import React from "react";
-import { HomeIcon, ListCategoryIcon, LogoutIcon, ProductIcon } from "./Icons";
+import {
+  HomeIcon,
+  ListCategoryIcon,
+  LogoutIcon,
+  OrderListIcon,
+  ProductIcon,
+} from "./Icons";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import logo from "@/public/images/logo.jpg";
@@ -69,6 +75,7 @@ const Nav = ({ show, setShowNav }) => {
             />
             Productos
           </Link>
+
           <Link
             href={"/categories"}
             className={
@@ -82,7 +89,17 @@ const Nav = ({ show, setShowNav }) => {
             />
             Categorias
           </Link>
-
+          <Link
+            href={"/orders"}
+            className={pathname.includes("/orders") ? activeLink : inactiveLink}
+          >
+            <OrderListIcon
+              className={
+                pathname.includes("/orders") ? activeIcon : inactiveIcon
+              }
+            />
+            Ordenes
+          </Link>
           <button className={inactiveLink} onClick={logout}>
             <LogoutIcon />
             Salir

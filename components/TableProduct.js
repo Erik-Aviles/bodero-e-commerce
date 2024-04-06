@@ -112,6 +112,13 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
             {product?.title}
           </User>
         );
+      case "id":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-small text-purple-700">{cellValue}</p>
+            <p className="text-bold text-tiny text-pink-700">{product?._id}</p>
+          </div>
+        );
       case "code":
         return (
           <div className="flex flex-col">
@@ -355,9 +362,9 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
               href={"/products/new"}
               as={Link}
               color="primary"
-              endContent={<PlusIcon />}
+              startContent={<PlusIcon />}
             >
-              Agregar producto
+              Producto
             </Button>
           </div>
         </div>
