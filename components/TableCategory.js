@@ -67,7 +67,7 @@ export default function TableCategory({
         );
       case "actions":
         return (
-          <div className="relative flex items-center justify-around">
+          <div className="flex items-center justify-around">
             <Tooltip content="Editar">
               <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
                 <EdithIcon

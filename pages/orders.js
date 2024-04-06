@@ -7,6 +7,7 @@ import axios from "axios";
 import TableOrder from "@/components/TableOrder";
 import { Product } from "@/models/Product";
 import { moogoseConnect } from "@/lib/mongoose";
+import { capitalize } from "@/utils/utils";
 
 export default withSwal((props, ref) => {
   const { swal, products } = props;
@@ -27,7 +28,9 @@ export default withSwal((props, ref) => {
   const disminuirCantidadProductos = async (orderId) => {
     let newstock = 0;
     let data = {};
+    let item = {};
     let _id = [];
+    let id = orderId._id;
 
     orderId.line_items.forEach((item) => {
       const producto = products.find(
@@ -46,7 +49,7 @@ export default withSwal((props, ref) => {
           axios.put("/api/products", { ...data, _id });
           showNotification({
             open: true,
-            msj: "Cambios guardados con exito!",
+            msj: "Pedido ha sido aprobado!",
             status: "success",
           });
         } catch (error) {
@@ -54,14 +57,27 @@ export default withSwal((props, ref) => {
         }
       }
     });
+
+    if (id) {
+      item = {
+        ...orders,
+        paid: true,
+      };
+      try {
+        axios.put("/api/orders", { ...item, _id: id });
+        fetchOrders();
+      } catch (error) {
+        console.error(error);
+      }
+    }
   };
 
-  /*   function deleteProduct(order) {
+  function deleteOrder(order) {
     swal
       .fire({
         title: "Estas seguro?",
-        text: `¿Realmente desea eliminar "${capitalize(
-          product?.title
+        text: `¿Realmente desea eliminar el pedido de "${capitalize(
+          order?.name
         )}" de la base de datos? Esta acción no se puede deshacer.`,
         showCancelButton: true,
         cancelButtonText: "Cancelar",
@@ -71,19 +87,17 @@ export default withSwal((props, ref) => {
       })
       .then(async (result) => {
         if (result.isConfirmed) {
-          const { _id } = product;
+          const { _id } = order;
           await axios.delete("/api/orders?_id=" + _id);
           showNotification({
             open: true,
-            msj: `Producto: "${capitalize(
-              product?.title
-            )}", eliminado con exito!`,
+            msj: `Pedido de "${capitalize(order?.name)}", eliminado con exito!`,
             status: "success",
           });
         }
-        goBack();
+        fetchOrders();
       });
-  } */
+  }
 
   function downloadPdf() {
     showNotification({
@@ -105,8 +119,7 @@ export default withSwal((props, ref) => {
           downloadPdf={downloadPdf}
           disminuirCantidadProductos={disminuirCantidadProductos}
           orders={orders}
-          setIsValidate={setIsValidate}
-          isValidate={isValidate}
+          deleteOrder={deleteOrder}
         />
       </Layout>
     </>

@@ -41,10 +41,10 @@ const ShowOrderDetail = ({ order }) => {
                   <img
                     src="/images/logo.jpg"
                     alt="Logo"
-                    className="h-14 sm:h-20"
+                    className="h-12 sm:h-18"
                   />
                   {/* Información de la empresa */}
-                  <div className="text-right">
+                  <div className="text-right leading-4">
                     <p className="font-bold text-xs md:text-sm">
                       Bodero Racing Development
                     </p>
@@ -63,9 +63,7 @@ const ShowOrderDetail = ({ order }) => {
                     <div className="leading-[12px]">
                       <p className="text-gray-600 text-[10px] md:text-xs">
                         Comprobante #:{" "}
-                        <span className="font-bold">
-                          0000{order._id.slice(-4)}
-                        </span>
+                        <span className="font-bold">{order._id}</span>
                       </p>
                       <p className="text-gray-600 text-[10px] md:text-xs">
                         Fecha:{" "}
@@ -81,21 +79,21 @@ const ShowOrderDetail = ({ order }) => {
                         <span className="font-semibold">{order.name}</span>
                       </p>
                       <p className="text-gray-600 text-[10px]">
-                        {"Telefono: "}
+                        {"Cell: "}
                         <span className="font-semibold">{order.phone}</span>
                       </p>
                       <p className="text-gray-600 text-[10px]">
-                        {"Correo: "}
+                        {"Email: "}
                         <span className="font-semibold">{order.email}</span>
                       </p>
                       <p className="text-gray-600 text-[10px]">
-                        {"País/Ciudad: "}
+                        {"País/Cdad: "}
                         <span className="font-semibold">
                           {order.country} - {order.city}
                         </span>
                       </p>
                       <p className="text-gray-600 text-[10px] ">
-                        {"Dirección: "}
+                        {"Dir: "}
                         <span className="font-semibold">
                           {order.streetAddress}
                         </span>
@@ -139,7 +137,7 @@ const ShowOrderDetail = ({ order }) => {
                         <td className="p-2 md:py-2 md:px-4 border border-gray-200 text-[10px] md:text-xs">
                           {pro.quantity}
                         </td>
-                        <td className="p-2 md:py-2 md:px-4 border border-gray-200 text-[10px] md:text-xs">
+                        <td className="p-2 md:py-2 md:px-4 border border-gray-200 text-[10px] md:text-xs text-right">
                           {formatToCurrency(pro.info_order.unit_amount)}
                         </td>
                       </tr>
@@ -149,7 +147,7 @@ const ShowOrderDetail = ({ order }) => {
 
                 {/* Totales */}
                 <div className="w-full flex justify-end">
-                  <div className="text-right border border-gray-200 py-2 pl-4 pr-5 ">
+                  <div className="w-32 text-right border border-gray-200 py-2 pl-4 pr-5 ">
                     <p className="text-gray-600 text-[10px] md:text-xs">
                       Subtotal:
                     </p>
@@ -159,17 +157,17 @@ const ShowOrderDetail = ({ order }) => {
                     <p className="text-gray-600 text-[10px] md:text-xs">
                       IVA (15%):
                     </p>
-                    <p className="font-bold text-sm md:text-base">
+                    <p className="font-semibold text-xs md:text-sm">
                       Total a pagar:
                     </p>
                   </div>
-                  <div className="text-right border border-gray-200 py-2 pl-4 pr-5">
+                  <div className="w-24 text-right border border-gray-200 py-2 pl-4 pr-2 md:pr-5">
                     <p className="text-[10px] md:text-xs">
                       ${subtotal.toFixed(2)}
                     </p>
                     <p className="text-[10px] md:text-xs">${0}</p>
                     <p className="text-[10px] md:text-xs">${iva.toFixed(2)}</p>
-                    <p className="font-bold text-xs md:text-sm">
+                    <p className="font-semibold text-xs md:text-sm">
                       ${total.toFixed(2)}
                     </p>
                   </div>

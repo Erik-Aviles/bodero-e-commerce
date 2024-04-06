@@ -15,6 +15,7 @@ import {
 } from "@nextui-org/react";
 
 import {
+  DeleteRIcon,
   DownloadIcon,
   EyeIcon,
   PlusIcon,
@@ -45,7 +46,7 @@ export default function TableOrder({
   disminuirCantidadProductos,
   downloadPdf,
   orders,
-  isValidate,
+  deleteOrder,
 }) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
@@ -107,6 +108,7 @@ export default function TableOrder({
 
     // Obtener el cantidad de producto
     const total = calcularTotal(order.line_items);
+    console.log(order._id);
 
     switch (columnKey) {
       case "name":
@@ -149,6 +151,7 @@ export default function TableOrder({
             className="text-tiny py-[0.5px] px-1 cursor-pointer"
             startContent={cellValue === true ? <VerifyIcon size={18} /> : ""}
             variant="faded"
+            isDisabled={cellValue === true ? true : false}
             color={statusColorMap[order?.paid]}
             onClick={() => disminuirCantidadProductos(order)}
           >
@@ -157,10 +160,15 @@ export default function TableOrder({
         );
       case "actions":
         return (
-          <div className="flex flex-col sm:flex-row justify-between gap-3 items-end">
+          <div className="flex items-center justify-between gap-2 ">
             <div className="flex gap-3 ">
               <ShowOrderDetail order={order} />
             </div>
+            <Tooltip color="danger" content="Eliminar">
+              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                <DeleteRIcon onClick={(e) => deleteOrder(order)} />
+              </span>
+            </Tooltip>
           </div>
         );
       default:

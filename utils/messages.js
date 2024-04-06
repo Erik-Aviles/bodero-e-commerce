@@ -4,6 +4,7 @@ const messages = {
     requireCaracteres: "El contraseña debe de ser minimo de 6 caracteres",
     notProduct: "Producto no encontrado o no se realizó ninguna modificación.",
     errorUpdatedProduct: "Error al actualizar el producto.",
+    errorUpdatedOrder: "Error al actualizar el pedido.",
     idNotValid: "Se requiere un ID de producto válido.",
     emailNotValid: "Dirección de correo electrónico no válida.",
     passwordNotMatch: "Las contraseñas no coinciden",

@@ -28,7 +28,6 @@ import { capitalize } from "@/utils/utils";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "title",
-  "id",
   "code",
   "salePrice",
   "quantity",
