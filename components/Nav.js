@@ -43,11 +43,11 @@ const Nav = ({ show, setShowNav }) => {
         }
       >
         <div className="w-full py-4  flex justify-center">
-          <Link href="/" className="w-48 ">
+          <Link href="/" className="w-40 ">
             <Image
               priority
               src={logo}
-              className={`object-cover w-48`}
+              className={`object-cover w-40`}
               alt="Logo B.D.R"
             />
           </Link>

@@ -9,7 +9,7 @@ const CartDashboard = ({ href, title, imageSrc, altText, itemCount }) => {
         <Image
           width={80}
           height={80}
-          className="w-2/5 object-contain"
+          className="object-contain"
           src={imageSrc}
           alt={altText}
         />

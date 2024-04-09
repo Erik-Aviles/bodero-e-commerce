@@ -50,9 +50,9 @@ export default function Home({ sizeProducts, sizeCategories, sizeOrders }) {
               </Button>
             </div>
           </div>
-          <div className="w-full  sm:flex sm:items-center  ">
+          <div className="w-full sm:flex sm:items-center  ">
             <div className="w-full pt-2.5 ">
-              <div className=" grid grid-cols-1 gap-7 lg:grid-cols-3 lg:gap-4 ">
+              <div className=" grid grid-cols-1 lg:grid-cols-4 gap-4 ">
                 <CartDashboard
                   href={"/products"}
                   title={"Productos"}
