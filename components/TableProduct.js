@@ -40,7 +40,12 @@ const INITIAL_VISIBLE_COLUMNS = [
   "actions",
 ];
 
-export default function TableProduct({ products, deleteProduct, formatPrice, fetchProducts }) {
+export default function TableProduct({
+  products,
+  deleteProduct,
+  formatPrice,
+  fetchProducts,
+}) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = useState(
@@ -69,10 +74,18 @@ export default function TableProduct({ products, deleteProduct, formatPrice, fet
     if (hasSearchFilter) {
       filteredProducts = filteredProducts.filter(
         (product) =>
-          removeAccents(product.title.toLowerCase()).includes(removeAccents(filterValue.toLowerCase())) ||
-          removeAccents(product.code.toLowerCase()).includes(removeAccents(filterValue.toLowerCase())) ||
-          removeAccents(product.codeWeb.toLowerCase()).includes(removeAccents(filterValue.toLowerCase())) ||
-          removeAccents(product.codeEnterprise.toLowerCase()).includes(removeAccents(filterValue.toLowerCase()))
+          removeAccents(product.title.toLowerCase()).includes(
+            removeAccents(filterValue.toLowerCase())
+          ) ||
+          removeAccents(product.code.toLowerCase()).includes(
+            removeAccents(filterValue.toLowerCase())
+          ) ||
+          removeAccents(product.codeWeb.toLowerCase()).includes(
+            removeAccents(filterValue.toLowerCase())
+          ) ||
+          removeAccents(product.codeEnterprise.toLowerCase()).includes(
+            removeAccents(filterValue.toLowerCase())
+          )
       );
     }
 
@@ -258,7 +271,10 @@ export default function TableProduct({ products, deleteProduct, formatPrice, fet
         return (
           <div className="flex items-center justify-between gap-2">
             <div className="flex gap-3">
-              <ModalEditProducts product={...product}  fetchProducts={fetchProducts}/>
+              <ModalEditProducts
+                product={product}
+                fetchProducts={fetchProducts}
+              />
             </div>
             <Tooltip color="danger" content="Eliminar">
               <span className="text-lg text-danger cursor-pointer active:opacity-50">
@@ -340,7 +356,7 @@ export default function TableProduct({ products, deleteProduct, formatPrice, fet
                 ))}
               </DropdownMenu>
             </Dropdown>
-           <ModalNewProducts fetchProducts ={ fetchProducts }/>
+            <ModalNewProducts fetchProducts={fetchProducts} />
           </div>
         </div>
         <div>

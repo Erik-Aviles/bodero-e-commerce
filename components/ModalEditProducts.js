@@ -2,7 +2,7 @@ import { useState } from "react";
 import ProductEditForm from "./ProductEditForm";
 import { EdithIcon } from "./Icons";
 
-const ModalEditProducts = ({ product,fetchProducts }) => {
+const ModalEditProducts = ({ product, fetchProducts }) => {
   const [showModal, setShowModal] = useState(false);
 
   const toggleModal = () => {
@@ -19,10 +19,10 @@ const ModalEditProducts = ({ product,fetchProducts }) => {
           <>
             <div className="fixed inset-0 z-40 bg-gray-500 bg-opacity-50"></div>
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="max-h-[700px] max-w-5xl bg-grayLight p-4 rounded-lg shadow-lg overflow-auto">
+              <div className="max-h-[700px] max-w-5xl bg-grayLight p-4 rounded-lg shadow-lg overflow-auto">
                 <ProductEditForm
                   titulo="Editar producto"
-                  product={...product}
+                  product={product}
                   toggleModal={toggleModal}
                   fetchProducts={fetchProducts}
                 />
