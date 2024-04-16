@@ -13,7 +13,6 @@ export default withSwal((props, ref) => {
   const { swal, products } = props;
   const [orders, setOrder] = useState([]);
   const { showNotification } = useContext(NotificationContext);
-  const { isValidate, setIsValidate } = useState(false);
 
   useEffect(() => {
     fetchOrders();
@@ -127,13 +126,11 @@ export default withSwal((props, ref) => {
 });
 
 export async function getServerSideProps() {
-  // Conectar a la base de datos MongoDB
   await moogoseConnect();
 
   let products = [];
 
   try {
-    // Consultar la base de datos para obtener solo los campos de ID y cantidad de todos los productos
     products = await Product.find(
       {},
       { _id: 1, quantity: 1, title: 1 },
@@ -145,7 +142,6 @@ export async function getServerSideProps() {
 
   return {
     props: {
-      // Convertir los productos en un objeto plano para que sea serializable
       products: JSON.parse(JSON.stringify(products)),
     },
   };

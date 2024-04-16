@@ -108,13 +108,12 @@ export default function TableOrder({
 
     // Obtener el cantidad de producto
     const total = calcularTotal(order.line_items);
-    console.log(order._id);
 
     switch (columnKey) {
       case "name":
         return (
           <div className="flex flex-col ">
-            <p className="text-bold text-tiny text-primary-400">
+            <p className="text-bold text-tiny text-primary-400 capitalize">
               {order?.name}
             </p>
           </div>

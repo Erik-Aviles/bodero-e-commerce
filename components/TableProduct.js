@@ -14,17 +14,21 @@ import {
   DropdownItem,
   User,
   Pagination,
+  Tooltip,
 } from "@nextui-org/react";
 import {
   PlusIcon,
-  VerticalDotsIcon,
   SearchIcon,
   ChevronDownIcon,
+  DeleteRIcon,
 } from "@/components/Icons";
 
 import { columnsProduct } from "@/resources/data";
 import Link from "next/link";
 import { capitalize } from "@/utils/utils";
+import ModalEditProducts from "./ModalEditProducts";
+import ModalNewProducts from "./ModalNewProducts";
+import removeAccents from "@/utils/removeAccents";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "title",
@@ -36,7 +40,7 @@ const INITIAL_VISIBLE_COLUMNS = [
   "actions",
 ];
 
-export default function TableProduct({ products, deleteProduct, formatPrice }) {
+export default function TableProduct({ products, deleteProduct, formatPrice, fetchProducts }) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = useState(
@@ -47,7 +51,6 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
     column: "age",
     direction: "ascending",
   });
-
   const [page, setPage] = useState(1);
 
   const hasSearchFilter = Boolean(filterValue);
@@ -66,12 +69,10 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
     if (hasSearchFilter) {
       filteredProducts = filteredProducts.filter(
         (product) =>
-          product.title.toLowerCase().includes(filterValue.toLowerCase()) ||
-          product.code.toLowerCase().includes(filterValue.toLowerCase()) ||
-          product.codeWeb.toLowerCase().includes(filterValue.toLowerCase()) ||
-          product.codeEnterprise
-            .toLowerCase()
-            .includes(filterValue.toLowerCase())
+          removeAccents(product.title.toLowerCase()).includes(removeAccents(filterValue.toLowerCase())) ||
+          removeAccents(product.code.toLowerCase()).includes(removeAccents(filterValue.toLowerCase())) ||
+          removeAccents(product.codeWeb.toLowerCase()).includes(removeAccents(filterValue.toLowerCase())) ||
+          removeAccents(product.codeEnterprise.toLowerCase()).includes(removeAccents(filterValue.toLowerCase()))
       );
     }
 
@@ -197,7 +198,6 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
             </p>
           </div>
         );
-
       case "offerPrice":
         return (
           <div className="flex flex-col">
@@ -254,34 +254,17 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
             </p>
           </div>
         );
-
       case "actions":
         return (
-          <div className="relative flex justify-end items-center gap-2">
-            <Dropdown>
-              <DropdownTrigger>
-                <Button isIconOnly size="sm" variant="light">
-                  <VerticalDotsIcon className="text-default-300" />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Menu de acciones">
-                <DropdownItem key="edit">
-                  <Link
-                    className="block"
-                    href={"/products/edit/" + product._id}
-                  >
-                    Editar
-                  </Link>
-                </DropdownItem>
-
-                <DropdownItem
-                  key="delete"
-                  onClick={() => deleteProduct(product)}
-                >
-                  Eliminar
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex gap-3">
+              <ModalEditProducts product={...product}  fetchProducts={fetchProducts}/>
+            </div>
+            <Tooltip color="danger" content="Eliminar">
+              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                <DeleteRIcon onClick={() => deleteProduct(product)} />
+              </span>
+            </Tooltip>
           </div>
         );
       default:
@@ -317,12 +300,11 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
 
   const onClear = useCallback(() => {
     setFilterValue("");
-    setPage(1);
   }, []);
 
   const topContent = useMemo(() => {
     return (
-      <div className=" flex flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <div className="flex flex-col sm:flex-row justify-between gap-3 items-end">
           <Input
             isClearable
@@ -337,7 +319,7 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
             <Dropdown>
               <DropdownTrigger className="flex ">
                 <Button
-                  endContent={<ChevronDownIcon className="text-small" />}
+                  endContent={<ChevronDownIcon className="-z-0 text-small" />}
                   variant="flat"
                 >
                   Columnas
@@ -358,14 +340,7 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Button
-              href={"/products/new"}
-              as={Link}
-              color="primary"
-              startContent={<PlusIcon />}
-            >
-              Producto
-            </Button>
+           <ModalNewProducts fetchProducts ={ fetchProducts }/>
           </div>
         </div>
         <div>
@@ -387,7 +362,7 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
               </span>
             </div>
             <span className="text-default-400 text-small">
-              Total, {products.length} Productos
+              Total, {products.length} Productos.
             </span>
             <label className="flex items-center text-default-400 text-small">
               Filas:
@@ -416,11 +391,6 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
   const bottomContent = useMemo(() => {
     return (
       <div className="py-2 px-2 flex justify-between items-center">
-        <span className="w-[30%] text-small text-default-400">
-          {selectedKeys === "all"
-            ? "Todos los elementos seleccionados"
-            : `${selectedKeys.size} de ${filteredItems.length} selección`}
-        </span>
         <Pagination
           isCompact
           showControls
@@ -459,11 +429,9 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "max-h-[440px]  ",
+        wrapper: "-z-1 max-h-[440px]  ",
         th: "text-warning uppercase",
       }}
-      selectedKeys={selectedKeys}
-      selectionMode="multiple"
       sortDescriptor={sortDescriptor}
       topContent={topContent}
       topContentPlacement="outside"

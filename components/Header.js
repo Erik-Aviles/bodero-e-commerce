@@ -11,7 +11,7 @@ const Header = () => {
         <hr className="h-px border-0 bg-gray-300" />
 
         <div className="flex items-center pt-2 sm:justify-between sm:gap-4">
-          <h1 className="text-2xl font-bold text-primary sm:text-3xl">
+          <h1 className="text-xl font-bold text-primary sm:text-2xl">
             Bienvenid@{" "}
             {session?.user?.name
               ? ", " + justFirstWord(session?.user?.name)

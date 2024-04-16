@@ -76,7 +76,9 @@ const ShowOrderDetail = ({ order }) => {
                       <h5 className="text-xs">Dtos del cliente</h5>
                       <p className="text-gray-600 text-[10px]">
                         {"Nombre: "}
-                        <span className="font-semibold">{order.name}</span>
+                        <span className="font-semibold capitalize">
+                          {order.name}
+                        </span>
                       </p>
                       <p className="text-gray-600 text-[10px]">
                         {"Cell: "}
@@ -88,20 +90,20 @@ const ShowOrderDetail = ({ order }) => {
                       </p>
                       <p className="text-gray-600 text-[10px]">
                         {"País/Cdad: "}
-                        <span className="font-semibold">
+                        <span className="font-semibold capitalize">
                           {order.country} - {order.city}
                         </span>
                       </p>
                       <p className="text-gray-600 text-[10px] ">
                         {"Dir: "}
-                        <span className="font-semibold">
+                        <span className="font-semibold capitalize">
                           {order.streetAddress}
                         </span>
                       </p>
                     </div>
                   </div>
                   <div className="flex w-full justify-center">
-                    <h4 className="text-base text-secondary md:text-xl">
+                    <h4 className="text-sm xs:text-base text-secondary md:text-xl">
                       NOTA DE VENTA
                     </h4>
                   </div>

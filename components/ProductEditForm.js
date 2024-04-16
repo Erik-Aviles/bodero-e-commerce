@@ -3,41 +3,42 @@ import { profitabilityToChoose, taxToChoose } from "@/resources/data";
 import NotificationContext from "@/context/NotificationContext";
 import { ReactSortable } from "react-sortablejs";
 import { DeleteIcon, UpLoadIcon } from "./Icons";
-import { useRouter } from "next/router";
 import Spinner from "./Spinner";
 import axios from "axios";
 import { Input } from "@nextui-org/react";
 import { capitalize } from "@/utils/utils";
-import Image from "next/image";
 import ModalCategories from "./ModalCategories";
 
-const ProductForm = ({
-  _id,
-  title: existingTitle,
-  code: existingCode,
-  codeEnterprise: existingCodeEnterprise,
-  codeWeb: existingCodeWeb,
-  price: exitingPrice,
-  tax: assignedTax,
-  profitability: assignedProfitability,
-  netPrice: exitingNetPrice,
-  salePrice: exitingSalePrice,
-  offerPrice: exitingOfferPrice,
-  profit: exitingProfit,
-  brand: exitingBrand,
-  category: assignedCategory,
-  color: exitingColor,
-  size: exitingSize,
-  quantity: existingQuantity,
-  location: existingLocation,
-  compatibility: existingCompatibility,
-  description: existingDescription,
-  descriptionAdditional: existingDescriptionAdditional,
-  images: exitingImages,
+const ProductEditForm = ({
+  product: {
+    _id,
+    title: existingTitle,
+    code: existingCode,
+    codeEnterprise: existingCodeEnterprise,
+    codeWeb: existingCodeWeb,
+    price: exitingPrice,
+    tax: assignedTax,
+    profitability: assignedProfitability,
+    netPrice: exitingNetPrice,
+    salePrice: exitingSalePrice,
+    offerPrice: exitingOfferPrice,
+    profit: exitingProfit,
+    brand: exitingBrand,
+    category: assignedCategory,
+    color: exitingColor,
+    size: exitingSize,
+    quantity: existingQuantity,
+    location: existingLocation,
+    compatibility: existingCompatibility,
+    description: existingDescription,
+    descriptionAdditional: existingDescriptionAdditional,
+    images: exitingImages,
+  },
   titulo,
+  toggleModal,
+  fetchProducts,
 }) => {
   const { showNotification } = useContext(NotificationContext);
-  const router = useRouter();
 
   const [codeVerify, setCodeVerify] = useState("");
   const [codeWebVerify, setCodeWebVerify] = useState("");
@@ -49,6 +50,7 @@ const ProductForm = ({
     existingCodeEnterprise || ""
   );
   const [codeWeb, setCodeWeb] = useState(existingCodeWeb || "");
+
   const [price, setPrice] = useState(exitingPrice || "");
   const [tax, setTax] = useState(assignedTax || 0);
   const [profitability, setProfitability] = useState(
@@ -76,7 +78,6 @@ const ProductForm = ({
   const [size, setSize] = useState(exitingSize || []);
 
   const [categories, setCategories] = useState([]);
-  const [goToProducts, setGoToProducts] = useState(false);
   const [isUpLoanding, setIsUpLoanding] = useState(false);
   const [verify, setVerify] = useState(false);
   const [verifyWeb, setWebVerify] = useState(false);
@@ -195,44 +196,8 @@ const ProductForm = ({
           msj: `"${capitalize(data.title)}", editado con exito!`,
           status: "success",
         });
-
-        setGoToProducts(true);
-      } catch (error) {
-        showNotification({
-          open: true,
-          msj: error.response.data.message,
-          status: "error",
-        });
-      }
-    } else {
-      try {
-        const res = await axios.post("/api/products", data);
-        showNotification({
-          open: true,
-          msj: res.data.message,
-          status: "success",
-        });
-        setTitle("");
-        setCode("");
-        setCodeEnterprise("");
-        setCodeWeb("");
-        setPrice("");
-        setTax(0);
-        setProfitability(0);
-        setNetPrice("");
-        setSalePrice("");
-        setOfferPrice("");
-        setProfit("");
-        setBrand("");
-        setCategory("");
-        setQuantity("");
-        setLocation("");
-        setCompatibility([]);
-        setDescription("");
-        setDescriptionAdditional("");
-        setImages([]);
-        setColor("");
-        setSize("");
+        fetchProducts();
+        toggleModal();
       } catch (error) {
         showNotification({
           open: true,
@@ -270,10 +235,6 @@ const ProductForm = ({
         return pIndex !== indexRemove;
       });
     });
-  }
-  if (goToProducts) {
-    router.push("/products");
-    return null;
   }
 
   function handleColorChange(event) {
@@ -379,48 +340,52 @@ const ProductForm = ({
   return (
     <div className="relative w-full flex flex-col justify-center ">
       <div className=" sm:pb-4 sm:flex sm:items-center sm:justify-between sm:gap-4">
-        <h3>{titulo}</h3>
+        <div className="flex flex-col ">
+          <h3>{titulo}</h3>
+          <p className="text-xs text-secondary">
+            Los campos con (*) son obligatorios.
+            <br />
+          </p>
+        </div>
         <ModalCategories fetchCategories={fetchCategories} />
-      </div>
-      <div className="sm:pb-4 sm:flex sm:items-center sm:justify-between sm:gap-4">
-        <p className="text-sm text-warning">
-          Los campos con (*) son obligatorios.
-          <br />
-        </p>
       </div>
       <form
         onSubmit={saveProduct}
-        className="w-fit flex flex-col gap-2 lg:grid lg:gap-5 lg:grid-cols-3 border-container "
+        className="w-fit flex flex-col gap-2 lg:grid lg:gap-5 lg:grid-cols-3 sm:border-container "
       >
         {/* Columna de codigos y descripcion*/}
         <div className="gap-2 flex flex-col">
           {/* codigos */}
-          <div className="flex flex-col gap-2 border-container ">
-            <p className="hidden md:block text-center text-secondary">
+          <div className="flex flex-col border-container ">
+            <p className="hidden md:block text-sm text-center text-secondary">
               {"CÓDIGOS "}
             </p>
-            <Input
-              type="text"
-              value={code}
-              label="Código"
-              placeholder="Código principal (*)"
-              labelPlacement="outside"
-              onChange={handleChangeCode}
-              // onChange={(e) => setCode(e.target.value)}
-            />
+            <div>
+              <label className="block my-1">Código (*)</label>
+              <Input
+                type="text"
+                labelPlacement="outside"
+                value={code}
+                placeholder="Código principal (*)"
+                onChange={handleChangeCode}
+                // onChange={(e) => setCode(e.target.value)}
+              />
+            </div>
             {!verify ? (
               <span></span>
             ) : (
               <span className="text-error text-small">Código ya existe!</span>
             )}
-            <Input
-              type="text"
-              value={codeWeb}
-              label="Código web"
-              placeholder="Código"
-              labelPlacement="outside"
-              onChange={handleChangeCodeWeb}
-            />
+            <div>
+              <label className="block my-1">Código Web</label>
+              <Input
+                type="text"
+                value={codeWeb}
+                placeholder="Código"
+                labelPlacement="outside"
+                onChange={handleChangeCodeWeb}
+              />
+            </div>
             {!verifyWeb ? (
               <span></span>
             ) : (
@@ -428,14 +393,16 @@ const ProductForm = ({
                 Código Web ya existe!
               </span>
             )}
-            <Input
-              type="text"
-              value={codeEnterprise}
-              label="Código empresa"
-              placeholder="Código"
-              labelPlacement="outside"
-              onChange={handleChangeCodeEnterprise}
-            />
+            <div>
+              <label className="block my-1">Código Empresa</label>
+              <Input
+                type="text"
+                value={codeEnterprise}
+                placeholder="Código"
+                labelPlacement="outside"
+                onChange={handleChangeCodeEnterprise}
+              />
+            </div>
             {!verifyEnterprise ? (
               <span></span>
             ) : (
@@ -455,7 +422,7 @@ const ProductForm = ({
             </button>
             {compatibility.length > 0 &&
               compatibility.map((item, index) => (
-                <div key={index + "1"} className="flex pb-3">
+                <div key={index} className="flex pb-3">
                   <div className="flex flex-col sm:basis-[95%] gap-1 w-full  ">
                     <Input
                       type="text"
@@ -527,6 +494,7 @@ const ProductForm = ({
               <div className="basis-2/5 ">
                 <label className="my-1 block">Categoria</label>
                 <select
+                  className="text-xs capitalize"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                 >
@@ -534,7 +502,7 @@ const ProductForm = ({
                     Sin categoria
                   </option>
                   {categories.length > 0 &&
-                    categories.map((category, index) => (
+                    categories.map((category) => (
                       <option key={category._id} value={category._id}>
                         {category?.name}
                       </option>
@@ -681,7 +649,7 @@ const ProductForm = ({
                 >
                   {profitabilityToChoose.length &&
                     profitabilityToChoose.map((item, index) => (
-                      <option key={index + item.value} value={item.value}>
+                      <option key={index} value={item.value}>
                         {item.profitability}
                       </option>
                     ))}
@@ -760,7 +728,7 @@ const ProductForm = ({
                 {!!images?.length &&
                   images.map((link, index) => (
                     <div
-                      key={link._id}
+                      key={index}
                       className="relative group w-24 h-24 flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md"
                     >
                       <img
@@ -799,7 +767,7 @@ const ProductForm = ({
               type="button"
               className="btn-delete whitespace-nowrap text-white px-2  md:px-4 py-1 rounded-sm mx-1"
               onClick={() => {
-                setGoToProducts(true);
+                toggleModal();
               }}
             >
               Cancelar
@@ -814,4 +782,4 @@ const ProductForm = ({
   );
 };
 
-export default ProductForm;
+export default ProductEditForm;

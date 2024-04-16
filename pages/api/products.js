@@ -13,8 +13,8 @@ export default async function handle(req, res) {
     } else {
       try {
         await moogoseConnect();
-        const product = await Product.find();
-        return res.status(200).json(product);
+        const products = await Product.find({}, null, { sort: { _id: -1 } });
+        return res.status(200).json(products);
       } catch (err) {
         return res.status(500).json({ err: err.message });
       }

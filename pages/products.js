@@ -1,6 +1,5 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import NotificationContext from "@/context/NotificationContext";
-import { moogoseConnect } from "@/lib/mongoose";
 import { withSwal } from "react-sweetalert2";
 import Layout from "@/components/Layout";
 import { useRouter } from "next/router";
@@ -8,13 +7,24 @@ import Head from "next/head";
 import axios from "axios";
 import TableProduct from "@/components/TableProduct";
 import { capitalize } from "@/utils/utils";
-import { Product } from "@/models/Product";
 
 export default withSwal((props, ref) => {
-  const router = useRouter();
-
-  const { swal, products } = props;
+  const { swal } = props;
   const { showNotification } = useContext(NotificationContext);
+  const [newProduct, setNewProduct] = useState([]);
+
+  const getProducts = async () => {
+    try {
+      const response = await axios.get("/api/products");
+      setNewProduct(response.data);
+    } catch (error) {
+      console.error("Error al obtener los productos:", error);
+    }
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
 
   function deleteProduct(product) {
     swal
@@ -41,12 +51,8 @@ export default withSwal((props, ref) => {
             status: "success",
           });
         }
-        goBack();
+        getProducts();
       });
-  }
-
-  function goBack() {
-    router.push("/products");
   }
 
   function formatPrice(price) {
@@ -69,16 +75,17 @@ export default withSwal((props, ref) => {
       <Layout>
         <h3>Panel de productos</h3>
         <TableProduct
-          products={products}
+          products={newProduct}
           deleteProduct={deleteProduct}
           formatPrice={formatPrice}
+          fetchProducts={getProducts}
         />
       </Layout>
     </>
   );
 });
 
-export async function getServerSideProps() {
+/* export async function getServerSideProps() {
   await moogoseConnect();
   const products = await Product.find({}, null, { sort: { _id: -1 } });
 
@@ -87,4 +94,4 @@ export async function getServerSideProps() {
       products: JSON.parse(JSON.stringify(products)),
     },
   };
-}
+} */

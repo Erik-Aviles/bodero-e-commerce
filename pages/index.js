@@ -1,14 +1,11 @@
 import Head from "next/head";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import CartDashboard from "@/components/CartDashboard";
-import { PlusIcon } from "@/components/Icons";
 import Layout from "@/components/Layout";
 import Loading from "@/components/Loading";
 import { moogoseConnect } from "@/lib/mongoose";
 import { Category } from "@/models/Category";
 import { Product } from "@/models/Product";
-import { Button } from "@nextui-org/react";
 import productImage from "@/public/images/manitos-caja.png";
 import categoryImage from "@/public/images/categorias.png";
 import userImage from "@/public/images/usuarios.png";
@@ -40,14 +37,6 @@ export default function Home({ sizeProducts, sizeCategories, sizeOrders }) {
                   Sistema de visualizacion y registro de la información.
                 </p>
               </div>
-              <Button
-                href={"/products/new"}
-                as={Link}
-                color="primary"
-                startContent={<PlusIcon />}
-              >
-                Producto
-              </Button>
             </div>
           </div>
           <div className="w-full sm:flex sm:items-center  ">

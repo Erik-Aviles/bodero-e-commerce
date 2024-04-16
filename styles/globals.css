@@ -12,8 +12,9 @@ textarea {
 .text-xs {
   @apply text-[10px] leading-4;
 }
-::placeholder{
-  @apply text-sm
+
+input, ::placeholder {
+  @apply text-[10px] leading-4
 }
 
 textarea, select{
@@ -49,13 +50,13 @@ label {
 }
 
 h3{
-  @apply text-secundary uppercase font-semibold mb-2 text-2xl;
+  @apply text-secundary uppercase font-semibold text-sm mb-1;
 }
 h4{
   @apply text-primary whitespace-nowrap font-semibold mb-2 text-xl;
 }
 label {
-  @apply text-primary text-sm mb-1 ;
+  @apply text-primary text-xs mb-1 ;
 }
 
 table.basic {

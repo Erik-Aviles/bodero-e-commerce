@@ -18,6 +18,7 @@ import { columnsCategory } from "@/resources/data";
 import { capitalize } from "@/utils/utils";
 import Link from "next/link";
 import ModalCategories from "./ModalCategories";
+import removeAccents from "@/utils/removeAccents";
 
 export default function TableCategory({
   deleteCaterory,
@@ -38,7 +39,9 @@ export default function TableCategory({
 
     if (hasSearchFilter) {
       resultadoFiltrado = resultadoFiltrado.filter((objeto) =>
-        objeto.name.toLowerCase().includes(filterValue.toLowerCase())
+        removeAccents(objeto.name.toLowerCase()).includes(
+          removeAccents(filterValue.toLowerCase())
+        )
       );
     }
     return resultadoFiltrado;
@@ -124,14 +127,6 @@ export default function TableCategory({
         </div>
         <div className="flex flex-col sm:flex-row justify-between gap-3 items-end">
           <div className="flex gap-3 ">
-            <Button
-              href={"/products/new"}
-              as={Link}
-              color="primary"
-              startContent={<PlusIcon />}
-            >
-              Producto
-            </Button>
             <ModalCategories fetchCategories={fetchCategories} />
           </div>
           <Input
