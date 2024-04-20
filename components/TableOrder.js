@@ -227,7 +227,7 @@ export default function TableOrder({
 
   const bottomContent = useMemo(() => {
     return (
-      <div className="-z-10 py-2 px-2 flex justify-between items-center">
+      <div className="py-2 px-2 flex justify-between items-center">
         <Pagination
           className=""
           isCompact
@@ -266,7 +266,7 @@ export default function TableOrder({
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "max-h-[440px]",
+        wrapper: "-z-1 max-h-[440px]",
         th: "text-warning uppercase",
       }}
       topContent={topContent}
