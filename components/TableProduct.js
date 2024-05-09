@@ -33,6 +33,7 @@ import removeAccents from "@/utils/removeAccents";
 const INITIAL_VISIBLE_COLUMNS = [
   "title",
   "code",
+  "createdAt",
   "salePrice",
   "quantity",
   "location",
@@ -187,6 +188,17 @@ export default function TableProduct({
             <p className="text-bold text-small text-default-400">
               {product?.profitability ? "%" + cellValue : cellValue}
             </p>
+          </div>
+        );
+      case "createdAt":
+        return (
+          <div className="flex flex-col min-w-[130px]">
+            <p className="text-bold text-small ">
+              {new Date(product?.createdAt).toLocaleString()}
+            </p>
+            <span className="text-bold text-tiny text-default-400 break-all capitalize">
+              {new Date(product?.updatedAt).toLocaleString()}
+            </span>
           </div>
         );
       case "salePrice":
@@ -350,7 +362,10 @@ export default function TableProduct({
                 onSelectionChange={setVisibleColumns}
               >
                 {columnsProduct.map((column) => (
-                  <DropdownItem key={column.uid} className="capitalize">
+                  <DropdownItem
+                    key={column.uid}
+                    className="text-[9px] capitalize"
+                  >
                     {capitalize(column.name)}
                   </DropdownItem>
                 ))}

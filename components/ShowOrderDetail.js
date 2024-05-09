@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { EyeIcon } from "./Icons";
+import { DeleteIcon, EyeIcon } from "./Icons";
 import { formatToCurrency } from "@/utils/formatToCurrency";
 
 const ShowOrderDetail = ({ order }) => {
@@ -26,7 +26,7 @@ const ShowOrderDetail = ({ order }) => {
 
   return (
     <div>
-      <div onClick={toggleModal}>
+      <div>
         <span title="Ver Detalles" className="w-fit">
           <EyeIcon className="cursor-pointer" onClick={toggleModal} />
         </span>
@@ -36,6 +36,11 @@ const ShowOrderDetail = ({ order }) => {
 
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
               <div className="h-[calc(100vh-50px)] bg-white max-w-[500px] p-4 rounded-lg shadow-lg overflow-auto">
+                <div className="flex justify-end items-center">
+                  <button onClick={toggleModal}>
+                    <DeleteIcon />
+                  </button>
+                </div>
                 <div className=" flex justify-between items-center mb-4 md:mb-6">
                   {/* Logo de la empresa */}
                   <img
@@ -132,6 +137,10 @@ const ShowOrderDetail = ({ order }) => {
                       <tr key={index}>
                         <td className="p-2 md:py-2 md:px-4 border border-gray-200 text-[10px] md:text-xs capitalize">
                           {pro.info_order.product_data.name}
+                          <br />
+                          <span className="p-1 text-[9px] font-bold">
+                            Cod: {pro.info_order.product_data.code}
+                          </span>
                         </td>
                         <td className="p-2 md:py-2 md:px-4 border border-gray-200 text-[10px] md:text-xs">
                           {formatToCurrency(pro.info_order.product_data.price)}

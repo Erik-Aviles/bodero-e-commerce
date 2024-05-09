@@ -45,6 +45,7 @@ const columnsProduct = [
   { name: "ID", uid: "id" },
   { name: "Articulo", uid: "title", sortable: true },
   { name: "Imagen", uid: "images" },
+  { name: "Fechas", uid: "createdAt" },
   { name: "Codigo", uid: "code", sortable: true },
   { name: "Codigo Web", uid: "codeWeb", sortable: true },
   { name: "Codigo Empresa", uid: "codeEnterprise", sortable: true },
