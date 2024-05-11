@@ -13,7 +13,8 @@ export default async function handle(req, res) {
       });
     });
 
-    const imagesPath = "public/images/categories"; // Directorio de destino
+    const imagesPath =
+      "https://bodero-e-commerce.vercel.app/public/images/categories"; // Directorio de destino
     const links = [];
 
     for (const file of files.file) {
