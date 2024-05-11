@@ -21,12 +21,13 @@ export default async function handle(req, res) {
       const newFileName = `${Date.now()}.${ext}`;
       const filePath = path.join(imagesPath, newFileName); // Ruta completa de destino
 
+      console.log(filePath);
       try {
         // Mover el archivo al directorio de imágenes
         fs.renameSync(file.path, filePath);
 
         // Construir el enlace público
-        const link = `/images/categories/${newFileName}`; // Ruta pública del archivo
+        const link = `https://bodero-e-commerce.vercel.app/images/categories/${newFileName}`; // Ruta pública del archivo
         links.push(link);
       } catch (error) {
         console.error("Error al mover el archivo:", error);
