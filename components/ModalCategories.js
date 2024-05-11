@@ -52,7 +52,7 @@ const ModalCategories = ({ fetchCategories }) => {
     } catch (error) {
       showNotification({
         open: true,
-        msj: data.message,
+        msj: "Ha ocurrido un error",
         status: "error",
       });
     }

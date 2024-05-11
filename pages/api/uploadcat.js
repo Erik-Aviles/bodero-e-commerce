@@ -6,6 +6,7 @@ import mime from "mime-types";
 export default async function handle(req, res) {
   if (req.method === "POST") {
     const form = new multiparty.Form();
+
     const { files } = await new Promise((resolve, reject) => {
       form.parse(req, (err, fields, files) => {
         if (err) reject(err);
@@ -13,7 +14,7 @@ export default async function handle(req, res) {
       });
     });
 
-    const imagesPath = "https://bodero-e-commerce.vercel.app/images/categories"; // Directorio de destino
+    const imagesPath = path.join(process.cwd(), "/images/categories");
     const links = [];
 
     for (const file of files.file) {
@@ -27,7 +28,10 @@ export default async function handle(req, res) {
         fs.renameSync(file.path, filePath);
 
         // Construir el enlace público
-        const link = `https://bodero-e-commerce.vercel.app/images/categories/${newFileName}`; // Ruta pública del archivo
+        const link = path.join(
+          process.cwd(),
+          `images/categories/${newFileName}`
+        ); // Ruta pública del archivo
         links.push(link);
       } catch (error) {
         console.error("Error al mover el archivo:", error);
@@ -35,6 +39,7 @@ export default async function handle(req, res) {
     }
     return res.json({ links });
   }
+
   if (req.method === "DELETE") {
     const imageUrl = decodeURIComponent(req.query.url);
 
