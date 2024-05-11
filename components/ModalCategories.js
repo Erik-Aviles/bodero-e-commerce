@@ -5,6 +5,8 @@ import useAuthFetch from "@/hooks/useAuthFetch";
 import Spinner from "./Spinner";
 import axios from "axios";
 import NotificationContext from "@/context/NotificationContext";
+import Image from "next/image";
+import localLoader from "@/utils/localLoader";
 
 const ModalCategories = ({ fetchCategories }) => {
   const { showNotification } = useContext(NotificationContext);
@@ -77,6 +79,9 @@ const ModalCategories = ({ fetchCategories }) => {
   };
 
   const toggleModal = () => {
+    setName("");
+    setDescription("");
+    setImage([]);
     setShowModal(!showModal);
   };
   const onClear = useCallback(() => {
@@ -148,9 +153,19 @@ const ModalCategories = ({ fetchCategories }) => {
                               key={index}
                               className="relative group w-24 h-24 flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md"
                             >
-                              <img
+                              {/*                               <img
                                 src={imageUrl}
                                 alt={`Imagen de ${name}`}
+                                className="rounded-md object-contain h-32 w-44 p-2"
+                              /> */}
+
+                              <Image
+                                loader={localLoader}
+                                src={imageUrl}
+                                alt={`Imagen de ${name}`}
+                                title={`Imagen de ${name}`}
+                                width={80}
+                                height={80}
                                 className="rounded-md object-contain h-32 w-44 p-2"
                               />
                               <div className="absolute top-2 right-2 cursor-pointer opacity-0  group-hover:opacity-100 ">

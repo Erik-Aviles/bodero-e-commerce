@@ -14,7 +14,7 @@ export default async function handle(req, res) {
       });
     });
 
-    const imagesPath = path.join(process.cwd(), "/images/categories");
+    const imagesPath = "public/images/categories";
     const links = [];
 
     for (const file of files.file) {
@@ -28,10 +28,7 @@ export default async function handle(req, res) {
         fs.renameSync(file.path, filePath);
 
         // Construir el enlace público
-        const link = path.join(
-          process.cwd(),
-          `images/categories/${newFileName}`
-        ); // Ruta pública del archivo
+        const link = `images/categories/${newFileName}`; // Ruta pública del archivo
         links.push(link);
       } catch (error) {
         console.error("Error al mover el archivo:", error);
