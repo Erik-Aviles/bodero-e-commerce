@@ -6,7 +6,7 @@ import Nav from "@/components/Nav";
 import { HamburguerIcon } from "@/components/Icons";
 import Header from "@/components/Header";
 import SignIn from "@/pages/auth/signin";
-import logo from "@/public/images/logo.jpg";
+import logo from "@/public/logo.jpg";
 
 export default function Layout({ children }) {
   const { data: session, status } = useSession();

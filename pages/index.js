@@ -6,10 +6,10 @@ import Loading from "@/components/Loading";
 import { moogoseConnect } from "@/lib/mongoose";
 import { Category } from "@/models/Category";
 import { Product } from "@/models/Product";
-import productImage from "@/public/images/manitos-caja.png";
-import categoryImage from "@/public/images/categorias.png";
-import userImage from "@/public/images/usuarios.png";
-import orderImage from "@/public/images/pedidos.png";
+import productImage from "@/public/images/dashboard/manitos-caja.png";
+import categoryImage from "@/public/images/dashboard/categorias.png";
+import userImage from "@/public/images/dashboard/usuarios.png";
+import orderImage from "@/public/images/dashboard/pedidos.png";
 import { Order } from "@/models/Order";
 
 export default function Home({ sizeProducts, sizeCategories, sizeOrders }) {

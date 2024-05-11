@@ -43,11 +43,7 @@ const ShowOrderDetail = ({ order }) => {
                 </div>
                 <div className=" flex justify-between items-center mb-4 md:mb-6">
                   {/* Logo de la empresa */}
-                  <img
-                    src="/images/logo.jpg"
-                    alt="Logo"
-                    className="h-12 sm:h-18"
-                  />
+                  <img src="/logo.jpg" alt="Logo" className="h-12 sm:h-18" />
                   {/* Información de la empresa */}
                   <div className="text-right leading-4">
                     <p className="font-bold text-xs md:text-sm">

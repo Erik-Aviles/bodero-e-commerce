@@ -9,7 +9,7 @@ export default async function handle(req, res) {
   if (method === "GET") {
     try {
       await moogoseConnect();
-      const categories = await Category.find();
+      const categories = await Category.find({}, null, { sort: { _id: -1 } });
       res.json(categories);
     } catch (err) {
       return res.status(500).json({ err: err.message });
@@ -20,8 +20,9 @@ export default async function handle(req, res) {
   if (method === "POST") {
     try {
       await moogoseConnect();
-      const { name } = req.body;
+      const { name, description, image } = req.body;
       //validar que esten todos los campos
+
       if (!name) {
         return res.status(400).json({
           message: messages.error.needProps,
@@ -36,6 +37,8 @@ export default async function handle(req, res) {
       }
       const categoryDoc = await Category.create({
         name,
+        description,
+        image,
       });
       res.json({ categoryDoc, message: messages.success.addedCategory });
     } catch (err) {
@@ -47,11 +50,13 @@ export default async function handle(req, res) {
   if (method === "PUT") {
     try {
       await moogoseConnect();
-      const { name, _id } = req.body;
+      const { name, description, image, _id } = req.body;
       const categoryDoc = await Category.updateOne(
         { _id },
         {
           name,
+          description,
+          image,
         }
       );
       res.json({ categoryDoc, message: messages.success.exitEdith });

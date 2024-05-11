@@ -3,7 +3,7 @@ import { signIn } from "next-auth/react";
 import { GooglegIcon } from "@/components/Icons";
 import Image from "next/image";
 import Head from "next/head";
-import logo from "@/public/images/logo.jpg";
+import logo from "@/public/logo.jpg";
 
 const baseURL = process.env.NEXTAUTH_URL;
 // const baseURL = "https://bodero-e-commerce.vercel.app/";

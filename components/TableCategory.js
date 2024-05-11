@@ -11,6 +11,7 @@ import {
   Pagination,
   Button,
   Input,
+  User,
 } from "@nextui-org/react";
 
 import { DeleteRIcon, EdithIcon, PlusIcon, SearchIcon } from "./Icons";
@@ -62,11 +63,13 @@ export default function TableCategory({
     switch (columnKey) {
       case "name":
         return (
-          <div className="flex flex-col ">
-            <p className=" break-words text-bold text-small capitalize">
-              {capitalize(cellValue)}
-            </p>
-          </div>
+          <User
+            className="justify-start min-w-[100px] break-words"
+            avatarProps={{ radius: "lg", src: category?.image?.[0] }}
+            name={capitalize(cellValue)}
+          >
+            {capitalize(cellValue)}
+          </User>
         );
       case "actions":
         return (
