@@ -14,7 +14,7 @@ export default async function handle(req, res) {
       });
     });
 
-    const imagesPath = `${process.env.NEXT_PUBLIC_URL}/_next/`;
+    const imagesPath = "public/images/categories";
     const links = [];
 
     for (const file of files.file) {
@@ -28,7 +28,7 @@ export default async function handle(req, res) {
         fs.renameSync(file.path, filePath);
 
         // Construir el enlace público
-        const link = `images/categories/${newFileName}`; // Ruta pública del archivo
+        const link = `${process.env.NEXTAUTH_URL}/images/categories/${newFileName}`; // Ruta pública del archivo
         links.push(link);
       } catch (error) {
         console.error("Error al mover el archivo:", error);
@@ -64,3 +64,6 @@ export default async function handle(req, res) {
 export const config = {
   api: { bodyParser: false },
 };
+
+/*
+ */
