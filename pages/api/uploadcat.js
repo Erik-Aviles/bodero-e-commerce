@@ -14,7 +14,7 @@ export default async function handle(req, res) {
       });
     });
 
-    const imagesPath = "public/images/categories";
+    const imagesPath = `${process.env.NEXTAUTH_URL}/images/categories`;
     const links = [];
 
     for (const file of files.file) {
