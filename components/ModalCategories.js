@@ -5,6 +5,8 @@ import useAuthFetch from "@/hooks/useAuthFetch";
 import Spinner from "./Spinner";
 import axios from "axios";
 import NotificationContext from "@/context/NotificationContext";
+import Image from "next/image";
+import localLoader from "@/utils/localLoader";
 
 const ModalCategories = ({ fetchCategories }) => {
   const { showNotification } = useContext(NotificationContext);
@@ -67,12 +69,19 @@ const ModalCategories = ({ fetchCategories }) => {
         data.append("file", file);
       }
       try {
-        const res = await axios.post("/api/uploadcat", data, {
-          headers: {
-            "content-type": "multipart/form-data",
-          },
+        const response = await fetch("/api/uploadcat", {
+          method: "POST",
+          body: data,
         });
-        setImage((oldImages) => [...oldImages, ...res.data?.links]);
+
+        if (response.ok) {
+          const res = await response.json();
+          console.log("Imagen subida correctamente:", res.links);
+          // Aquí podrías hacer algo con la respuesta, como mostrar la imagen cargada
+          setImage((oldImages) => [...oldImages, ...res.links]);
+        } else {
+          console.error("Error al subir la imagen:", response.statusText);
+        }
       } catch (error) {
         console.error("Error cargando la imagen:", error);
       }
@@ -189,7 +198,7 @@ const ModalCategories = ({ fetchCategories }) => {
                             <span>Cargar imagen</span>
                             <input
                               type="file"
-                              accept="image/*"
+                              multiple
                               onChange={handleUpload}
                               className="hidden"
                             />

@@ -3,6 +3,10 @@ import fs from "fs";
 import path from "path";
 import mime from "mime-types";
 
+export const config = {
+  api: { bodyParser: false },
+};
+
 export default async function handle(req, res) {
   if (req.method === "POST") {
     const form = new multiparty.Form();
@@ -22,7 +26,6 @@ export default async function handle(req, res) {
       const newFileName = `${Date.now()}.${ext}`;
       const filePath = path.join(imagesPath, newFileName); // Ruta completa de destino
 
-      console.log(filePath);
       try {
         // Mover el archivo al directorio de imágenes
         fs.renameSync(file.path, filePath);
@@ -60,10 +63,6 @@ export default async function handle(req, res) {
     return res.status(405).json({ message: "Metodo no permitido" });
   }
 }
-
-export const config = {
-  api: { bodyParser: false },
-};
 
 /*
  */
