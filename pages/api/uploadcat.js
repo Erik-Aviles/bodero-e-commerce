@@ -18,7 +18,7 @@ export default async function handle(req, res) {
       });
     });
 
-    const imagesPath = `./public/images/categories`;
+    const imagesPath = `public/images/categories`;
     const links = [];
 
     for (const file of files.file) {
@@ -35,9 +35,13 @@ export default async function handle(req, res) {
         links.push(link);
       } catch (error) {
         console.error("Error al mover el archivo:", error);
+        res.status(500).send("Se ha producido un error al cargar el archivo.");
       }
     }
-    return res.json({ links });
+
+    return res
+      .status(200)
+      .send({ links, message: "El archivo se ha cargado correctamente!" });
   }
 
   if (req.method === "DELETE") {

@@ -491,23 +491,28 @@ const ProductEditForm = ({
                 />
               </div>
 
-              <div className="basis-2/5 ">
-                <label className="my-1 block">Categoria</label>
-                <select
-                  className="text-xs capitalize"
+              <div className="basis-2/5">
+                <label htmlFor="category" className="my-1 block">
+                  Categorias
+                </label>
+                <Input
+                  labelPlacement="outside"
+                  className="mb-3.5 xs:mb-0"
+                  list="category-options"
                   value={category}
+                  placeholder="Categoria"
                   onChange={(e) => setCategory(e.target.value)}
-                >
-                  <option key={"sincategory"} value="">
-                    Sin categoria
-                  </option>
+                />
+                <datalist className="text-xs capitalize" id="category-options">
                   {categories.length > 0 &&
-                    categories.map((category) => (
-                      <option key={category._id} value={category._id}>
-                        {category?.name}
-                      </option>
-                    ))}
-                </select>
+                    categories
+                      .sort((a, b) => a.name.localeCompare(b.name))
+                      .map((category) => (
+                        <option key={category._id} value={category?._id}>
+                          {category?.name.toUpperCase()}
+                        </option>
+                      ))}
+                </datalist>
               </div>
             </div>
             {/* ubicacion y cantidad*/}
