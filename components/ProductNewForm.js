@@ -473,8 +473,34 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
                   onChange={(e) => setBrand(e.target.value)}
                 />
               </div>
-
-              <div className="basis-2/5 ">
+              <div className="basis-2/5">
+                <label htmlFor="category" className="my-1 block">
+                  Categorias
+                </label>
+                <Input
+                  labelPlacement="outside"
+                  className="mb-3.5 xs:mb-0"
+                  list="category-options"
+                  value={category}
+                  placeholder="Categoria"
+                  onChange={(e) => setCategory(e.target.value)}
+                />
+                <datalist id="category-options">
+                  {categories.length > 0 &&
+                    categories
+                      .sort((a, b) => a.name.localeCompare(b.name))
+                      .map((category) => (
+                        <option
+                          className="text-[10px]"
+                          key={category._id}
+                          value={category?._id}
+                        >
+                          {category?.name.toUpperCase()}
+                        </option>
+                      ))}
+                </datalist>
+              </div>
+              {/*    <div className="basis-2/5 ">
                 <label className="my-1 block">Categoria</label>
                 <select
                   className="text-xs capitalize"
@@ -491,7 +517,7 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
                       </option>
                     ))}
                 </select>
-              </div>
+              </div> */}
             </div>
             {/* ubicacion y cantidad*/}
             <div className="xs:flex sm:gap-2 ">
