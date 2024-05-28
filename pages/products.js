@@ -7,13 +7,15 @@ import Head from "next/head";
 import axios from "axios";
 import TableProduct from "@/components/TableProduct";
 import { capitalize } from "@/utils/utils";
+import { useProducts } from "@/context/ProoductsContext";
+import Spinner from "@/components/Spinner";
 
 export default withSwal((props, ref) => {
   const { swal } = props;
   const { showNotification } = useContext(NotificationContext);
-  const [newProduct, setNewProduct] = useState([]);
 
-  const getProducts = async () => {
+  /*   const getProducts = async () => {
+    const [newProduct, setNewProduct] = useState([]);
     try {
       const response = await axios.get("/api/products");
       setNewProduct(response.data);
@@ -21,10 +23,24 @@ export default withSwal((props, ref) => {
       console.error("Error al obtener los productos:", error);
     }
   };
-
+  
   useEffect(() => {
     getProducts();
-  }, []);
+  }, []); */
+
+  const {
+    products,
+    error: productsError,
+    isValidating: productsLoading,
+  } = useProducts();
+
+  if (productsError) return <div>Fallo al cargar los datos</div>;
+  if (productsLoading || !products)
+    return (
+      <div>
+        <Spinner /> Cargando productos...
+      </div>
+    );
 
   function deleteProduct(product) {
     swal
@@ -51,7 +67,6 @@ export default withSwal((props, ref) => {
             status: "success",
           });
         }
-        getProducts();
       });
   }
 
@@ -75,23 +90,11 @@ export default withSwal((props, ref) => {
       <Layout>
         <h3>Panel de productos</h3>
         <TableProduct
-          products={newProduct}
+          products={products}
           deleteProduct={deleteProduct}
           formatPrice={formatPrice}
-          fetchProducts={getProducts}
         />
       </Layout>
     </>
   );
 });
-
-/* export async function getServerSideProps() {
-  await moogoseConnect();
-  const products = await Product.find({}, null, { sort: { _id: -1 } });
-
-  return {
-    props: {
-      products: JSON.parse(JSON.stringify(products)),
-    },
-  };
-} */

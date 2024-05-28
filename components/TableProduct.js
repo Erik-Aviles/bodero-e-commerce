@@ -41,12 +41,7 @@ const INITIAL_VISIBLE_COLUMNS = [
   "actions",
 ];
 
-export default function TableProduct({
-  products,
-  deleteProduct,
-  formatPrice,
-  fetchProducts,
-}) {
+export default function TableProduct({ products, deleteProduct, formatPrice }) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = useState(
@@ -292,10 +287,7 @@ export default function TableProduct({
         return (
           <div className="flex items-center justify-between gap-2">
             <div className="flex gap-3">
-              <ModalEditProducts
-                product={product}
-                fetchProducts={fetchProducts}
-              />
+              <ModalEditProducts product={product} />
             </div>
             <Tooltip color="danger" content="Eliminar">
               <span className="text-lg text-danger cursor-pointer active:opacity-50">
@@ -380,7 +372,7 @@ export default function TableProduct({
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <ModalNewProducts fetchProducts={fetchProducts} />
+            <ModalNewProducts />
           </div>
         </div>
         <div>

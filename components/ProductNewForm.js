@@ -154,7 +154,6 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
     };
     try {
       const res = await axios.post("/api/products", data);
-      fetchProducts();
       showNotification({
         open: true,
         msj: res.data.message,
@@ -184,7 +183,7 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
     } catch (error) {
       showNotification({
         open: true,
-        msj: error.response.data.message,
+        msj: error.message,
         status: "error",
       });
     }

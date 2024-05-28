@@ -36,7 +36,6 @@ const ProductEditForm = ({
   },
   titulo,
   toggleModal,
-  fetchProducts,
 }) => {
   const { showNotification } = useContext(NotificationContext);
 
@@ -196,12 +195,11 @@ const ProductEditForm = ({
           msj: `"${capitalize(data.title)}", editado con exito!`,
           status: "success",
         });
-        fetchProducts();
         toggleModal();
       } catch (error) {
         showNotification({
           open: true,
-          msj: error.response.data.message,
+          msj: error.message,
           status: "error",
         });
       }
