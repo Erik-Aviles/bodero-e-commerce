@@ -24,8 +24,8 @@ const ModalNewProducts = ({ fetchProducts }) => {
         {showModal && (
           <>
             <div className="fixed inset-0 z-40 bg-gray-500 bg-opacity-50"></div>
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-              <div className="max-h-[700px] max-w-5xl bg-grayLight p-4 rounded-lg shadow-lg overflow-auto">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-5 ">
+              <div className="max-w-5xl max-h-[calc(100vh-100px)] lg:h-fit bg-grayLight p-4 rounded-lg shadow-lg overflow-auto">
                 <ProductNewForm
                   titulo="Registrar producto"
                   toggleModal={toggleModal}

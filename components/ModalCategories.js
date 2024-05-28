@@ -44,7 +44,6 @@ const ModalCategories = ({ fetchCategories }) => {
       );
       const updatedImages = image.filter((img, idx) => idx !== index);
       setImage(updatedImages);
-      console.log(data);
 
       showNotification({
         open: true,
@@ -76,7 +75,7 @@ const ModalCategories = ({ fetchCategories }) => {
 
         if (response.ok) {
           const res = await response.json();
-          console.log("Imagen subida correctamente:", res.links);
+          // console.log("Imagen subida correctamente:", res.links);
           // Aquí podrías hacer algo con la respuesta, como mostrar la imagen cargada
           setImage((oldImages) => [...oldImages, ...res.links]);
         } else {
@@ -102,7 +101,7 @@ const ModalCategories = ({ fetchCategories }) => {
   return (
     <div>
       <div className="flex justify-end">
-        <section className="w-fit">
+        <section className="w-fit py-4 md:py-0">
           <Button
             onClick={toggleModal}
             color="primary"

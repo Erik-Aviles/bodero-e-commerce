@@ -495,26 +495,45 @@ const ProductEditForm = ({
                 <label htmlFor="category" className="my-1 block">
                   Categorias
                 </label>
-                <Input
-                  labelPlacement="outside"
-                  className="mb-3.5 xs:mb-0"
-                  list="category-options"
-                  value={category}
-                  placeholder="Categoria"
-                  onChange={(e) => setCategory(e.target.value)}
-                />
-                <datalist className="text-xs capitalize" id="category-options">
-                  {categories.length > 0 &&
-                    categories
-                      .sort((a, b) => a.name.localeCompare(b.name))
-                      .map((category) => (
-                        <option key={category._id} value={category?._id}>
-                          {category?.name.toUpperCase()}
-                        </option>
-                      ))}
-                </datalist>
+                <div className="relative">
+                  <select
+                    id="category"
+                    className="text-xs capitalize appearance-none "
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                  >
+                    <option key={"sincategory"} value="">
+                      Sin Categoria
+                    </option>
+                    {categories.length > 0 &&
+                      categories
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                        .map((category) => (
+                          <option key={category._id} value={category._id}>
+                            {category?.name}
+                          </option>
+                        ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 9l-7 7-7-7"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
+
             {/* ubicacion y cantidad*/}
             <div className="xs:flex sm:gap-2 ">
               <div className="basis-3/5 mr-1 sm:mr-0">

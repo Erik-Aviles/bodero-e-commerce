@@ -176,6 +176,15 @@ export default function TableProduct({
             </p>
           </div>
         );
+      case "profit":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-small ">{formatPrice(cellValue)}</p>
+            <p className="text-bold text-tiny  text-default-400">
+              {product?.profitability ? "%" + product?.profitability : ""}
+            </p>
+          </div>
+        );
       case "netPrice":
         return (
           <div className="flex flex-col">
@@ -364,7 +373,7 @@ export default function TableProduct({
                 {columnsProduct.map((column) => (
                   <DropdownItem
                     key={column.uid}
-                    className="text-[9px] capitalize"
+                    className="text-[8px] capitalize"
                   >
                     {capitalize(column.name)}
                   </DropdownItem>
