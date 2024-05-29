@@ -2,29 +2,44 @@ import React, { useContext, useEffect, useState } from "react";
 import NotificationContext from "@/context/NotificationContext";
 import { withSwal } from "react-sweetalert2";
 import Layout from "@/components/Layout";
-import { useRouter } from "next/router";
+import { ClipLoader } from "react-spinners";
 import Head from "next/head";
 import axios from "axios";
 import TableProduct from "@/components/TableProduct";
 import { capitalize } from "@/utils/utils";
+import Spinner from "@/components/Spinner";
+import { fetcher } from "@/utils/fetcher";
+import useSWR from "swr";
 
 export default withSwal((props, ref) => {
   const { swal } = props;
   const { showNotification } = useContext(NotificationContext);
+  const {
+    data: products,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR("/api/products/full", fetcher);
+
   const [newProduct, setNewProduct] = useState([]);
+
+  useEffect(() => {
+    if (products) {
+      setNewProduct(products);
+    }
+  }, [products]);
 
   const getProducts = async () => {
     try {
-      const response = await axios.get("/api/products");
+      const response = await axios.get("/api/products/full");
       setNewProduct(response.data);
+      mutate(); // Actualizar manualmente la caché de SWR
     } catch (error) {
       console.error("Error al obtener los productos:", error);
     }
   };
 
-  useEffect(() => {
-    getProducts();
-  }, []);
+  if (error) return <div>Fallo al cargar los productos</div>;
 
   function deleteProduct(product) {
     swal
@@ -42,7 +57,7 @@ export default withSwal((props, ref) => {
       .then(async (result) => {
         if (result.isConfirmed) {
           const { _id } = product;
-          await axios.delete("/api/products?_id=" + _id);
+          await axios.delete("/api/products/full?_id=" + _id);
           showNotification({
             open: true,
             msj: `Producto: "${capitalize(
@@ -74,24 +89,18 @@ export default withSwal((props, ref) => {
       </Head>
       <Layout>
         <h3>Panel de productos</h3>
-        <TableProduct
-          products={newProduct}
-          deleteProduct={deleteProduct}
-          formatPrice={formatPrice}
-          fetchProducts={getProducts}
-        />
+
+        {isLoading || !products ? (
+          <Spinner />
+        ) : (
+          <TableProduct
+            products={newProduct}
+            deleteProduct={deleteProduct}
+            formatPrice={formatPrice}
+            fetchProducts={getProducts}
+          />
+        )}
       </Layout>
     </>
   );
 });
-
-/* export async function getServerSideProps() {
-  await moogoseConnect();
-  const products = await Product.find({}, null, { sort: { _id: -1 } });
-
-  return {
-    props: {
-      products: JSON.parse(JSON.stringify(products)),
-    },
-  };
-} */

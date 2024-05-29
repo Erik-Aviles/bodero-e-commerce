@@ -83,20 +83,17 @@ const ProductEditForm = ({
   const [verifyWeb, setWebVerify] = useState(false);
   const [verifyEnterprise, setEnterpriseVerify] = useState(false);
 
-  useEffect(() => {
-    axios.get("/api/categories").then((res) => {
-      setCategories(res.data);
-    });
-  }, []);
-
   function fetchCategories() {
-    axios.get("/api/categories").then((res) => {
+    axios.get("/api/categories/minimal").then((res) => {
       setCategories(res.data);
     });
   }
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
-    axios.get("/api/products").then((res) => {
+    axios.get("/api/products/full").then((res) => {
       const data = res.data;
       const code = data.map((item) => item.code);
       const codeWeb = data.map((item) => item.codeWeb);
@@ -190,7 +187,7 @@ const ProductEditForm = ({
     };
     if (_id) {
       try {
-        await axios.put("/api/products", { ...data, _id });
+        await axios.put("/api/products/full", { ...data, _id });
         showNotification({
           open: true,
           msj: `"${capitalize(data.title)}", editado con exito!`,

@@ -27,7 +27,7 @@ const ModalCategories = ({ fetchCategories }) => {
       image,
     };
     await authRouter({
-      endpoint: "categories",
+      endpoint: "categories/full",
       formData: data,
     });
     setName("");

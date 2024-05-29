@@ -201,7 +201,7 @@ export default function TableProduct({
         );
       case "createdAt":
         return (
-          <div className="flex flex-col min-w-[130px]">
+          <div className="flex flex-col min-w-[140px]">
             <p className="text-bold text-small ">
               {new Date(product?.createdAt).toLocaleString()}
             </p>

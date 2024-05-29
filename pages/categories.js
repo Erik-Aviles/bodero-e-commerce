@@ -1,15 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
 import NotificationContext from "@/context/NotificationContext";
+import { DeleteIcon, UpLoadIcon } from "@/components/Icons";
+import TableCategory from "@/components/TableCategory";
+import { ReactSortable } from "react-sortablejs";
 import { withSwal } from "react-sweetalert2";
+import { Input } from "@nextui-org/react";
+import { capitalize } from "@/utils/utils";
+import Spinner from "@/components/Spinner";
 import Layout from "@/components/Layout";
 import Head from "next/head";
 import axios from "axios";
-import { Input } from "@nextui-org/react";
-import TableCategory from "@/components/TableCategory";
-import { capitalize } from "@/utils/utils";
-import { DeleteIcon, UpLoadIcon } from "@/components/Icons";
-import Spinner from "@/components/Spinner";
-import { ReactSortable } from "react-sortablejs";
+import useSWR from "swr";
+import { fetcher } from "@/utils/fetcher";
 
 function Categories({ swal }) {
   const { showNotification } = useContext(NotificationContext);
@@ -17,14 +19,33 @@ function Categories({ swal }) {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState([]);
   const [editedCategory, setEditedCategory] = useState(null);
-  const [categories, setCategories] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [newCategories, setNewCategories] = useState([]);
 
-  async function fetchCategories() {
-    await axios.get("/api/categories").then((res) => {
-      setCategories(res.data);
-    });
-  }
+  const {
+    data: categories,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR("/api/categories/full", fetcher);
+
+  useEffect(() => {
+    if (categories) {
+      setNewCategories(categories);
+    }
+  }, [categories]);
+
+  const getCategories = async () => {
+    try {
+      const response = await axios.get("/api/categories/full");
+      setNewCategories(response.data);
+      mutate(); // Actualizar manualmente la caché de SWR
+    } catch (error) {
+      console.error("Error al obtener las categorias:", error);
+    }
+  };
+
+  if (error) return <div>Falo al cargar los categorias</div>;
 
   async function EditCategory(e) {
     e.preventDefault();
@@ -35,7 +56,7 @@ function Categories({ swal }) {
     };
     if (editedCategory) {
       data._id = editedCategory._id;
-      await axios.put("/api/categories", data);
+      await axios.put("/api/categories/full", data);
       showNotification({
         open: true,
         msj: `Categoria:
@@ -47,7 +68,7 @@ function Categories({ swal }) {
     setName("");
     setDescription("");
     setImage([]);
-    fetchCategories();
+    getCategories();
   }
 
   function editCategory(value) {
@@ -110,7 +131,7 @@ function Categories({ swal }) {
       .then(async (result) => {
         if (result.isConfirmed) {
           const { _id } = value;
-          await axios.delete("/api/categories?_id=" + _id);
+          await axios.delete("/api/categories/full?_id=" + _id);
           showNotification({
             open: true,
             msj: `Categoria:
@@ -118,14 +139,10 @@ function Categories({ swal }) {
             status: "success",
           });
 
-          fetchCategories();
+          getCategories();
         }
       });
   }
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   return (
     <>
@@ -249,18 +266,21 @@ function Categories({ swal }) {
               </div>
             </div>
           )}
-          {!editedCategory && (
-            <section className="">
-              <div className=" mx-auto max-w-[600px] ">
-                <TableCategory
-                  fetchCategories={fetchCategories}
-                  deleteCaterory={deleteCaterory}
-                  editCategory={editCategory}
-                  categories={categories}
-                />
-              </div>
-            </section>
-          )}
+          {!editedCategory &&
+            (isLoading || !categories ? (
+              <Spinner />
+            ) : (
+              <section className="">
+                <div className=" mx-auto max-w-[600px] ">
+                  <TableCategory
+                    categories={newCategories}
+                    fetchCategories={getCategories}
+                    deleteCaterory={deleteCaterory}
+                    editCategory={editCategory}
+                  />
+                </div>
+              </section>
+            ))}
         </div>
       </Layout>
     </>

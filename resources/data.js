@@ -38,6 +38,7 @@ const columnsOrder = [
 
 const columnsCategory = [
   { name: "NOMBRE", uid: "name" },
+  { name: "FECHA", uid: "createdAt" },
   { name: "DESCRIPCION", uid: "description" },
   { name: "ACTIONS", uid: "actions" },
 ];

@@ -1,30 +1,53 @@
 import React, { useContext, useEffect, useState } from "react";
 import NotificationContext from "@/context/NotificationContext";
+import TableOrder from "@/components/TableOrder";
 import { withSwal } from "react-sweetalert2";
+import Spinner from "@/components/Spinner";
+import { capitalize } from "@/utils/utils";
+import { fetcher } from "@/utils/fetcher";
 import Layout from "@/components/Layout";
 import Head from "next/head";
 import axios from "axios";
-import TableOrder from "@/components/TableOrder";
-import { Product } from "@/models/Product";
-import { moogoseConnect } from "@/lib/mongoose";
-import { capitalize } from "@/utils/utils";
+import useSWR from "swr";
 
 export default withSwal((props, ref) => {
-  const { swal, products } = props;
-  const [orders, setOrder] = useState([]);
+  const { swal } = props;
   const { showNotification } = useContext(NotificationContext);
+  const [newOrders, setNewOrders] = useState([]);
+
+  const { data: minimalProducts, error: errorGetMinimal } = useSWR(
+    "/api/products/minimal",
+    fetcher
+  );
+
+  const {
+    data: orders,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR("/api/orders/full", fetcher);
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    if (orders) {
+      setNewOrders(orders);
+    }
+  }, [orders]);
 
-  async function fetchOrders() {
-    await axios.get("/api/orders").then((res) => {
-      setOrder(res.data);
-    });
-  }
+  const getOrders = async () => {
+    try {
+      const response = await axios.get("/api/orders/full");
+      setNewOrders(response.data);
+      mutate(); // Actualizar manualmente la caché de SWR
+    } catch (error) {
+      console.error("Error al obtener las ordenes:", error);
+    }
+  };
 
-  const disminuirCantidadProductos = async (orderId) => {
+  if (errorGetMinimal) return <div>FalLo al cargar los productos</div>;
+
+  if (error) return <div>FalLo al cargar las Ordenes</div>;
+
+  const disminuirCantidadProductos = (orderId) => {
     let newstock = 0;
     let data = {};
     let item = {};
@@ -32,20 +55,19 @@ export default withSwal((props, ref) => {
     let id = orderId._id;
 
     orderId.line_items.forEach((item) => {
-      const producto = products.find(
+      const producto = minimalProducts.find(
         (producto) => producto._id === item.info_order.product_data.id
       );
       _id = producto._id;
-      newstock = producto.quantity - item.quantity;
+      newstock = producto.quantity - item?.quantity;
       data = {
         ...data,
         quantity: newstock,
       };
-      // Guardar los cambios en la API
 
       if (_id) {
         try {
-          axios.put("/api/products", { ...data, _id });
+          axios.put("/api/products/full", { ...data, _id });
           showNotification({
             open: true,
             msj: "Pedido ha sido aprobado!",
@@ -59,12 +81,12 @@ export default withSwal((props, ref) => {
 
     if (id) {
       item = {
-        ...orders,
+        ...newOrders,
         paid: true,
       };
       try {
-        axios.put("/api/orders", { ...item, _id: id });
-        fetchOrders();
+        axios.put("/api/orders/full", { ...item, _id: id });
+        getOrders();
       } catch (error) {
         console.error(error);
       }
@@ -87,14 +109,14 @@ export default withSwal((props, ref) => {
       .then(async (result) => {
         if (result.isConfirmed) {
           const { _id } = order;
-          await axios.delete("/api/orders?_id=" + _id);
+          await axios.delete("/api/orders/full?_id=" + _id);
           showNotification({
             open: true,
             msj: `Pedido de "${capitalize(order?.name)}", eliminado con exito!`,
             status: "success",
           });
         }
-        fetchOrders();
+        getOrders();
       });
   }
 
@@ -113,36 +135,19 @@ export default withSwal((props, ref) => {
       </Head>
       <Layout>
         <h3>Panel de ordenes</h3>
-        <TableOrder
-          fetchOrders={fetchOrders}
-          downloadPdf={downloadPdf}
-          disminuirCantidadProductos={disminuirCantidadProductos}
-          orders={orders}
-          deleteOrder={deleteOrder}
-        />
+
+        {isLoading || !orders ? (
+          <Spinner />
+        ) : (
+          <TableOrder
+            fetchOrders={getOrders}
+            downloadPdf={downloadPdf}
+            disminuirCantidadProductos={disminuirCantidadProductos}
+            orders={newOrders}
+            deleteOrder={deleteOrder}
+          />
+        )}
       </Layout>
     </>
   );
 });
-
-export async function getServerSideProps() {
-  await moogoseConnect();
-
-  let products = [];
-
-  try {
-    products = await Product.find(
-      {},
-      { _id: 1, quantity: 1, title: 1 },
-      { sort: { _id: -1 } }
-    );
-  } catch (error) {
-    console.error("Error al obtener los productos:", error);
-  }
-
-  return {
-    props: {
-      products: JSON.parse(JSON.stringify(products)),
-    },
-  };
-}

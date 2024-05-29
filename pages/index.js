@@ -4,15 +4,27 @@ import CartDashboard from "@/components/CartDashboard";
 import Layout from "@/components/Layout";
 import Loading from "@/components/Loading";
 import { moogoseConnect } from "@/lib/mongoose";
-import { Category } from "@/models/Category";
-import { Product } from "@/models/Product";
 import productImage from "@/public/images/dashboard/manitos-caja.png";
 import categoryImage from "@/public/images/dashboard/categorias.png";
 import userImage from "@/public/images/dashboard/usuarios.png";
 import orderImage from "@/public/images/dashboard/pedidos.png";
 import { Order } from "@/models/Order";
+import { fetcher } from "@/utils/fetcher";
+import useSWR from "swr";
 
-export default function Home({ sizeProducts, sizeCategories, sizeOrders }) {
+export default function Home() {
+  const { data: sizeProducts, isLoading: isLoadProduct } = useSWR(
+    "/api/products/size",
+    fetcher
+  );
+  const { data: sizeCategories, isLoading: isLoadCategory } = useSWR(
+    "/api/categories/size",
+    fetcher
+  );
+  const { data: sizeOrders, isLoading: isLoadOrders } = useSWR(
+    "/api/orders/size",
+    fetcher
+  );
   const { data: session, status } = useSession();
 
   if (status === "loading") {
@@ -47,6 +59,7 @@ export default function Home({ sizeProducts, sizeCategories, sizeOrders }) {
                   title={"Productos"}
                   imageSrc={productImage}
                   altText={"cajita de productos"}
+                  isLoading={isLoadProduct}
                   itemCount={sizeProducts}
                 />
                 <CartDashboard
@@ -54,6 +67,7 @@ export default function Home({ sizeProducts, sizeCategories, sizeOrders }) {
                   title={"Categorias"}
                   imageSrc={categoryImage}
                   altText={"cajita de productos"}
+                  isLoading={isLoadCategory}
                   itemCount={sizeCategories}
                 />
                 <CartDashboard
@@ -68,6 +82,7 @@ export default function Home({ sizeProducts, sizeCategories, sizeOrders }) {
                   title={"Pedidos"}
                   imageSrc={orderImage}
                   altText={"una cajita con una lista"}
+                  isLoading={isLoadOrders}
                   itemCount={sizeOrders}
                 />
               </div>
@@ -77,28 +92,4 @@ export default function Home({ sizeProducts, sizeCategories, sizeOrders }) {
       </Layout>
     </>
   );
-}
-
-export async function getServerSideProps() {
-  await moogoseConnect();
-  const categories = await Category.find({}, null, {
-    sort: { _id: -1 },
-  });
-  const products = await Product.find({}, null, {
-    sort: { _id: -1 },
-  });
-  const orders = await Order.find({}, null, {
-    sort: { _id: -1 },
-  });
-  const sizeProducts = products?.length;
-  const sizeCategories = categories?.length;
-  const sizeOrders = orders?.length;
-
-  return {
-    props: {
-      sizeProducts: sizeProducts,
-      sizeCategories: sizeCategories,
-      sizeOrders: sizeOrders,
-    },
-  };
 }

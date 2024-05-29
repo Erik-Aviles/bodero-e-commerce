@@ -47,20 +47,17 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
   const [verifyWeb, setWebVerify] = useState(false);
   const [verifyEnterprise, setEnterpriseVerify] = useState(false);
 
-  useEffect(() => {
-    axios.get("/api/categories").then((res) => {
-      setCategories(res.data);
-    });
-  }, []);
-
   function fetchCategories() {
-    axios.get("/api/categories").then((res) => {
+    axios.get("/api/categories/minimal").then((res) => {
       setCategories(res.data);
     });
   }
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
-    axios.get("/api/products").then((res) => {
+    axios.get("/api/products/full").then((res) => {
       const data = res.data;
       const code = data.map((item) => item.code);
       const codeWeb = data.map((item) => item.codeWeb);
@@ -153,7 +150,7 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
       images,
     };
     try {
-      const res = await axios.post("/api/products", data);
+      const res = await axios.post("/api/products/full", data);
       fetchProducts();
       showNotification({
         open: true,

@@ -266,7 +266,7 @@ export default function TableOrder({
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 max-h-[440px]",
+        wrapper: "-z-1 max-h-[450px]",
         th: "text-warning uppercase",
       }}
       topContent={topContent}

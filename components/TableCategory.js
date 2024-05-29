@@ -71,6 +71,17 @@ export default function TableCategory({
             {capitalize(cellValue)}
           </User>
         );
+      case "createdAt":
+        return (
+          <div className="flex flex-col min-w-[140px]">
+            <p className="text-bold text-small ">
+              {new Date(category?.createdAt).toLocaleString()}
+            </p>
+            <span className="text-bold text-tiny text-default-400 break-all capitalize">
+              {new Date(category?.updatedAt).toLocaleString()}
+            </span>
+          </div>
+        );
       case "actions":
         return (
           <div className="flex items-center justify-around">

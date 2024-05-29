@@ -10,7 +10,7 @@ export default async function handle(req, res) {
     try {
       await moogoseConnect();
       const categories = await Category.find({}, null, { sort: { _id: -1 } });
-      res.json(categories);
+      return res.status(200).json(categories);
     } catch (err) {
       return res.status(500).json({ err: err.message });
     }
