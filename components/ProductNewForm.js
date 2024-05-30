@@ -31,7 +31,7 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
   const [brand, setBrand] = useState("");
   const [category, setCategory] = useState("");
 
-  const [quantity, setQuantity] = useState("");
+  const [quantity, setQuantity] = useState(0);
   const [location, setLocation] = useState("");
   const [compatibility, setCompatibility] = useState([]);
   const [description, setDescription] = useState("");
@@ -88,7 +88,7 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
   const handleChangeCode = (e) => {
     const { value } = e.target;
     setCode(value);
-    const exists = codeVerify.some(
+    const exists = codeVerify?.some(
       (item) => item.toLowerCase() === value.toLowerCase() && item !== ""
     );
     if (exists) {
@@ -143,6 +143,7 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
       color,
       size,
       quantity,
+      lastquantity: quantity,
       location,
       compatibility,
       description,

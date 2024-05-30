@@ -57,21 +57,43 @@ const ProductShema = new Schema(
     category: { type: String, ref: "Category" },
     color: [{ type: Object }],
     size: [{ type: Object }],
-    quantity: { type: Number },
+    quantity: { type: Number, default: 0 }, //este es el stock
+    quantityUpdated: { type: Date },
+    lastquantity: { type: Number },
+    lastquantityUpdated: { type: Date, default: Date.now },
     location: { type: String, trim: true },
     compatibility: [{ type: Object }],
     description: { type: String, required: true },
     descriptionAdditional: { type: String },
     images: [{ type: String }],
-    stock: {
-      type: Boolean,
-      default: false,
-    },
   },
   {
     timestamps: true,
     versionKey: false,
   }
 );
+
+// Middleware para actualizar lastquantityUpdated cuando lastquantity cambie
+ProductShema.pre("save", function (next) {
+  if (this.isModified("lastquantity")) {
+    this.lastquantityUpdated = Date.now();
+  }
+  next();
+});
+
+// Middleware pre-save para operaciones save y updateOne
+ProductShema.pre("updateOne", async function (next) {
+  const update = this.getUpdate();
+  const _id = this.getQuery()._id;
+
+  if (update.$set && update.$set.quantity !== undefined) {
+    const product = await mongoose.model("Product").findById(_id);
+
+    if (product && update.$set.quantity < product.quantity) {
+      this.set({ quantityUpdated: new Date() });
+    }
+  }
+  next();
+});
 
 export const Product = models.Product || model("Product", ProductShema);

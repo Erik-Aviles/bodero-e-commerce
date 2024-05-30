@@ -27,7 +27,8 @@ const ProductEditForm = ({
     category: assignedCategory,
     color: exitingColor,
     size: exitingSize,
-    quantity: existingQuantity,
+    quantity,
+    lastquantity,
     location: existingLocation,
     compatibility: existingCompatibility,
     description: existingDescription,
@@ -63,7 +64,6 @@ const ProductEditForm = ({
   const [brand, setBrand] = useState(exitingBrand || "");
   const [category, setCategory] = useState(assignedCategory || "");
 
-  const [quantity, setQuantity] = useState(existingQuantity || "");
   const [location, setLocation] = useState(existingLocation || "");
   const [compatibility, setCompatibility] = useState(
     existingCompatibility || []
@@ -178,7 +178,6 @@ const ProductEditForm = ({
       category,
       color,
       size,
-      quantity,
       location,
       compatibility,
       description,
@@ -544,15 +543,25 @@ const ProductEditForm = ({
                   onChange={(e) => setLocation(e.target.value)}
                 />
               </div>
-              <div className="basis-2/5">
-                <label className="my-1 block">Cantidad</label>
-                <Input
-                  type="number"
-                  value={quantity}
-                  placeholder="Cantidad"
-                  labelPlacement="outside"
-                  onChange={(e) => setQuantity(e.target.value)}
-                />
+              <div className="basis-2/5 flex gap-2">
+                <div>
+                  <label className="my-1 block">Stock</label>
+                  <Input
+                    type="number"
+                    labelPlacement="outside"
+                    style={{ cursor: "no-drop" }}
+                    value={quantity}
+                  />
+                </div>
+                <div>
+                  <label className="my-1 block">Ulm. cant.</label>
+                  <Input
+                    type="number"
+                    labelPlacement="outside"
+                    style={{ cursor: "no-drop" }}
+                    value={lastquantity}
+                  />
+                </div>
               </div>
             </div>
             {/* tamaño y color*/}

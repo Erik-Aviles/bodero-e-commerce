@@ -57,6 +57,7 @@ const columnsProduct = [
   { name: "Tamaño", uid: "size" },
   { name: "Utilidad", uid: "profit" },
   { name: "Stock", uid: "quantity", sortable: true },
+  { name: "Ult. Cant.", uid: "lastquantity" },
   { name: "Ubicación", uid: "location" },
   { name: "Compatibilidad", uid: "compatibility" },
   { name: "Descripción", uid: "description" },

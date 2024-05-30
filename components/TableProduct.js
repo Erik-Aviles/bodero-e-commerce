@@ -29,12 +29,14 @@ import { capitalize } from "@/utils/utils";
 import ModalEditProducts from "./ModalEditProducts";
 import ModalNewProducts from "./ModalNewProducts";
 import removeAccents from "@/utils/removeAccents";
+import ModalRegisterStockProduct from "./ModalRegisterStockProduct";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "title",
   "code",
   "createdAt",
   "salePrice",
+  "lastquantity",
   "quantity",
   "location",
   "compatibility",
@@ -137,11 +139,13 @@ export default function TableProduct({
       case "code":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-small text-purple-700">{cellValue}</p>
-            <p className="text-bold text-tiny text-pink-700">
+            <p className="text-bold text-small whitespace-nowrap text-purple-700">
+              {cellValue}
+            </p>
+            <p className="text-bold text-tiny whitespace-nowrap text-pink-700">
               {product?.codeWeb}
             </p>
-            <p className="text-bold text-tiny text-sky-700">
+            <p className="text-bold text-tiny whitespace-nowrap text-sky-700">
               {product?.codeEnterprise}
             </p>
           </div>
@@ -199,6 +203,50 @@ export default function TableProduct({
             </p>
           </div>
         );
+      case "salePrice":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-small ">{formatPrice(cellValue)}</p>
+          </div>
+        );
+      case "quantity":
+        return (
+          <div className="flex flex-col">
+            <span className="text-bold text-tiny text-default-400 capitalize">
+              {product?.quantityUpdated
+                ? new Date(product?.quantityUpdated).toLocaleString()
+                : ""}
+            </span>
+            <p
+              className={`text-bold whitespace-nowrap text-small ${
+                cellValue < 3
+                  ? "text-error"
+                  : cellValue <= 5
+                  ? "text-warning"
+                  : ""
+              }`}
+            >
+              {cellValue
+                ? cellValue + (cellValue > 1 ? " Uds." : " U.")
+                : "0 U."}
+            </p>
+          </div>
+        );
+      case "lastquantity":
+        return (
+          <div className="flex flex-col">
+            <span className="text-bold text-tiny text-default-400 break-all capitalize">
+              {cellValue
+                ? new Date(product?.lastquantityUpdated).toLocaleString()
+                : ""}
+            </span>
+            <p className="text-bold text-small ">
+              {cellValue > 0
+                ? cellValue + (cellValue > 1 ? " Uds." : " U.")
+                : ""}
+            </p>
+          </div>
+        );
       case "createdAt":
         return (
           <div className="flex flex-col min-w-[140px]">
@@ -208,28 +256,6 @@ export default function TableProduct({
             <span className="text-bold text-tiny text-default-400 break-all capitalize">
               {new Date(product?.updatedAt).toLocaleString()}
             </span>
-          </div>
-        );
-      case "salePrice":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-small ">{formatPrice(cellValue)}</p>
-          </div>
-        );
-      case "quantity":
-        return (
-          <div className="">
-            <p
-              className={`text-bold w-full text-small ${
-                cellValue < 3
-                  ? "text-error"
-                  : cellValue <= 5
-                  ? "text-warning"
-                  : ""
-              }`}
-            >
-              {cellValue}
-            </p>
           </div>
         );
       case "offerPrice":
@@ -291,12 +317,18 @@ export default function TableProduct({
       case "actions":
         return (
           <div className="flex items-center justify-between gap-2">
+            <ModalRegisterStockProduct
+              product={product}
+              fetchProducts={fetchProducts}
+            />
+
             <div className="flex gap-3">
               <ModalEditProducts
                 product={product}
                 fetchProducts={fetchProducts}
               />
             </div>
+
             <Tooltip color="danger" content="Eliminar">
               <span className="text-lg text-danger cursor-pointer active:opacity-50">
                 <DeleteRIcon onClick={() => deleteProduct(product)} />

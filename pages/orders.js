@@ -63,6 +63,7 @@ export default withSwal((props, ref) => {
       data = {
         ...data,
         quantity: newstock,
+        quantityUpdated: Date.now(),
       };
 
       if (_id) {

@@ -40,7 +40,8 @@ export default async function handle(req, res) {
         category,
         color,
         size,
-        quantity,
+        lastquantity,
+        quantity, //este es el stock
         location,
         compatibility,
         description,
@@ -67,7 +68,9 @@ export default async function handle(req, res) {
         category,
         color,
         size,
-        quantity,
+        quantity, //este es el stock
+        lastquantity,
+        lastquantityUpdated: Date.now(),
         location,
         compatibility,
         description,
@@ -105,12 +108,13 @@ export default async function handle(req, res) {
         color,
         size,
         quantity,
+        quantityUpdated,
         location,
         compatibility,
         description,
         descriptionAdditional,
         images,
-        stock,
+
         _id,
       } = req.body;
 
@@ -118,34 +122,33 @@ export default async function handle(req, res) {
         return res.status(400).json({ message: messages.error.idNotValid });
       }
 
-      //Encuentra y actualiza el producto
-      await Product.updateOne(
-        { _id },
-        {
-          title,
-          code,
-          codeEnterprise,
-          codeWeb,
-          price,
-          tax,
-          profitability,
-          netPrice,
-          salePrice,
-          profit,
-          offerPrice,
-          brand,
-          category,
-          color,
-          size,
-          quantity,
-          location,
-          compatibility,
-          description,
-          descriptionAdditional,
-          images,
-          stock,
-        }
-      );
+      const updateData = {
+        title,
+        code,
+        codeEnterprise,
+        codeWeb,
+        price,
+        tax,
+        profitability,
+        netPrice,
+        salePrice,
+        profit,
+        offerPrice,
+        brand,
+        category,
+        color,
+        size,
+        quantity,
+        quantityUpdated,
+        location,
+        compatibility,
+        description,
+        descriptionAdditional,
+        images,
+      };
+
+      // Encuentra y actualiza el producto
+      await Product.updateOne({ _id }, updateData);
 
       return res.status(200).json(true);
     } catch (err) {
