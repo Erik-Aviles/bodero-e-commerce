@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { DeleteIcon, StockIcon } from "./Icons";
 import NotificationContext from "@/context/NotificationContext";
 import axios from "axios";
-import { Input } from "@nextui-org/react";
+import { Input, Tooltip } from "@nextui-org/react";
 
 const ModalRegisterStockProduct = ({ product, fetchProducts }) => {
   const { showNotification } = useContext(NotificationContext);
@@ -55,9 +55,11 @@ const ModalRegisterStockProduct = ({ product, fetchProducts }) => {
   return (
     <div>
       <div>
-        <span title="Ingresar stock" className="w-fit">
-          <StockIcon className="cursor-pointer" onClick={toggleModal} />
-        </span>
+        <Tooltip color="success" content="Registar">
+          <span className="text-lg text-success cursor-pointer active:opacity-50">
+            <StockIcon className=" w-[22px] h-[22px]" onClick={toggleModal} />
+          </span>
+        </Tooltip>
         {showModal && (
           <>
             <div className="fixed inset-0 z-40 bg-gray-500 bg-opacity-50"></div>
@@ -126,7 +128,7 @@ const ModalRegisterStockProduct = ({ product, fetchProducts }) => {
                   </div>
                   <button
                     type="submit"
-                    className="w-full bg-blue-500 text-white py-2 rounded"
+                    className="w-full bg-primary text-white py-2 rounded hover:opacity-90 active:opacity-90"
                   >
                     Aplicar
                   </button>

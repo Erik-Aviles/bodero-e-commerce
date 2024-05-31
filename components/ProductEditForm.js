@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { profitabilityToChoose, taxToChoose } from "@/resources/data";
+import { profitabilityToChoose, taxToChoose } from "@/resources/valuesToChoose";
 import NotificationContext from "@/context/NotificationContext";
 import { ReactSortable } from "react-sortablejs";
 import { DeleteIcon, UpLoadIcon } from "./Icons";
@@ -8,6 +8,7 @@ import axios from "axios";
 import { Input } from "@nextui-org/react";
 import { capitalize } from "@/utils/utils";
 import ModalCategories from "./ModalCategories";
+import ButtonClose from "./buttons/ButtonClose";
 
 const ProductEditForm = ({
   product: {
@@ -335,6 +336,11 @@ const ProductEditForm = ({
 
   return (
     <div className="relative w-full flex flex-col justify-center ">
+      <ButtonClose
+        onClick={() => {
+          toggleModal();
+        }}
+      />
       <div className=" sm:pb-4 sm:flex sm:items-center sm:justify-between sm:gap-4">
         <div className="flex flex-col ">
           <h3>{titulo}</h3>

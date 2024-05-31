@@ -89,7 +89,6 @@ export default withSwal((props, ref) => {
       </Head>
       <Layout>
         <h3>Panel de productos</h3>
-
         {isLoading || !products ? (
           <Spinner />
         ) : (

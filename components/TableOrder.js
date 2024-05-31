@@ -22,7 +22,7 @@ import {
   SearchIcon,
   VerifyIcon,
 } from "./Icons";
-import { columnsOrder } from "@/resources/data";
+import { columnsOrder } from "@/resources/productTableColumns";
 import { capitalize } from "@/utils/utils";
 import Link from "next/link";
 import ShowOrderDetail from "./ShowOrderDetail";
@@ -159,13 +159,14 @@ export default function TableOrder({
         );
       case "actions":
         return (
-          <div className="flex items-center justify-between gap-2 ">
-            <div className="flex gap-3 ">
-              <ShowOrderDetail order={order} />
-            </div>
+          <div className="flex items-center gap-3 ">
+            <ShowOrderDetail order={order} />
             <Tooltip color="danger" content="Eliminar">
               <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                <DeleteRIcon onClick={(e) => deleteOrder(order)} />
+                <DeleteRIcon
+                  className=" w-[22px] h-[22px]"
+                  onClick={(e) => deleteOrder(order)}
+                />
               </span>
             </Tooltip>
           </div>

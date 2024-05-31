@@ -7,6 +7,7 @@ import axios from "axios";
 import NotificationContext from "@/context/NotificationContext";
 import Image from "next/image";
 import localLoader from "@/utils/localLoader";
+import ButtonClose from "./buttons/ButtonClose";
 
 const ModalCategories = ({ fetchCategories }) => {
   const { showNotification } = useContext(NotificationContext);
@@ -100,8 +101,8 @@ const ModalCategories = ({ fetchCategories }) => {
 
   return (
     <div>
-      <div className="flex justify-end">
-        <section className="w-fit py-4 md:py-0">
+      <div>
+        <section className="w-fit md:py-0">
           <Button
             onClick={toggleModal}
             color="primary"
@@ -112,13 +113,11 @@ const ModalCategories = ({ fetchCategories }) => {
         </section>
         {showModal && (
           <>
-            <div
-              onClick={toggleModal}
-              className="fixed inset-0 z-10 bg-gray-500 bg-opacity-50"
-            ></div>
-            <div className="fixed inset-0 z-30 flex items-center justify-center p-4">
-              <div className="bg-white rounded shadow-md">
+            <div className="fixed inset-0 z-40 bg-gray-500 bg-opacity-50"></div>
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-5 ">
+              <div className="bg-grayLight rounded-lg shadow-lg">
                 <div className="relative p-6 w-72 sm:w-[500px]">
+                  <ButtonClose onClick={toggleModal} />
                   <h3 className="text-lg font-semibold">
                     REGISTRO DE CATEGORIAS
                   </h3>
@@ -221,7 +220,7 @@ const ModalCategories = ({ fetchCategories }) => {
                     </div>
                   </form>
                 </div>
-                <div className="p-4 bg-gray-100 flex justify-end"></div>
+                <div className="p-2 bg-gray-100 flex justify-end rounded-lg shadow-lg"></div>
               </div>
             </div>
           </>

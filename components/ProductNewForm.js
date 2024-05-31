@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { profitabilityToChoose, taxToChoose } from "@/resources/data";
+import { profitabilityToChoose, taxToChoose } from "@/resources/valuesToChoose";
 import NotificationContext from "@/context/NotificationContext";
 import { ReactSortable } from "react-sortablejs";
 import { DeleteIcon, UpLoadIcon } from "./Icons";
@@ -8,6 +8,7 @@ import axios from "axios";
 import { Input } from "@nextui-org/react";
 import { capitalize } from "@/utils/utils";
 import ModalCategories from "./ModalCategories";
+import ButtonClose from "./buttons/ButtonClose";
 
 const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
   const { showNotification } = useContext(NotificationContext);
@@ -319,8 +320,9 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
 
   return (
     <div className="relative w-full flex flex-col justify-center ">
+      <ButtonClose onClick={toggleModal} />
       <div className=" sm:pb-4 sm:flex sm:items-center sm:justify-between sm:gap-4">
-        <div className="flex flex-col ">
+        <div className="flex flex-col pb-2">
           <h3>{titulo}</h3>
           <p className="text-xs text-secondary">
             Los campos con (*) son obligatorios.
@@ -332,7 +334,7 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
 
       <form
         onSubmit={saveProduct}
-        className="w-fit flex flex-col gap-2 lg:grid lg:gap-5 lg:grid-cols-3 sm:border-container "
+        className="w-fit flex flex-col gap-2 lg:grid lg:gap-5 lg:grid-cols-3 sm:border-container pt-2"
       >
         {/* Columna de codigos y descripcion*/}
         <div className="gap-2 flex flex-col">

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ProductEditForm from "./ProductEditForm";
 import { EdithIcon } from "./Icons";
+import { Tooltip } from "@nextui-org/react";
 
 const ModalEditProducts = ({ product, fetchProducts }) => {
   const [showModal, setShowModal] = useState(false);
@@ -12,9 +13,11 @@ const ModalEditProducts = ({ product, fetchProducts }) => {
   return (
     <div>
       <div>
-        <span title="Editar" className="w-fit">
-          <EdithIcon className="cursor-pointer" onClick={toggleModal} />
-        </span>
+        <Tooltip color="primary" content="Editar">
+          <span className="text-lg text-primary cursor-pointer active:opacity-50">
+            <EdithIcon className=" w-[22px] h-[22px]" onClick={toggleModal} />
+          </span>
+        </Tooltip>
         {showModal && (
           <>
             <div className="fixed inset-0 z-40 bg-gray-500 bg-opacity-50"></div>
@@ -27,6 +30,7 @@ const ModalEditProducts = ({ product, fetchProducts }) => {
                   fetchProducts={fetchProducts}
                 />
               </div>
+              <div className="p-2 bg-gray-100 flex justify-end rounded-lg shadow-lg"></div>
             </div>
           </>
         )}

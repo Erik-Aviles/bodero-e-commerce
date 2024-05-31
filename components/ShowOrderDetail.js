@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { DeleteIcon, EyeIcon } from "./Icons";
 import { formatToCurrency } from "@/utils/formatToCurrency";
+import { Tooltip } from "@nextui-org/react";
+import ButtonClose from "./buttons/ButtonClose";
 
 const ShowOrderDetail = ({ order }) => {
   const [showOrderModal, setShowOrderModal] = useState(false);
@@ -27,20 +29,18 @@ const ShowOrderDetail = ({ order }) => {
   return (
     <div>
       <div>
-        <span title="Ver Detalles" className="w-fit">
-          <EyeIcon className="cursor-pointer" onClick={toggleModal} />
-        </span>
+        <Tooltip color="yellow" content="Ver Detalles">
+          <span className="text-lg text-yellow cursor-pointer active:opacity-50">
+            <EyeIcon className=" w-6 h-6" onClick={toggleModal} />
+          </span>
+        </Tooltip>
         {showOrderModal && (
           <>
             <div className="fixed inset-0 z-40 bg-gray-500 bg-opacity-50"></div>
 
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
               <div className="max-h-[calc(100vh-100px)] bg-white max-w-[500px] p-4 rounded-lg shadow-lg overflow-auto">
-                <div className="flex justify-end items-center">
-                  <button onClick={toggleModal}>
-                    <DeleteIcon />
-                  </button>
-                </div>
+                <ButtonClose onClick={toggleModal} />
                 <div className=" flex justify-between items-center mb-4 md:mb-6">
                   {/* Logo de la empresa */}
                   <img src="/logo.jpg" alt="Logo" className="h-12 sm:h-18" />

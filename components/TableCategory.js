@@ -15,7 +15,7 @@ import {
 } from "@nextui-org/react";
 
 import { DeleteRIcon, EdithIcon, PlusIcon, SearchIcon } from "./Icons";
-import { columnsCategory } from "@/resources/data";
+import { columnsCategory } from "@/resources/productTableColumns";
 import { capitalize } from "@/utils/utils";
 import Link from "next/link";
 import ModalCategories from "./ModalCategories";
@@ -64,8 +64,9 @@ export default function TableCategory({
       case "name":
         return (
           <User
-            className="justify-start min-w-[100px] break-words"
+            className="flex flex-row-reverse justify-between whitespace-nowrap min-w-[100px] "
             avatarProps={{ radius: "lg", src: category?.image?.[0] }}
+            description={""}
             name={capitalize(cellValue)}
           >
             {capitalize(cellValue)}
@@ -84,18 +85,21 @@ export default function TableCategory({
         );
       case "actions":
         return (
-          <div className="flex items-center justify-around">
-            <Tooltip content="Editar">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                <EdithIcon
-                  onClick={() => editCategory(category)}
-                  fill="secondary"
+          <div className="flex items-center gap-3">
+            <Tooltip color="danger" content="Eliminar">
+              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                <DeleteRIcon
+                  className=" w-[22px] h-[22px]"
+                  onClick={(e) => deleteCaterory(category)}
                 />
               </span>
             </Tooltip>
-            <Tooltip color="danger" content="Eliminar">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                <DeleteRIcon onClick={(e) => deleteCaterory(category)} />
+            <Tooltip content="Editar">
+              <span className="text-lg text-primary cursor-pointer active:opacity-50">
+                <EdithIcon
+                  className=" w-[22px] h-[22px]"
+                  onClick={() => editCategory(category)}
+                />
               </span>
             </Tooltip>
           </div>
@@ -134,13 +138,11 @@ export default function TableCategory({
   const topContent = useMemo(() => {
     return (
       <div className=" flex flex-col gap-4">
-        <div className="flex justify-between items-center">
-          <span className="text-default-400 text-small">
-            Total, {categories.length} Categorias
-          </span>
-        </div>
         <div className="flex flex-col sm:flex-row justify-between gap-3 items-end">
-          <div className="flex gap-3 ">
+          <div className=" flex items-end gap-4">
+            <span className="text-default-400 text-small">
+              Total, {categories.length} Categorias.
+            </span>
             <ModalCategories fetchCategories={fetchCategories} />
           </div>
           <Input
@@ -160,11 +162,11 @@ export default function TableCategory({
   const bottomContent = useMemo(() => {
     return (
       <div className="py-2 px-2 flex justify-between items-center">
-        <span className="w-[30%] text-small text-default-400">
+        {/*  <span className="w-[30%] text-small text-default-400">
           {selectedKeys === "all"
             ? "Todos los elementos seleccionados"
             : `${selectedKeys.size} de ${categories.length} selección`}
-        </span>
+        </span> */}
         <Pagination
           isCompact
           showControls
@@ -206,8 +208,8 @@ export default function TableCategory({
         wrapper: "min-h-[280px]  ",
         th: "text-warning uppercase",
       }}
-      selectedKeys={selectedKeys}
-      selectionMode="multiple"
+      // selectedKeys={selectedKeys}
+      // selectionMode="multiple"
       topContent={topContent}
       topContentPlacement="outside"
       onSelectionChange={setSelectedKeys}

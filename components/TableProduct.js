@@ -23,7 +23,7 @@ import {
   DeleteRIcon,
 } from "@/components/Icons";
 
-import { columnsProduct } from "@/resources/data";
+import { columnsProduct } from "@/resources/productTableColumns";
 import Link from "next/link";
 import { capitalize } from "@/utils/utils";
 import ModalEditProducts from "./ModalEditProducts";
@@ -32,6 +32,7 @@ import removeAccents from "@/utils/removeAccents";
 import ModalRegisterStockProduct from "./ModalRegisterStockProduct";
 
 const INITIAL_VISIBLE_COLUMNS = [
+  "actions",
   "title",
   "code",
   "createdAt",
@@ -40,7 +41,6 @@ const INITIAL_VISIBLE_COLUMNS = [
   "quantity",
   "location",
   "compatibility",
-  "actions",
 ];
 
 export default function TableProduct({
@@ -121,7 +121,7 @@ export default function TableProduct({
       case "title":
         return (
           <User
-            className="justify-start min-w-[200px]"
+            className="flex flex-row-reverse justify-between min-w-[230px] max-w-[315px]"
             avatarProps={{ radius: "lg", src: product.images?.[0] }}
             description={capitalize(product?.brand)}
             name={capitalize(cellValue)}
@@ -212,10 +212,10 @@ export default function TableProduct({
       case "quantity":
         return (
           <div className="flex flex-col">
-            <span className="text-bold text-tiny text-default-400 capitalize">
+            <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
               {product?.quantityUpdated
                 ? new Date(product?.quantityUpdated).toLocaleString()
-                : ""}
+                : "Sin venta"}
             </span>
             <p
               className={`text-bold whitespace-nowrap text-small ${
@@ -232,28 +232,48 @@ export default function TableProduct({
             </p>
           </div>
         );
+      case "quantityUpdated":
+        return (
+          <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
+            {cellValue
+              ? new Date(cellValue).toLocaleString()
+              : "No hay registro"}
+          </span>
+        );
       case "lastquantity":
         return (
           <div className="flex flex-col">
-            <span className="text-bold text-tiny text-default-400 break-all capitalize">
+            <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
               {cellValue
                 ? new Date(product?.lastquantityUpdated).toLocaleString()
                 : ""}
             </span>
             <p className="text-bold text-small ">
-              {cellValue > 0
-                ? cellValue + (cellValue > 1 ? " Uds." : " U.")
-                : ""}
+              {cellValue > 0 ? (
+                cellValue + (cellValue > 1 ? " Uds." : " U.")
+              ) : (
+                <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
+                  Sin registro
+                </span>
+              )}
             </p>
           </div>
         );
+      case "lastquantityUpdated":
+        return (
+          <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
+            {product?.lastquantity
+              ? new Date(cellValue).toLocaleString()
+              : "Sin registro"}
+          </span>
+        );
       case "createdAt":
         return (
-          <div className="flex flex-col min-w-[140px]">
-            <p className="text-bold text-small ">
+          <div className="flex flex-col">
+            <p className="text-bold text-small whitespace-nowrap">
               {new Date(product?.createdAt).toLocaleString()}
             </p>
-            <span className="text-bold text-tiny text-default-400 break-all capitalize">
+            <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
               {new Date(product?.updatedAt).toLocaleString()}
             </span>
           </div>
@@ -316,24 +336,23 @@ export default function TableProduct({
         );
       case "actions":
         return (
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-3">
+            <Tooltip color="danger" content="Eliminar">
+              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                <DeleteRIcon
+                  className=" w-[22px] h-[22px]"
+                  onClick={() => deleteProduct(product)}
+                />
+              </span>
+            </Tooltip>
+            <ModalEditProducts
+              product={product}
+              fetchProducts={fetchProducts}
+            />
             <ModalRegisterStockProduct
               product={product}
               fetchProducts={fetchProducts}
             />
-
-            <div className="flex gap-3">
-              <ModalEditProducts
-                product={product}
-                fetchProducts={fetchProducts}
-              />
-            </div>
-
-            <Tooltip color="danger" content="Eliminar">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                <DeleteRIcon onClick={() => deleteProduct(product)} />
-              </span>
-            </Tooltip>
           </div>
         );
       default:
@@ -373,8 +392,8 @@ export default function TableProduct({
 
   const topContent = useMemo(() => {
     return (
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col sm:flex-row justify-between gap-3 items-end">
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row justify-between items-end">
           <Input
             isClearable
             className="w-full sm:max-w-[45%] order-1"
@@ -388,7 +407,7 @@ export default function TableProduct({
             <Dropdown>
               <DropdownTrigger className="flex ">
                 <Button
-                  endContent={<ChevronDownIcon className="-z-0 text-small" />}
+                  endContent={<ChevronDownIcon className=" text-small" />}
                   variant="flat"
                 >
                   Columnas
@@ -416,23 +435,22 @@ export default function TableProduct({
           </div>
         </div>
         <div>
-          <div className="flex justify-between items-center">
-            <div>
-              <span className="text-default-400 text-small ">
-                <span className="flex items-center gap-1">
-                  Principal:
-                  <article className="w-4 h-4 bg-purple-700 rounded-full"></article>
-                </span>
-                <span className="flex items-center gap-1">
-                  Web:
-                  <article className="w-4 h-4 bg-pink-700 rounded-full"></article>
-                </span>
-                <span className="flex items-center gap-1">
-                  Empresarial:
-                  <article className="w-4 h-4 bg-sky-700 rounded-full"></article>
-                </span>
+          <div className="flex justify-between gap-5 items-center">
+            <div className="flex flex-wrap items-center gap-2 text-default-400 text-small ">
+              <span className="flex items-center gap-1">
+                Principal:
+                <article className="w-4 h-4 bg-purple-700 rounded-full"></article>
+              </span>
+              <span className="flex items-center gap-1">
+                Web:
+                <article className="w-4 h-4 bg-pink-700 rounded-full"></article>
+              </span>
+              <span className="flex items-center gap-1">
+                Empresarial:
+                <article className="w-4 h-4 bg-sky-700 rounded-full"></article>
               </span>
             </div>
+
             <span className="text-default-400 text-small">
               Total, {products.length} Productos.
             </span>
@@ -501,7 +519,7 @@ export default function TableProduct({
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 max-h-[440px]  ",
+        wrapper: "-z-1 h-[385px]  ",
         th: "text-warning uppercase",
       }}
       sortDescriptor={sortDescriptor}

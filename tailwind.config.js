@@ -26,8 +26,10 @@ module.exports = {
         red: "#fe0000",
         white: "#fefefe",
         success: "#39bd02", //Verde V2
+        successLight: "#a8e58f", //Verde pastel
         error: "#f70301", //Rojo
         warning: "#ff6e01", //Naranja
+        yellow: "#f2ae0d", //amarillo
       },
     },
     screens: {

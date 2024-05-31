@@ -12,6 +12,7 @@ import Head from "next/head";
 import axios from "axios";
 import useSWR from "swr";
 import { fetcher } from "@/utils/fetcher";
+import ButtonClose from "@/components/buttons/ButtonClose";
 
 function Categories({ swal }) {
   const { showNotification } = useContext(NotificationContext);
@@ -154,18 +155,24 @@ function Categories({ swal }) {
         />
       </Head>
       <Layout>
-        <div className="h-full flex flex-col gap-3">
-          <div className="h-fit max-w-screen-xl pb-4 ">
-            <div className="sm:flex sm:items-center sm:justify-between sm:gap-4">
-              <h3>Panel de categoria</h3>
-            </div>
+        <div className="h-full flex flex-col gap-1">
+          <div className="sm:flex sm:items-center sm:justify-between sm:gap-4">
+            <h3>Panel de categoria</h3>
           </div>
           {editedCategory && (
             <div className="flex items-center justify-center">
               <div className="bg-white p-6 w-72 sm:w-[500px] rounded shadow-md">
-                <label className="pb-3">
-                  {`Editar categoria "${editedCategory.name}"`}
-                </label>
+                <ButtonClose
+                  onClick={() => {
+                    setEditedCategory(null);
+                    setName("");
+                    setDescription("");
+                    setImage("");
+                  }}
+                />
+                <p className="text-primary text-small pb-3">
+                  {`Editar categoria "${capitalize(editedCategory.name)}"`}
+                </p>
                 <form className="lex flex-col gap-2" onSubmit={EditCategory}>
                   <div className="flex flex-col gap-2 w-full ">
                     <div className="border-container w-full">
