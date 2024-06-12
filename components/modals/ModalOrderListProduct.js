@@ -1,0 +1,59 @@
+import React, { useState } from "react";
+import { EdithIcon, PlusIcon } from "../Icons";
+import { Button, Tooltip } from "@nextui-org/react";
+import OrderListForm from "../forms/OrderListForm";
+import { capitalize } from "@/utils/utils";
+
+const ModalOrderListProduct = ({ order, fetchOrders }) => {
+  const [showModal, setShowOrderModal] = useState(false);
+
+  const toggleModal = () => {
+    setShowOrderModal(!showModal);
+  };
+
+  return (
+    <div>
+      <div>
+        {!order ? (
+          <section className="w-fit md:py-0">
+            <Button
+              onClick={toggleModal}
+              color="primary"
+              startContent={<PlusIcon />}
+            >
+              Agregar pedido
+            </Button>
+          </section>
+        ) : (
+          <Tooltip color="primary" content="Editar">
+            <span className="text-lg text-primary cursor-pointer active:opacity-50">
+              <EdithIcon className=" w-[22px] h-[22px]" onClick={toggleModal} />
+            </span>
+          </Tooltip>
+        )}
+        {showModal && (
+          <>
+            <div className="fixed inset-0 z-40 bg-gray-500 bg-opacity-50"></div>
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+              <div className="bg-white p-4 max-w-md rounded-lg shadow-lg overflow-auto">
+                <OrderListForm
+                  titulo={!order ? "Registrar pedido" : "Editar Pedido"}
+                  textSmall={
+                    !order
+                      ? "Los campos con (*) son obligatorios."
+                      : `Editar el pedido de: "${capitalize(order?.customer)} `
+                  }
+                  order={order}
+                  toggleModal={toggleModal}
+                  fetchOrders={fetchOrders}
+                />
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ModalOrderListProduct;

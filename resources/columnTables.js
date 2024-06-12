@@ -1,9 +1,16 @@
 const columnsOrder = [
-  { name: "APROBADO", uid: "paid" },
+  { name: "ESTADO", uid: "paid" },
   { name: "CLIENTE", uid: "name" },
   { name: "FECHA", uid: "createdAt" },
   { name: "MONTO", uid: "amount" },
   { name: "CANTIDAD", uid: "quantity" },
+  { name: "ACCION", uid: "actions" },
+];
+const columnsOrdersList = [
+  { name: "ESTADO", uid: "delivered" },
+  { name: "CLIENTE", uid: "customer" },
+  { name: "ARTICULOS", uid: "articulo" },
+  { name: "FECHA DE PEDIDO", uid: "orderEntryDate" },
   { name: "ACCION", uid: "actions" },
 ];
 
@@ -37,5 +44,23 @@ const columnsProduct = [
   { name: "Descripción", uid: "description" },
   { name: "Desc. Adicional", uid: "descriptionAdditional" },
 ];
+const columnsCustomer = [
+  { name: "Acción", uid: "actions" },
+  { name: "Nombres", uid: "name", sortable: true },
+  { name: "Cédula", uid: "identifications" },
+  { name: "Fechas", uid: "createdAt" },
+  { name: "Dirección", uid: "address" },
+  { name: "Teléfono", uid: "phone" },
+  { name: "Vehículos", uid: "myVehicles_list" },
+  // { name: "Pedidos", uid: "myProductOrder_list" },
+  { name: "Compras", uid: "myShopping_list" },
+  { name: "Observaciones", uid: "observations" },
+];
 
-export { columnsProduct, columnsCategory, columnsOrder };
+export {
+  columnsProduct,
+  columnsCategory,
+  columnsOrder,
+  columnsCustomer,
+  columnsOrdersList,
+};

@@ -16,39 +16,24 @@ import {
   Pagination,
   Tooltip,
 } from "@nextui-org/react";
-import {
-  PlusIcon,
-  SearchIcon,
-  ChevronDownIcon,
-  DeleteRIcon,
-} from "@/components/Icons";
+import { SearchIcon, ChevronDownIcon, DeleteRIcon } from "@/components/Icons";
 
-import { columnsProduct } from "@/resources/productTableColumns";
-import Link from "next/link";
+import { columnsCustomer } from "@/resources/columnTables";
 import { capitalize } from "@/utils/utils";
-import ModalEditProducts from "./ModalEditProducts";
-import ModalNewProducts from "./ModalNewProducts";
 import removeAccents from "@/utils/removeAccents";
-import ModalRegisterStockProduct from "./ModalRegisterStockProduct";
+import ModalCustomers from "../modals/ModalCustomers";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "actions",
-  "title",
-  "code",
-  "createdAt",
-  "salePrice",
-  "lastquantity",
-  "quantity",
-  "location",
-  "compatibility",
+  "name",
+  "identifications",
+  "phone",
+  "myVehicles_list",
+  "myProductOrder_list",
+  "myShopping_list",
 ];
 
-export default function TableProduct({
-  products,
-  deleteProduct,
-  formatPrice,
-  fetchProducts,
-}) {
+export default function TableCustomer({ customers, deleteCustomer }) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = useState(
@@ -66,34 +51,28 @@ export default function TableProduct({
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns;
 
-    return columnsProduct.filter((column) =>
+    return columnsCustomer.filter((column) =>
       Array.from(visibleColumns).includes(column.uid)
     );
   }, [visibleColumns]);
 
   const filteredItems = useMemo(() => {
-    let filteredProducts = [...products];
+    let filteredCustomers = [...customers];
 
     if (hasSearchFilter) {
-      filteredProducts = filteredProducts.filter(
-        (product) =>
-          removeAccents(product.title.toLowerCase()).includes(
+      filteredCustomers = filteredCustomers.filter(
+        (customer) =>
+          removeAccents(customer.name.toLowerCase()).includes(
             removeAccents(filterValue.toLowerCase())
           ) ||
-          removeAccents(product.code.toLowerCase()).includes(
-            removeAccents(filterValue.toLowerCase())
-          ) ||
-          removeAccents(product.codeWeb.toLowerCase()).includes(
-            removeAccents(filterValue.toLowerCase())
-          ) ||
-          removeAccents(product.codeEnterprise.toLowerCase()).includes(
+          removeAccents(customer.identifications.toLowerCase()).includes(
             removeAccents(filterValue.toLowerCase())
           )
       );
     }
 
-    return filteredProducts;
-  }, [products, filterValue]);
+    return filteredCustomers;
+  }, [customers, filterValue]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -114,223 +93,48 @@ export default function TableProduct({
     });
   }, [sortDescriptor, items]);
 
-  const renderCell = useCallback((product, columnKey) => {
-    const cellValue = product[columnKey];
+  const renderCell = useCallback((customer, columnKey) => {
+    const cellValue = customer[columnKey];
 
     switch (columnKey) {
-      case "title":
-        return (
-          <User
-            className="flex flex-row-reverse justify-between min-w-[230px] max-w-[315px]"
-            avatarProps={{ radius: "lg", src: product.images?.[0] }}
-            description={capitalize(product?.brand)}
-            name={capitalize(cellValue)}
-          >
-            {product?.title}
-          </User>
-        );
-      case "id":
+      case "name":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-small text-purple-700">{cellValue}</p>
-            <p className="text-bold text-tiny text-pink-700">{product?._id}</p>
-          </div>
-        );
-      case "code":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-small whitespace-nowrap text-purple-700">
+            <p className="text-bold text-small whitespace-nowrap capitalize">
               {cellValue}
             </p>
-            <p className="text-bold text-tiny whitespace-nowrap text-pink-700">
-              {product?.codeWeb}
-            </p>
-            <p className="text-bold text-tiny whitespace-nowrap text-sky-700">
-              {product?.codeEnterprise}
-            </p>
-          </div>
-        );
-      case "compatibility":
-        return (
-          <>
-            {cellValue.length > 0 &&
-              cellValue.map((item, index) => (
-                <div
-                  key={index}
-                  className="min-w-[250px] max-w-[280px] flex gap-1 items-center"
-                >
-                  <p className="text-bold text-small pr-1 capitalize">
-                    {item.title + ":"}
-                  </p>
-                  <span className="text-bold text-tiny text-default-400 break-all capitalize">
-                    {Array.isArray(item.model)
-                      ? item.model.join(", ")
-                      : item.model}
-                  </span>
-                </div>
-              ))}
-          </>
-        );
-      case "price":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-small ">{formatPrice(cellValue)}</p>
-            <p className="text-bold text-tiny  text-default-400">
-              {product?.tax ? "%" + product?.tax : ""}
-            </p>
-          </div>
-        );
-      case "profit":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-small ">{formatPrice(cellValue)}</p>
-            <p className="text-bold text-tiny  text-default-400">
-              {product?.profitability ? "%" + product?.profitability : ""}
-            </p>
-          </div>
-        );
-      case "netPrice":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-small ">{formatPrice(cellValue)}</p>
-          </div>
-        );
-      case "profitability":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-small text-default-400">
-              {product?.profitability ? "%" + cellValue : cellValue}
-            </p>
-          </div>
-        );
-      case "salePrice":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-small ">{formatPrice(cellValue)}</p>
-          </div>
-        );
-      case "quantity":
-        return (
-          <div className="flex flex-col">
-            <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
-              {product?.quantityUpdated
-                ? new Date(product?.quantityUpdated).toLocaleString()
-                : "Sin venta"}
+            <span className="text-bold text-tiny text-default-400 whitespace-nowrap capitalize">
+              {customer?.lastname}
             </span>
-            <p
-              className={`text-bold whitespace-nowrap text-small ${
-                cellValue < 3
-                  ? "text-error"
-                  : cellValue <= 5
-                  ? "text-warning"
-                  : ""
-              }`}
-            >
-              {cellValue
-                ? cellValue + (cellValue > 1 ? " Uds." : " U.")
-                : "0 U."}
-            </p>
           </div>
         );
-      case "quantityUpdated":
-        return (
-          <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
-            {cellValue
-              ? new Date(cellValue).toLocaleString()
-              : "No hay registro"}
-          </span>
-        );
-      case "lastquantity":
-        return (
-          <div className="flex flex-col">
-            <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
-              {cellValue
-                ? new Date(product?.lastquantityUpdated).toLocaleString()
-                : ""}
-            </span>
-            <p className="text-bold text-small ">
-              {cellValue > 0 ? (
-                cellValue + (cellValue > 1 ? " Uds." : " U.")
-              ) : (
-                <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
-                  Sin registro
-                </span>
-              )}
-            </p>
-          </div>
-        );
-      case "lastquantityUpdated":
-        return (
-          <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
-            {product?.lastquantity
-              ? new Date(cellValue).toLocaleString()
-              : "Sin registro"}
-          </span>
-        );
-      case "createdAt":
+      case "identifications":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-small whitespace-nowrap">
-              {new Date(product?.createdAt).toLocaleString()}
+              {cellValue}
             </p>
             <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
-              {new Date(product?.updatedAt).toLocaleString()}
+              {customer?.email}
             </span>
           </div>
         );
-      case "offerPrice":
+      case "phone":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-success text-small ">
-              {formatPrice(cellValue)}
-            </p>
-          </div>
-        );
-      case "color":
-        return (
-          <div className="flex flex-col ">
-            <p className="max-w-[200px]  break-words text-bold text-small ">
+            <p className="text-bold text-small whitespace-nowrap">
               {cellValue}
             </p>
+            <span className="text-bold text-tiny text-default-400 capitalize">
+              {customer?.address}
+            </span>
           </div>
         );
-      case "size":
-        return (
-          <div className="flex flex-col ">
-            <p className="max-w-[200px] break-words text-bold text-small">
-              {cellValue}
-            </p>
-          </div>
-        );
-      case "description":
+      case "observations":
         return (
           <div className="flex flex-col ">
             <p className="min-w-[250px] max-w-[280px] break-words text-bold text-small">
               {cellValue}
-            </p>
-          </div>
-        );
-      case "descriptionAdditional":
-        return (
-          <div className="flex flex-col ">
-            <p className="min-w-[250px] max-w-[280px]  break-words text-bold text-small ">
-              {cellValue}
-            </p>
-          </div>
-        );
-      case "images":
-        return (
-          <div className="flex flex-col ">
-            <p className="max-w-[250px] min-w-[200px] break-words text-bold text-small ">
-              {cellValue?.length === 0
-                ? cellValue
-                : cellValue.map((item, index) => (
-                    <span key={index}>
-                      {item}
-                      <br />
-                    </span>
-                  ))}
-              <b />
             </p>
           </div>
         );
@@ -341,18 +145,11 @@ export default function TableProduct({
               <span className="text-lg text-danger cursor-pointer active:opacity-50">
                 <DeleteRIcon
                   className=" w-[22px] h-[22px]"
-                  onClick={() => deleteProduct(product)}
+                  onClick={() => deleteCustomer(customer)}
                 />
               </span>
             </Tooltip>
-            <ModalEditProducts
-              product={product}
-              fetchProducts={fetchProducts}
-            />
-            <ModalRegisterStockProduct
-              product={product}
-              fetchProducts={fetchProducts}
-            />
+            <ModalCustomers customer={customer} />
           </div>
         );
       default:
@@ -397,7 +194,7 @@ export default function TableProduct({
           <Input
             isClearable
             className="w-full sm:max-w-[45%] order-1"
-            placeholder="Buscar por nombre, codigo o codigo web"
+            placeholder="Buscar por nombre o cédula... "
             startContent={<SearchIcon className="mr-1" />}
             value={filterValue}
             onClear={() => onClear()}
@@ -421,7 +218,7 @@ export default function TableProduct({
                 selectionMode="multiple"
                 onSelectionChange={setVisibleColumns}
               >
-                {columnsProduct.map((column) => (
+                {columnsCustomer.map((column) => (
                   <DropdownItem
                     key={column.uid}
                     className="text-[8px] capitalize"
@@ -431,12 +228,12 @@ export default function TableProduct({
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <ModalNewProducts fetchProducts={fetchProducts} />
+            <ModalCustomers />
           </div>
         </div>
         <div>
           <div className="flex justify-between gap-5 items-center">
-            <div className="flex flex-wrap items-center gap-2 text-default-400 text-small ">
+            {/*  <div className="flex flex-wrap items-center gap-2 text-default-400 text-small ">
               <span className="flex items-center gap-1">
                 Principal:
                 <article className="w-4 h-4 bg-purple-700 rounded-full"></article>
@@ -449,10 +246,10 @@ export default function TableProduct({
                 Empresarial:
                 <article className="w-4 h-4 bg-sky-700 rounded-full"></article>
               </span>
-            </div>
+            </div> */}
 
             <span className="text-default-400 text-small">
-              Total, {products.length} Productos.
+              Total, {customers.length} Clientes.
             </span>
             <label className="flex items-center text-default-400 text-small">
               Filas:
@@ -473,7 +270,7 @@ export default function TableProduct({
     filterValue,
     visibleColumns,
     onRowsPerPageChange,
-    products.length,
+    customers.length,
     onSearchChange,
     hasSearchFilter,
   ]);

@@ -1,149 +1,19 @@
-import React, { useContext, useEffect, useState } from "react";
-import NotificationContext from "@/context/NotificationContext";
-import { DeleteIcon, UpLoadIcon } from "@/components/Icons";
-import TableCategory from "@/components/TableCategory";
-import { ReactSortable } from "react-sortablejs";
-import { withSwal } from "react-sweetalert2";
-import { Input } from "@nextui-org/react";
-import { capitalize } from "@/utils/utils";
+import React, { useEffect } from "react";
+import TableCategory from "@/components/tables/TableCategory";
+import useCategories from "@/hooks/useCategories";
 import Spinner from "@/components/Spinner";
 import Layout from "@/components/Layout";
 import Head from "next/head";
-import axios from "axios";
-import useSWR from "swr";
-import { fetcher } from "@/utils/fetcher";
-import ButtonClose from "@/components/buttons/ButtonClose";
 
-function Categories({ swal }) {
-  const { showNotification } = useContext(NotificationContext);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState([]);
-  const [editedCategory, setEditedCategory] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [newCategories, setNewCategories] = useState([]);
-
-  const {
-    data: categories,
-    error,
-    isLoading,
-    mutate,
-  } = useSWR("/api/categories/full", fetcher);
+export default function Categories() {
+  const { newCategories, error, isLoading, getCategories, deleteCaterory } =
+    useCategories();
 
   useEffect(() => {
-    if (categories) {
-      setNewCategories(categories);
-    }
-  }, [categories]);
-
-  const getCategories = async () => {
-    try {
-      const response = await axios.get("/api/categories/full");
-      setNewCategories(response.data);
-      mutate(); // Actualizar manualmente la caché de SWR
-    } catch (error) {
-      console.error("Error al obtener las categorias:", error);
-    }
-  };
-
-  if (error) return <div>Falo al cargar los categorias</div>;
-
-  async function EditCategory(e) {
-    e.preventDefault();
-    const data = {
-      name: name.toLowerCase(),
-      description,
-      image,
-    };
-    if (editedCategory) {
-      data._id = editedCategory._id;
-      await axios.put("/api/categories/full", data);
-      showNotification({
-        open: true,
-        msj: `Categoria:
-        ${capitalize(data?.name)}, modificada con exito!`,
-        status: "success",
-      });
-      setEditedCategory(null);
-    }
-    setName("");
-    setDescription("");
-    setImage([]);
     getCategories();
-  }
+  }, []);
 
-  function editCategory(value) {
-    setEditedCategory(value);
-    setName(value?.name);
-    setDescription(value?.description);
-    setImage(value?.image);
-  }
-
-  const handeDeleteImage = async (index) => {
-    const updateImages = image[index];
-    try {
-      const data = await axios.delete(
-        `/api/uploadcat?url=${encodeURIComponent(updateImages)}`
-      );
-      const updatedImages = image.filter((img, idx) => idx !== index);
-      setImage(updatedImages);
-    } catch (error) {
-      showNotification({
-        open: true,
-        msj: "Hubo un error al eliminar imagen",
-        status: "error",
-      });
-    }
-  };
-
-  const handleUpload = async (e) => {
-    const files = e.target?.files;
-    if (files?.length > 0) {
-      setIsUploading(true);
-      const data = new FormData();
-      for (const file of files) {
-        data.append("file", file);
-      }
-      try {
-        const res = await axios.post("/api/uploadcat", data);
-        setImage((oldImages) => [...oldImages, ...res.data?.links]);
-      } catch (error) {
-        console.error("Error cargando la imagen:", error);
-      }
-      setIsUploading(false);
-    }
-  };
-
-  function updateImagesOrder(image) {
-    setImage(image);
-  }
-
-  function deleteCaterory(value) {
-    swal
-      .fire({
-        title: "Estas seguro?",
-        text: `Quires eliminar "${value.name}"?`,
-        showCancelButton: true,
-        cancelButtonText: "Cancelar",
-        confirmButtonColor: "#fe0000",
-        confirmButtonText: "Si, Eliminar",
-        reverseButtons: true,
-      })
-      .then(async (result) => {
-        if (result.isConfirmed) {
-          const { _id } = value;
-          await axios.delete("/api/categories/full?_id=" + _id);
-          showNotification({
-            open: true,
-            msj: `Categoria:
-              ${capitalize(value?.name)}, eliminada con exito!`,
-            status: "success",
-          });
-
-          getCategories();
-        }
-      });
-  }
+  if (error) return <div>Falló al cargar las categorias</div>;
 
   return (
     <>
@@ -155,142 +25,18 @@ function Categories({ swal }) {
         />
       </Head>
       <Layout>
-        <div className="h-full flex flex-col gap-1">
-          <div className="sm:flex sm:items-center sm:justify-between sm:gap-4">
-            <h3>Panel de categoria</h3>
-          </div>
-          {editedCategory && (
-            <div className="flex items-center justify-center">
-              <div className="bg-white p-6 w-72 sm:w-[500px] rounded shadow-md">
-                <ButtonClose
-                  onClick={() => {
-                    setEditedCategory(null);
-                    setName("");
-                    setDescription("");
-                    setImage("");
-                  }}
-                />
-                <p className="text-primary text-small pb-3">
-                  {`Editar categoria "${capitalize(editedCategory.name)}"`}
-                </p>
-                <form className="lex flex-col gap-2" onSubmit={EditCategory}>
-                  <div className="flex flex-col gap-2 w-full ">
-                    <div className="border-container w-full">
-                      <Input
-                        type="text"
-                        value={name}
-                        placeholder="Escribir nombre"
-                        labelPlacement="outside"
-                        onChange={(e) => setName(e.target.value)}
-                      />
-                    </div>
-                    <div className="flex flex-col border-container w-full">
-                      <textarea
-                        rows={3}
-                        maxLength={50}
-                        placeholder="Escribir descripción"
-                        value={description}
-                        className="min-h-[55px]"
-                        onChange={(e) => setDescription(e.target.value)}
-                      />
-                      {description?.length === 50 ? (
-                        <span className="pt-1 text-success text-[10px] ">
-                          A llegado al limite de caracteres.
-                        </span>
-                      ) : (
-                        <span></span>
-                      )}
-                    </div>
-
-                    <div className="border-container flex justify-center items-center gap-3">
-                      <ReactSortable
-                        // list={images}
-                        list={Array.isArray(image) ? image : []}
-                        className="flex flex-wrap gap-1"
-                        setList={updateImagesOrder}
-                      >
-                        {image?.length > 0 &&
-                          image?.map((imageUrl, index) => (
-                            <div
-                              key={index}
-                              className="relative group w-24 h-24 flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md"
-                            >
-                              <img
-                                src={imageUrl}
-                                alt={`Imagen de ${name}`}
-                                className="rounded-md object-contain h-32 w-44 p-2"
-                              />
-                              <div className="absolute top-2 right-2 cursor-pointer opacity-0  group-hover:opacity-100 ">
-                                <button
-                                  type="button"
-                                  onClick={() => handeDeleteImage(index)}
-                                >
-                                  <DeleteIcon className="w-6 h-6 text-red stroke-2 bg-white rounded-full" />
-                                </button>
-                              </div>
-                            </div>
-                          ))}
-                      </ReactSortable>
-                      {isUploading ? (
-                        <div className="w-24 h-24 flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
-                          <Spinner />
-                        </div>
-                      ) : (
-                        <label className="w-24 h-24 flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
-                          <UpLoadIcon />
-                          <span>Cargar imagen</span>
-                          <input
-                            type="file"
-                            multiple
-                            onChange={handleUpload}
-                            className="hidden"
-                          />
-                        </label>
-                      )}
-                    </div>
-                    <div className="flex gap-1 mb-1">
-                      <button
-                        type="button"
-                        className="bg-error basis-1/2 hover:bg-error/60 text-white font-bold py-2 px-4"
-                        onClick={() => {
-                          setEditedCategory(null);
-                          setName("");
-                          setDescription("");
-                          setImage("");
-                        }}
-                      >
-                        Cancelar
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn-primary py-1 xs:w-40 basis-1/2"
-                      >
-                        Guardar
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
-          {!editedCategory &&
-            (isLoading || !categories ? (
-              <Spinner />
-            ) : (
-              <section className="">
-                <div className=" mx-auto max-w-[600px] ">
-                  <TableCategory
-                    categories={newCategories}
-                    fetchCategories={getCategories}
-                    deleteCaterory={deleteCaterory}
-                    editCategory={editCategory}
-                  />
-                </div>
-              </section>
-            ))}
-        </div>
+        <h3>Panel de categoria</h3>
+        {isLoading || !newCategories ? (
+          <Spinner />
+        ) : (
+          <section className="max-w-4xl mx-auto">
+            <TableCategory
+              categories={newCategories}
+              deleteCaterory={deleteCaterory}
+            />
+          </section>
+        )}
       </Layout>
     </>
   );
 }
-export default withSwal(({ swal }, ref) => <Categories swal={swal} />);

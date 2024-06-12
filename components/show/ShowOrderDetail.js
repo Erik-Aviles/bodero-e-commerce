@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { DeleteIcon, EyeIcon } from "./Icons";
+import { DeleteIcon, EyeIcon } from "../Icons";
 import { formatToCurrency } from "@/utils/formatToCurrency";
 import { Tooltip } from "@nextui-org/react";
-import ButtonClose from "./buttons/ButtonClose";
+import ButtonClose from "../buttons/ButtonClose";
 
 const ShowOrderDetail = ({ order }) => {
   const [showOrderModal, setShowOrderModal] = useState(false);
@@ -40,7 +40,9 @@ const ShowOrderDetail = ({ order }) => {
 
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
               <div className="max-h-[calc(100vh-100px)] bg-white max-w-[500px] p-4 rounded-lg shadow-lg overflow-auto">
-                <ButtonClose onClick={toggleModal} />
+                <header className=" flex justify-end pb-2">
+                  <ButtonClose onClick={toggleModal} />
+                </header>
                 <div className=" flex justify-between items-center mb-4 md:mb-6">
                   {/* Logo de la empresa */}
                   <img src="/logo.jpg" alt="Logo" className="h-12 sm:h-18" />

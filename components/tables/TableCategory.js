@@ -14,19 +14,13 @@ import {
   User,
 } from "@nextui-org/react";
 
-import { DeleteRIcon, EdithIcon, PlusIcon, SearchIcon } from "./Icons";
-import { columnsCategory } from "@/resources/productTableColumns";
+import { DeleteRIcon, SearchIcon } from "../Icons";
+import { columnsCategory } from "@/resources/columnTables";
 import { capitalize } from "@/utils/utils";
-import Link from "next/link";
-import ModalCategories from "./ModalCategories";
+import ModalCategories from "../modals/ModalCategories";
 import removeAccents from "@/utils/removeAccents";
 
-export default function TableCategory({
-  deleteCaterory,
-  editCategory,
-  categories,
-  fetchCategories,
-}) {
+export default function TableCategory({ deleteCaterory, categories }) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -83,6 +77,14 @@ export default function TableCategory({
             </span>
           </div>
         );
+      case "description":
+        return (
+          <div className="flex flex-col ">
+            <p className="min-w-[250px] max-w-[280px] break-words text-bold text-small">
+              {cellValue}
+            </p>
+          </div>
+        );
       case "actions":
         return (
           <div className="flex items-center gap-3">
@@ -94,14 +96,7 @@ export default function TableCategory({
                 />
               </span>
             </Tooltip>
-            <Tooltip content="Editar">
-              <span className="text-lg text-primary cursor-pointer active:opacity-50">
-                <EdithIcon
-                  className=" w-[22px] h-[22px]"
-                  onClick={() => editCategory(category)}
-                />
-              </span>
-            </Tooltip>
+            <ModalCategories category={category} />
           </div>
         );
       default:
@@ -143,7 +138,7 @@ export default function TableCategory({
             <span className="text-default-400 text-small">
               Total, {categories.length} Categorias.
             </span>
-            <ModalCategories fetchCategories={fetchCategories} />
+            <ModalCategories />
           </div>
           <Input
             isClearable
@@ -205,7 +200,7 @@ export default function TableCategory({
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "min-h-[280px]  ",
+        wrapper: "-z-1 min-h-[280px]  ",
         th: "text-warning uppercase",
       }}
       // selectedKeys={selectedKeys}

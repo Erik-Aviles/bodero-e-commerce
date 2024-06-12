@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import NotificationContext from "@/context/NotificationContext";
-import TableOrder from "@/components/TableOrder";
+import TableOrder from "@/components/tables/TableOrder";
 import { withSwal } from "react-sweetalert2";
 import Spinner from "@/components/Spinner";
 import { capitalize } from "@/utils/utils";

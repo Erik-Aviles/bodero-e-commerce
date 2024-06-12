@@ -51,17 +51,25 @@ export default async function handle(req, res) {
     try {
       await moogoseConnect();
       const { name, description, image, _id } = req.body;
-      const categoryDoc = await Category.updateOne(
-        { _id },
-        {
-          name,
-          description,
-          image,
-        }
-      );
-      res.json({ categoryDoc, message: messages.success.exitEdith });
+
+      if (!_id || _id.trim() === "") {
+        return res.status(400).json({ message: messages.error.idNotValid });
+      }
+
+      const updateData = {
+        name,
+        description,
+        image,
+      };
+
+      // Encuentra y actualiza la categoria
+      await Category.updateOne({ _id }, updateData);
+      return res.status(200).json(true);
     } catch (err) {
-      return res.status(500).json({ err: err.message });
+      return res.status(500).json({
+        message: messages.error.errorUpdatedCategory,
+        err: err.message,
+      });
     }
   }
 

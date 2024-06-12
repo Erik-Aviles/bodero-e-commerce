@@ -21,12 +21,10 @@ import {
   PlusIcon,
   SearchIcon,
   VerifyIcon,
-} from "./Icons";
-import { columnsOrder } from "@/resources/productTableColumns";
-import { capitalize } from "@/utils/utils";
-import Link from "next/link";
-import ShowOrderDetail from "./ShowOrderDetail";
-import { formatToCurrency } from "@/utils/formatToCurrency";
+} from "../Icons";
+import { columnsOrdersList } from "@/resources/columnTables";
+import ModalOrderListProduct from "../modals/ModalOrderListProduct";
+import removeAccents from "@/utils/removeAccents";
 
 const statusColorMap = {
   true: "success",
@@ -34,19 +32,18 @@ const statusColorMap = {
 };
 
 const INITIAL_VISIBLE_COLUMNS = [
-  "name",
-  "createdAt",
-  "amount",
-  "quantity",
-  "paid",
+  "customer",
+  "articulo",
+  "orderEntryDate",
+  "delivered",
   "actions",
 ];
 
-export default function TableOrder({
-  disminuirCantidadProductos,
-  downloadPdf,
+export default function TableOrderList({
+  verifyOrderDelivery,
   orders,
   deleteOrder,
+  fetchOrders,
 }) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
@@ -62,17 +59,18 @@ export default function TableOrder({
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns;
 
-    return columnsOrder.filter((column) =>
+    return columnsOrdersList.filter((column) =>
       Array.from(visibleColumns).includes(column.uid)
     );
   }, [visibleColumns]);
 
   const filteredItems = useMemo(() => {
     let resultadoFiltrado = [...orders];
-
     if (hasSearchFilter) {
-      resultadoFiltrado = resultadoFiltrado.filter((objeto) =>
-        objeto.name.toLowerCase().includes(filterValue.toLowerCase())
+      resultadoFiltrado = resultadoFiltrado.filter((order) =>
+        removeAccents(order.customer.toLowerCase()).includes(
+          removeAccents(filterValue.toLowerCase())
+        )
       );
     }
     return resultadoFiltrado;
@@ -89,78 +87,55 @@ export default function TableOrder({
 
   const renderCell = useCallback((order, columnKey) => {
     const cellValue = order[columnKey];
-
-    function calcularTotal(lineItems) {
-      let total = 0;
-      lineItems.forEach((pro) => {
-        total += pro.info_order.unit_amount;
-      });
-      return total;
-    }
-    function calcularQuantity(lineItems) {
-      let total = 0;
-      lineItems.forEach((pro) => {
-        total += pro.quantity;
-      });
-      return total;
-    }
-    const quantity = calcularQuantity(order.line_items);
-
-    // Obtener el cantidad de producto
-    const total = calcularTotal(order.line_items);
-
     switch (columnKey) {
-      case "name":
+      case "customer":
         return (
           <div className="flex flex-col ">
-            <p className="text-bold text-tiny text-primary-400 capitalize">
-              {order?.name}
+            <p className="text-bold text-tiny text-primary-400 whitespace-nowrap capitalize">
+              {order?.customer}
             </p>
           </div>
         );
 
-      case "amount":
+      case "articulo":
         return (
-          <div className="flex flex-col">
+          <div className="flex flex-col min-w-[150px] max-w-[315px]">
             <p className=" break-words text-bold text-tiny capitalize">
-              {formatToCurrency(total)}
+              {cellValue}
             </p>
           </div>
         );
-      case "quantity":
+      case "orderEntryDate":
         return (
           <div className="flex flex-col">
-            <p className=" break-words text-bold text-tiny capitalize">
-              {quantity}
-              {" ud."}
+            <p className=" break-words text-bold text-tiny whitespace-nowrap">
+              {new Date(order?.date).toLocaleString()}
             </p>
           </div>
         );
-      case "createdAt":
+      case "delivered":
         return (
-          <div className="flex flex-col">
-            <p className=" break-words text-bold text-tiny capitalize">
-              {new Date(order.createdAt).toLocaleString()}
-            </p>
+          <div className="flex flex-col gap-1">
+            {cellValue === true && (
+              <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
+                {new Date(order.orderDeliveryDate).toLocaleString()}
+              </span>
+            )}
+            <Chip
+              className=" text-tiny py-[0.5px] px-1 cursor-pointer"
+              startContent={cellValue === true && <VerifyIcon size={18} />}
+              variant="faded"
+              isDisabled={cellValue === true ? true : false}
+              color={statusColorMap[cellValue]}
+              onClick={() => verifyOrderDelivery(order._id)}
+            >
+              {cellValue === false ? "Pendiente" : "Entregado"}
+            </Chip>
           </div>
-        );
-      case "paid":
-        return (
-          <Chip
-            className="text-tiny py-[0.5px] px-1 cursor-pointer"
-            startContent={cellValue === true ? <VerifyIcon size={18} /> : ""}
-            variant="faded"
-            isDisabled={cellValue === true ? true : false}
-            color={statusColorMap[order?.paid]}
-            onClick={() => disminuirCantidadProductos(order)}
-          >
-            {cellValue === false ? "No" : "Sí"}
-          </Chip>
         );
       case "actions":
         return (
           <div className="flex items-center gap-3 ">
-            <ShowOrderDetail order={order} />
             <Tooltip color="danger" content="Eliminar">
               <span className="text-lg text-danger cursor-pointer active:opacity-50">
                 <DeleteRIcon
@@ -169,6 +144,7 @@ export default function TableOrder({
                 />
               </span>
             </Tooltip>
+            <ModalOrderListProduct order={order} fetchOrders={fetchOrders} />
           </div>
         );
       default:
@@ -176,7 +152,7 @@ export default function TableOrder({
     }
   }, []);
 
-  //sigiente
+  //siguiente
   const onNextPage = useCallback(() => {
     if (page < pages) {
       setPage(page + 1);
@@ -209,19 +185,18 @@ export default function TableOrder({
           <span className="text-default-400 text-small">
             Total, {orders.length} Ordenes.
           </span>
+          <ModalOrderListProduct fetchOrders={fetchOrders} />
         </div>
-        {/*   <div className="flex flex-col sm:flex-row justify-between gap-3 items-end">
-          <div className="flex gap-3 ">
-       <Input
-            isClearable
-            className="w-full sm:max-w-[45%] order-1"
-            placeholder="Buscar orden..."
-            startContent={<SearchIcon className="mr-1" />}
-            value={filterValue}
-            onClear={() => onClear()}
-            onValueChange={onSearchChange}
-          /> 
-        </div> */}
+
+        <Input
+          isClearable
+          className="w-full sm:max-w-[45%] order-1"
+          placeholder="Búsqueda por nombre o cedula..."
+          startContent={<SearchIcon className="mr-1" />}
+          value={filterValue}
+          onClear={() => onClear()}
+          onValueChange={onSearchChange}
+        />
       </div>
     );
   }, [filterValue, orders.length, onSearchChange, hasSearchFilter]);

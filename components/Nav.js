@@ -1,25 +1,15 @@
 import React from "react";
-import {
-  HomeIcon,
-  ListCategoryIcon,
-  LogoutIcon,
-  OrderListIcon,
-  ProductIcon,
-} from "./Icons";
+import { LogoutIcon } from "./Icons";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import logo from "@/public/logo.jpg";
-import { useRouter } from "next/router";
 import Image from "next/image";
+import { routeList } from "@/resources/routeList";
+import NavLink from "./NavLink";
 
 const Nav = ({ show, setShowNav }) => {
   const inactiveLink =
     "flex gap-2 px-2 py-3 md:py-2 text-base hover:bg-[#97a8bc]/10 ";
-  const activeLink = `${inactiveLink} bg-primaryLight text-white rounded-sm`;
-  const inactiveIcon = "w-7 h-7";
-  const activeIcon = `${inactiveIcon} text-primary`;
-  const router = useRouter();
-  const { pathname } = router;
 
   async function logout() {
     await signOut({
@@ -53,53 +43,9 @@ const Nav = ({ show, setShowNav }) => {
           </Link>
         </div>
         <nav className=" flex flex-col gap-2">
-          <Link
-            href={"/"}
-            className={pathname === "/" ? activeLink : inactiveLink}
-          >
-            <HomeIcon
-              className={pathname === "/" ? activeIcon : inactiveIcon}
-            />
-            Dashboard
-          </Link>
-          <Link
-            href={"/products"}
-            className={
-              pathname.includes("/products") ? activeLink : inactiveLink
-            }
-          >
-            <ProductIcon
-              className={
-                pathname.includes("/products") ? activeIcon : inactiveIcon
-              }
-            />
-            Productos
-          </Link>
-
-          <Link
-            href={"/categories"}
-            className={
-              pathname.includes("/categories") ? activeLink : inactiveLink
-            }
-          >
-            <ListCategoryIcon
-              className={
-                pathname.includes("/categories") ? activeIcon : inactiveIcon
-              }
-            />
-            Categorias
-          </Link>
-          <Link
-            href={"/orders"}
-            className={pathname.includes("/orders") ? activeLink : inactiveLink}
-          >
-            <OrderListIcon
-              className={
-                pathname.includes("/orders") ? activeIcon : inactiveIcon
-              }
-            />
-            Ordenes
-          </Link>
+          {routeList.map(({ id, route, path, icon }) => (
+            <NavLink key={id} path={path} icon={icon} route={route} />
+          ))}
           <button className={inactiveLink} onClick={logout}>
             <LogoutIcon />
             Salir

@@ -1,30 +1,32 @@
 import React, { useContext, useState } from "react";
-import { DeleteIcon, StockIcon } from "./Icons";
+import { DeleteIcon, StockIcon } from "../Icons";
 import NotificationContext from "@/context/NotificationContext";
 import axios from "axios";
 import { Input, Tooltip } from "@nextui-org/react";
+import useProducts from "@/hooks/useProducts";
+import ButtonClose from "../buttons/ButtonClose";
 
-const ModalRegisterStockProduct = ({ product, fetchProducts }) => {
+const ModalRegisterStockProduct = ({ product }) => {
+  const { getProducts } = useProducts();
   const { showNotification } = useContext(NotificationContext);
   const [showModal, setShowOrderModal] = useState(false);
+  const [stock, setStock] = useState("");
 
   const toggleModal = () => {
     setShowOrderModal(!showModal);
   };
 
-  const [stock, setStock] = useState("");
-
   const handleChange = (e) => {
     setStock(e.target.value);
   };
 
-  async function handleSubmit(e) {
+  async function saveStock(e) {
     e.preventDefault();
     if (product._id) {
       if (stock === "" || null || undefined) {
         showNotification({
           open: true,
-          msj: `Favor ingresar un valor!`,
+          msj: `Favor, ingresar un valor!`,
           status: "error",
         });
         return;
@@ -33,13 +35,13 @@ const ModalRegisterStockProduct = ({ product, fetchProducts }) => {
         const lastquantity = (product.lastquantity = stock);
         try {
           await axios.put("/api/products/stock", { lastquantity, _id });
-          fetchProducts();
+          setStock("");
           showNotification({
             open: true,
             msj: `Valor "${stock}", ingresado con exito!`,
             status: "success",
           });
-          setStock("");
+          getProducts();
           toggleModal();
         } catch (error) {
           showNotification({
@@ -66,26 +68,23 @@ const ModalRegisterStockProduct = ({ product, fetchProducts }) => {
 
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
               <div className="bg-white md:w-[350px] p-4 rounded-lg shadow-lg overflow-auto">
-                <header className=" flex flex-col gap-1">
-                  <div className="flex justify-end items-center">
-                    <button onClick={toggleModal}>
-                      <DeleteIcon />
-                    </button>
-                  </div>
+                {/* Encabezado */}
+                <header className=" flex justify-between pb-3">
                   <h3>{"Registro de stock"}</h3>
+                  <ButtonClose onClick={toggleModal} />
                 </header>
 
                 {/* Cuerpo de la informacion del producto */}
-                <div>
-                  <div className="border-container">
+                <section className="">
+                  <div className="bg-grayLight border-container">
                     <div className="flex gap-1 pb-2">
-                      <p>Articulo:</p>
+                      <p className="font-semibold">Articulo:</p>
                       <span className="capitalize text-primary text-small">
                         {product?.title}
                       </span>
                     </div>
                     <div className="flex gap-1">
-                      <p>Codigo:</p>{" "}
+                      <p className="font-semibold">Codigo:</p>
                       <span className="capitalize text-primary text-small">
                         {product?.code}
                       </span>
@@ -93,7 +92,7 @@ const ModalRegisterStockProduct = ({ product, fetchProducts }) => {
                   </div>
                   <div className="flex justify-between py-2">
                     <div className="flex flex-col items-center  gap-1">
-                      <p className="block text-secondary">Stock actual:</p>
+                      <p className="block text-secondary">Stock actual</p>
                       <p className=" text-gray-700">
                         {product?.quantity
                           ? product?.quantity +
@@ -102,7 +101,7 @@ const ModalRegisterStockProduct = ({ product, fetchProducts }) => {
                       </p>
                     </div>
                     <div className="flex items-center flex-col gap-1">
-                      <p className="block text-secondary">Ultimo registro:</p>
+                      <p className="block text-secondary">Último registro</p>
                       <p className=" text-gray-700">
                         {product?.lastquantity
                           ? product?.lastquantity +
@@ -111,10 +110,10 @@ const ModalRegisterStockProduct = ({ product, fetchProducts }) => {
                       </p>
                     </div>
                   </div>
-                </div>
+                </section>
                 <form
-                  onSubmit={handleSubmit}
-                  className="max-w-md mx-auto p-4 bg-white shadow-md rounded"
+                  onSubmit={saveStock}
+                  className="p-4 bg-white shadow-md rounded-md"
                 >
                   <div className="mb-4">
                     <Input

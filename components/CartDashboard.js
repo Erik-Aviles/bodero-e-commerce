@@ -3,14 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { ClipLoader } from "react-spinners";
 
-const CartDashboard = ({
-  href,
-  title,
-  imageSrc,
-  altText,
-  itemCount,
-  isLoading,
-}) => {
+const CartDashboard = ({ href, title, src, alt, itemCount, isLoading }) => {
   return (
     <Link href={href}>
       <article className="card ml:animated-button">
@@ -18,8 +11,8 @@ const CartDashboard = ({
           width={80}
           height={80}
           className="object-contain"
-          src={imageSrc}
-          alt={altText}
+          src={src}
+          alt={alt}
         />
         <section className="flex-center flex-col gap-2 items-center">
           <h3 className="m-0">{title}</h3>

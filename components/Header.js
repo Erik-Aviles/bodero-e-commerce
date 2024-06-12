@@ -1,15 +1,28 @@
 import React from "react";
 import { useSession } from "next-auth/react";
 import { justFirstWord } from "@/utils/justFirstWord";
+import { HamburguerIcon } from "./Icons";
+import Link from "next/link";
+import Image from "next/image";
+import logo from "@/public/logo.jpg";
 
-const Header = () => {
+const Header = ({ setShowNav }) => {
   const { data: session } = useSession();
 
   return (
     <>
-      <header className="fixed z-10 sm:z-10 md:relative bg-white w-full px-4 pb-2  sm:px-6 lg:px-8">
-        <hr className="h-px border-0 bg-gray-300" />
-
+      <header className="sticky top-0 z-30 md:relative bg-white w-full p-2 ">
+        <div className="w-full bg-white md:hidden flex py-2">
+          <button onClick={() => setShowNav(true)}>
+            <HamburguerIcon className="fill-red w-8 h-8" />
+          </button>
+          <div className="m-auto">
+            <Link href="/" className="w-32">
+              <Image alt="Logo" className="w-32" src={logo} />
+            </Link>
+          </div>
+        </div>
+        <hr className="h-px border-0 bg-gray-300 md:hidden" />
         <div className="flex items-center pt-2 sm:justify-between sm:gap-4">
           <h1 className="text-xl font-bold text-primary sm:text-2xl">
             Bienvenid@{" "}

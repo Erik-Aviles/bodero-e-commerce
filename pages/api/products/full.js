@@ -49,6 +49,7 @@ export default async function handle(req, res) {
         images,
       } = req.body;
 
+      //validar que esten todos los campos
       if (!title || !code || !price || !profitability || !brand || !description)
         return res.status(400).json({ message: messages.error.needProps });
 
@@ -114,7 +115,6 @@ export default async function handle(req, res) {
         description,
         descriptionAdditional,
         images,
-
         _id,
       } = req.body;
 

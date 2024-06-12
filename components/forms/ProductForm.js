@@ -2,60 +2,62 @@ import React, { useContext, useEffect, useState } from "react";
 import { profitabilityToChoose, taxToChoose } from "@/resources/valuesToChoose";
 import NotificationContext from "@/context/NotificationContext";
 import { ReactSortable } from "react-sortablejs";
-import { DeleteIcon, UpLoadIcon } from "./Icons";
-import Spinner from "./Spinner";
+import { DeleteIcon, UpLoadIcon } from "../Icons";
+import Spinner from "../Spinner";
 import axios from "axios";
-import { Input } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem, Input } from "@nextui-org/react";
 import { capitalize } from "@/utils/utils";
-import ModalCategories from "./ModalCategories";
-import ButtonClose from "./buttons/ButtonClose";
+import ModalCategories from "../modals/ModalCategories";
+import ButtonClose from "../buttons/ButtonClose";
+import useProducts from "@/hooks/useProducts";
+import useCategories from "@/hooks/useCategories";
 
-const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
+const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
+  const { getProducts } = useProducts();
+  const { newCategories } = useCategories();
   const { showNotification } = useContext(NotificationContext);
 
   const [codeVerify, setCodeVerify] = useState("");
   const [codeWebVerify, setCodeWebVerify] = useState("");
   const [codeEnterpriseVerify, setCodeEnterpriseVerify] = useState("");
 
-  const [title, setTitle] = useState("");
-  const [code, setCode] = useState("");
-  const [codeEnterprise, setCodeEnterprise] = useState("");
-  const [codeWeb, setCodeWeb] = useState("");
+  const [title, setTitle] = useState(product?.title || "");
+  const [code, setCode] = useState(product?.code || "");
+  const [codeEnterprise, setCodeEnterprise] = useState(
+    product?.codeEnterprise || ""
+  );
+  const [codeWeb, setCodeWeb] = useState(product?.codeWeb || "");
 
-  const [price, setPrice] = useState("");
-  const [tax, setTax] = useState(0);
-  const [profitability, setProfitability] = useState(0);
-  const [netPrice, setNetPrice] = useState("");
-  const [salePrice, setSalePrice] = useState("");
-  const [offerPrice, setOfferPrice] = useState("");
-  const [profit, setProfit] = useState(0);
-  const [brand, setBrand] = useState("");
-  const [category, setCategory] = useState("");
+  const [price, setPrice] = useState(product?.price || "");
+  const [tax, setTax] = useState(product?.tax || 0);
+  const [profitability, setProfitability] = useState(
+    product?.profitability || 0
+  );
+  const [netPrice, setNetPrice] = useState(product?.netPrice || "");
+  const [salePrice, setSalePrice] = useState(product?.salePrice || "");
+  const [offerPrice, setOfferPrice] = useState(product?.offerPrice || "");
+  const [profit, setProfit] = useState(product?.profit || 0);
+  const [brand, setBrand] = useState(product?.brand || "");
+  const [category, setCategory] = useState(product?.category || "");
+  const [quantity, setQuantity] = useState(product?.quantity || 0);
 
-  const [quantity, setQuantity] = useState(0);
-  const [location, setLocation] = useState("");
-  const [compatibility, setCompatibility] = useState([]);
-  const [description, setDescription] = useState("");
-  const [descriptionAdditional, setDescriptionAdditional] = useState("");
-  const [images, setImages] = useState([]);
+  const [location, setLocation] = useState(product?.location || "");
+  const [compatibility, setCompatibility] = useState(
+    product?.compatibility || []
+  );
+  const [description, setDescription] = useState(product?.description || "");
+  const [descriptionAdditional, setDescriptionAdditional] = useState(
+    product?.descriptionAdditional || ""
+  );
+  const [images, setImages] = useState(product?.images || []);
 
-  const [color, setColor] = useState([]);
-  const [size, setSize] = useState([]);
+  const [color, setColor] = useState(product?.color || []);
+  const [size, setSize] = useState(product?.size || []);
 
-  const [categories, setCategories] = useState([]);
   const [isUpLoanding, setIsUpLoanding] = useState(false);
   const [verify, setVerify] = useState(false);
   const [verifyWeb, setWebVerify] = useState(false);
   const [verifyEnterprise, setEnterpriseVerify] = useState(false);
-
-  function fetchCategories() {
-    axios.get("/api/categories/minimal").then((res) => {
-      setCategories(res.data);
-    });
-  }
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   useEffect(() => {
     axios.get("/api/products/full").then((res) => {
@@ -89,7 +91,7 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
   const handleChangeCode = (e) => {
     const { value } = e.target;
     setCode(value);
-    const exists = codeVerify?.some(
+    const exists = codeVerify.some(
       (item) => item.toLowerCase() === value.toLowerCase() && item !== ""
     );
     if (exists) {
@@ -125,6 +127,7 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
     }
   };
 
+  //guardar producto
   async function saveProduct(e) {
     e.preventDefault();
     let data = {
@@ -153,7 +156,7 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
     };
     try {
       const res = await axios.post("/api/products/full", data);
-      fetchProducts();
+      getProducts();
       showNotification({
         open: true,
         msj: res.data.message,
@@ -186,6 +189,52 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
         msj: error.response.data.message,
         status: "error",
       });
+    }
+  }
+
+  //editar producto
+  async function edithProduct(e) {
+    e.preventDefault();
+    let data = {
+      title: title.toLowerCase(),
+      code,
+      codeEnterprise,
+      codeWeb,
+      price,
+      tax,
+      profitability,
+      netPrice,
+      salePrice,
+      profit,
+      offerPrice,
+      brand,
+      category,
+      color,
+      size,
+      location,
+      compatibility,
+      description,
+      descriptionAdditional,
+      images,
+    };
+    const _id = product?._id;
+    if (_id) {
+      try {
+        await axios.put("/api/products/full", { ...data, _id });
+        showNotification({
+          open: true,
+          msj: `"${capitalize(data.title)}", editado con exito!`,
+          status: "success",
+        });
+        getProducts();
+        toggleModal();
+      } catch (error) {
+        showNotification({
+          open: true,
+          msj: error.response.data.message,
+          status: "error",
+        });
+      }
     }
   }
 
@@ -320,29 +369,26 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
 
   return (
     <div className="relative w-full flex flex-col justify-center ">
-      <ButtonClose onClick={toggleModal} />
-      <div className=" sm:pb-4 sm:flex sm:items-center sm:justify-between sm:gap-4">
-        <div className="flex flex-col pb-2">
-          <h3>{titulo}</h3>
-          <p className="text-xs text-secondary">
-            Los campos con (*) son obligatorios.
-            <br />
-          </p>
-        </div>
-        <ModalCategories fetchCategories={fetchCategories} />
+      <div className="flex justify-end items-center">
+        <ButtonClose onClick={toggleModal} />
       </div>
-
+      <div className="sm:flex sm:items-center sm:justify-between sm:gap-4">
+        <div className="flex flex-col pb-2">
+          <h3 className="text-lg font-semibold">{titulo}</h3>
+          <p className="text-xs text-primary">{textSmall}</p>
+        </div>
+        <ModalCategories />
+      </div>
       <form
-        onSubmit={saveProduct}
-        className="w-fit flex flex-col gap-2 lg:grid lg:gap-5 lg:grid-cols-3 sm:border-container pt-2"
+        onSubmit={!product ? saveProduct : edithProduct}
+        className="w-fit flex flex-col gap-2 lg:grid lg:gap-5 lg:grid-cols-3 sm:border-container "
       >
         {/* Columna de codigos y descripcion*/}
         <div className="gap-2 flex flex-col">
-          {/* codigos */}
-          <div className="flex flex-col border-container ">
-            <p className="hidden md:block text-center text-secondary">
-              {"CÓDIGOS "}
-            </p>
+          {/* Codigos */}
+
+          <fieldset className="bg-grayLight flex flex-col border-container ">
+            <legend className="text-center text-secondary">CÓDIGOS</legend>
             <div>
               <label className="block my-1">Código (*)</label>
               <Input
@@ -393,9 +439,13 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
                 Código Empresarial ya existe!
               </span>
             )}
-          </div>
-          {/* compatibilidad */}
-          <div className="border-container ">
+          </fieldset>
+
+          {/* Compatibilidad */}
+          <fieldset className=" bg-grayLight  border-container ">
+            <legend className="text-center text-secondary">
+              COMPATIBILIDADES
+            </legend>
             <button
               type="button"
               className="btn-default text-sm mb-2"
@@ -444,11 +494,40 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
                   </button>
                 </div>
               ))}
-          </div>
+          </fieldset>
+
+          {/* Categorias */}
+          <fieldset className="bg-grayLight  border-container ">
+            <legend className="text-center text-secondary">
+              SELECCIONAR CATEGORIA
+            </legend>
+            <Autocomplete
+              aria-label="Seleccion de categorias"
+              inputValue={category}
+              onInputChange={(value) => setCategory(value)}
+            >
+              {newCategories.length > 0 &&
+                newCategories
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((category) => (
+                    <AutocompleteItem
+                      className="max-w-xs "
+                      key={category._id}
+                      value={category._id}
+                    >
+                      {capitalize(category?.name)}
+                    </AutocompleteItem>
+                  ))}
+            </Autocomplete>
+          </fieldset>
         </div>
-        {/* Columna de nombre y imagenes*/}
+
+        {/* Columna de datos personales y descripcion*/}
         <div className="gap-2 flex flex-col">
-          <div className=" border-container">
+          <fieldset className="bg-grayLight border-container">
+            <legend className="text-center text-secondary">
+              DATOS PRINCIPALES
+            </legend>
             {/* nombre*/}
             <div>
               <label className="my-1 block">Nombre (*)</label>
@@ -460,82 +539,22 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
                 onChange={(e) => setTitle(e.target.value)}
               />
             </div>
-            {/* marca y categoria*/}
-            <div className="xs:flex sm:gap-2 ">
-              <div className="basis-3/5 mr-1 sm:mr-0">
-                <label className="my-1 block">Marca (*)</label>
-                <Input
-                  type="text"
-                  value={brand}
-                  placeholder="Marca"
-                  labelPlacement="outside"
-                  className="mb-3.5 xs:mb-0"
-                  onChange={(e) => setBrand(e.target.value)}
-                />
-              </div>
-              <div className="basis-2/5">
-                <label htmlFor="category" className="my-1 block">
-                  Categorias
-                </label>
-                <div className="relative">
-                  <select
-                    id="category"
-                    className="text-xs capitalize appearance-none "
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                  >
-                    <option key={"sincategory"} value="">
-                      Sin Categoria
-                    </option>
-                    {categories.length > 0 &&
-                      categories
-                        .sort((a, b) => a.name.localeCompare(b.name))
-                        .map((category) => (
-                          <option key={category._id} value={category._id}>
-                            {category?.name}
-                          </option>
-                        ))}
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M19 9l-7 7-7-7"
-                      ></path>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              {/*    <div className="basis-2/5 ">
-                <label className="my-1 block">Categoria</label>
-                <select
-                  className="text-xs capitalize"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                >
-                  <option key={"sincategory"} value="">
-                    Sin categoria
-                  </option>
-                  {categories.length > 0 &&
-                    categories.map((category) => (
-                      <option key={category._id} value={category._id}>
-                        {category?.name}
-                      </option>
-                    ))}
-                </select>
-              </div> */}
+            {/* marca */}
+            <div>
+              <label className="my-1 block">Marca (*)</label>
+              <Input
+                type="text"
+                value={brand}
+                placeholder="Marca"
+                labelPlacement="outside"
+                className="mb-3.5 xs:mb-0"
+                onChange={(e) => setBrand(e.target.value)}
+              />
             </div>
+
             {/* ubicacion y cantidad*/}
             <div className="xs:flex sm:gap-2 ">
-              <div className="basis-3/5 mr-1 sm:mr-0">
+              <div className="basis-1/2 mr-1 sm:mr-0">
                 <label className="my-1 block">Ubicación</label>
                 <Input
                   type="text"
@@ -546,16 +565,39 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
                   onChange={(e) => setLocation(e.target.value)}
                 />
               </div>
-              <div className="basis-2/5">
-                <label className="my-1 block">Cantidad</label>
-                <Input
-                  type="number"
-                  value={quantity}
-                  placeholder="Cantidad"
-                  labelPlacement="outside"
-                  onChange={(e) => setQuantity(e.target.value)}
-                />
-              </div>
+              {!product ? (
+                <div className="basis-1/2">
+                  <label className="my-1 block">Cantidad</label>
+                  <Input
+                    type="number"
+                    value={quantity}
+                    placeholder="Cantidad"
+                    labelPlacement="outside"
+                    onChange={(e) => setQuantity(e.target.value)}
+                  />
+                </div>
+              ) : (
+                <div className="basis-1/2 flex gap-2">
+                  <div>
+                    <label className="my-1 block">Stock</label>
+                    <Input
+                      type="number"
+                      labelPlacement="outside"
+                      style={{ cursor: "no-drop" }}
+                      value={product?.quantity}
+                    />
+                  </div>
+                  <div>
+                    <label className="my-1 block">Ulm. cant.</label>
+                    <Input
+                      type="number"
+                      labelPlacement="outside"
+                      style={{ cursor: "no-drop" }}
+                      value={product?.lastquantity}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
             {/* tamaño y color*/}
             <div className="xs:flex sm:gap-2 ">
@@ -581,13 +623,16 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
                 />
               </div>
             </div>
-          </div>
-          {/* descripciones*/}
-          <div className="border-container">
+          </fieldset>
+
+          {/* Descripciones*/}
+          <fieldset className="bg-grayLight border-container">
+            <legend className="text-center text-secondary">
+              DESCRIPCIONES
+            </legend>
             <div>
               <label className="my-1 block">Descripción (*)</label>
               <textarea
-                rows={5}
                 placeholder="Escribir descripción"
                 value={description}
                 className="min-h-[70px] "
@@ -597,22 +642,22 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
             <div>
               <label className="my-1 block">Descripción adicional</label>
               <textarea
-                rows={5}
                 placeholder="Escribir observación"
                 value={descriptionAdditional}
                 className="min-h-[70px] "
                 onChange={(e) => setDescriptionAdditional(e.target.value)}
               />
             </div>
-          </div>
-        </div>{" "}
-        {/* Columna de valores y compatibilidad*/}
+          </fieldset>
+        </div>
+
+        {/* Columna de valores y imagen*/}
         <div className="gap-2 flex flex-col">
-          {/* valores */}
-          <div className="flex flex-col gap-2 border-container">
-            <p className="hidden md:block text-center text-secondary">
-              {"CÁLCULO DE VALORES"}
-            </p>
+          {/* Valores */}
+          <fieldset className="bg-grayLight flex flex-col gap-2 border-container">
+            <legend className="text-center text-secondary">
+              CÁLCULO DE VALORES
+            </legend>
             <div className="flex sm:gap-2 ">
               <div className="basis-2/6 mr-1 sm:mr-0">
                 <label className="my-1 block">P. Costo (*)</label>
@@ -686,7 +731,6 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
                   title="No editable"
                   type="number"
                   labelPlacement="outside"
-                  style={{ cursor: "no-drop" }}
                   startContent={
                     <div className="flex items-center">
                       <span className="text-default-400 text-small">$</span>
@@ -694,6 +738,7 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
                   }
                   value={!price ? 0 : salePrice}
                   placeholder="0.00"
+                  onChange={(e) => setSalePrice(e.target.value)}
                 />
               </div>
               <div className="basis-2/6">
@@ -731,73 +776,74 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
                 />
               </div>
             </div>
-            {offerPrice <= netPrice ? (
-              <span className="text-error text-small">
-                Valor no recomendado
-              </span>
-            ) : (
-              <span></span>
-            )}
-          </div>
-
-          {/* imagenes*/}
-          <div>
-            <label className="my-1 block">Imagen(es)</label>
-            <div className="h-fit mb-[12px] border-2 border-secundary rounded-sm flex justify-center items-center flex-wrap gap-3 p-2 ">
-              <ReactSortable
-                // list={images}
-                list={Array.isArray(images) ? images : []}
-                className="flex flex-wrap gap-1"
-                setList={updateImagesOrder}
-              >
-                {!!images?.length &&
-                  images.map((link, index) => (
-                    <div
-                      key={index}
-                      className="relative group w-24 h-24 flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md"
-                    >
-                      <img
-                        src={link}
-                        alt="imagen"
-                        className="rounded-md object-contain h-32 w-44 p-1"
-                      />
-                      <div className="absolute top-2 right-2 cursor-pointer opacity-0  group-hover:opacity-100 ">
-                        <button onClick={() => handeDeleteImage(index)}>
-                          <DeleteIcon className="w-6 h-6 text-red stroke-2 bg-white rounded-full" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-              </ReactSortable>
-              {isUpLoanding ? (
-                <div className="w-24 h-24 text-center flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
-                  <Spinner />
-                </div>
-              ) : (
-                <label className="w-24 h-24 text-center flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
-                  <UpLoadIcon />
-                  <span>Cargar imagen</span>
-                  <input
-                    onChange={upLoadImages}
-                    type="file"
-                    className="hidden"
-                  />
-                </label>
-              )}
-            </div>
-          </div>
-          {/* botones */}
-          <div className="gap-2 flex justify-center my-2">
-            <button
-              type="button"
-              className="btn-delete whitespace-nowrap text-white px-2  md:px-4 py-1 rounded-sm mx-1"
-              onClick={() => {
-                toggleModal();
-              }}
+            <span
+              className={
+                !offerPrice || offerPrice === 0
+                  ? "text-primary text-small"
+                  : offerPrice > netPrice
+                  ? "text-success text-small"
+                  : "text-error text-small"
+              }
             >
-              Cancelar
+              {!offerPrice || offerPrice === 0
+                ? "Registra una oferta!"
+                : offerPrice > netPrice
+                ? "Oferta aceptada!"
+                : "Oferta no recomendada!"}
+            </span>
+          </fieldset>
+          {/* imagenes*/}
+          <fieldset className="bg-grayLight h-fit mb-[12px] border-2 border-secundary rounded-md flex justify-center items-center flex-wrap gap-3 p-2 ">
+            <legend className="text-center text-secondary">IMAGENES</legend>
+            <ReactSortable
+              // list={images}
+              list={Array.isArray(images) ? images : []}
+              className="flex flex-wrap gap-1"
+              setList={updateImagesOrder}
+            >
+              {!!images?.length &&
+                images.map((link, index) => (
+                  <div
+                    key={index}
+                    className="relative group w-24 h-24 flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md"
+                  >
+                    <img
+                      src={link}
+                      alt="imagen"
+                      className="rounded-md object-contain h-32 w-44 p-1"
+                    />
+                    <div className="absolute top-2 right-2 cursor-pointer opacity-0  group-hover:opacity-100 ">
+                      <button onClick={() => handeDeleteImage(index)}>
+                        <DeleteIcon className="w-6 h-6 text-red stroke-2 bg-white rounded-full" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </ReactSortable>
+            {isUpLoanding ? (
+              <div className="w-24 h-24 text-center flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
+                <Spinner />
+              </div>
+            ) : (
+              <label className="w-24 h-24 text-center flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
+                <UpLoadIcon />
+                <span>Cargar imagen</span>
+                <input onChange={upLoadImages} type="file" className="hidden" />
+              </label>
+            )}
+          </fieldset>
+          {/* botones */}
+          <div className="flex gap-1 mb-1">
+            <button
+              onClick={toggleModal}
+              className="bg-secundary basis-1/2 hover:bg-secundary/60 text-white font-bold py-2 px-4"
+            >
+              Cerrar
             </button>
-            <button type="submit" className="btn-primary mx-1">
+            <button
+              type="submit"
+              className="btn-primary hover:bg-primary/60 py-1 xs:w-40 basis-1/2"
+            >
               Guardar
             </button>
           </div>
@@ -807,4 +853,4 @@ const ProductNewForm = ({ titulo, toggleModal, fetchProducts }) => {
   );
 };
 
-export default ProductNewForm;
+export default ProductForm;
