@@ -85,6 +85,7 @@ const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
               isClearable
               type="text"
               value={name}
+              isRequired={true}
               placeholder="Escribir título"
               labelPlacement="outside"
               onClear={() => onClear()}

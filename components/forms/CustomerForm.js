@@ -117,6 +117,7 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
                   <Input
                     type="text"
                     value={name}
+                    isRequired={true}
                     placeholder="Escribir Nombres"
                     labelPlacement="outside"
                     onChange={(e) => setName(e.target.value.toLowerCase())}
@@ -127,6 +128,7 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
                   <Input
                     type="text"
                     value={lastname}
+                    isRequired={true}
                     placeholder="Escribir Apellidos"
                     labelPlacement="outside"
                     onChange={(e) => setLastname(e.target.value.toLowerCase())}
@@ -135,7 +137,18 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
               </div>
               <div className="xs:flex xs:gap-2">
                 <div className="">
-                  <label className="my-1 block">Cédula (*)</label>
+                  <label className="my-1 block">Teléfono (*)</label>
+                  <Input
+                    type="text"
+                    value={phone}
+                    isRequired={true}
+                    placeholder="Escribir teléfono"
+                    labelPlacement="outside"
+                    onChange={(e) => setPhone(e.target.value.toLowerCase())}
+                  />
+                </div>
+                <div className="">
+                  <label className="my-1 block">Cédula</label>
                   <Input
                     type="text"
                     value={identifications}
@@ -144,17 +157,6 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
                     onChange={(e) =>
                       setIdentifications(e.target.value.toLowerCase())
                     }
-                  />
-                </div>
-
-                <div className="">
-                  <label className="my-1 block">Teléfono (*)</label>
-                  <Input
-                    type="text"
-                    value={phone}
-                    placeholder="Escribir teléfono"
-                    labelPlacement="outside"
-                    onChange={(e) => setPhone(e.target.value.toLowerCase())}
                   />
                 </div>
               </div>

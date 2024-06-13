@@ -8,7 +8,6 @@ const CustomerSchema = new Schema(
     lastname: {
       type: String,
       trim: true,
-      required: true,
     },
 
     identifications: { type: String, trim: true, unique: true },

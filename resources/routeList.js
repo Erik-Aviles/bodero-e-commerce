@@ -35,5 +35,5 @@ export const routeList = [
     path: "/users",
     icon: <UsersIcon />,
   },
-  { id: "7", route: "Ordenes", path: "/orders", icon: <OrderIcon /> },
+  { id: "7", route: "Ventas", path: "/orders", icon: <OrderIcon /> },
 ];

@@ -47,7 +47,7 @@ const OrderListForm = ({
     };
 
     try {
-      const res = await axios.post("/api/orderslist", data);
+      const res = await axios.post("/api/orderslist/full", data);
       showNotification({
         open: true,
         msj: res.data.message,
@@ -83,7 +83,7 @@ const OrderListForm = ({
     const _id = order._id;
     if (_id) {
       try {
-        const res = await axios.put("/api/orderslist", { ...data, _id });
+        const res = await axios.put("/api/orderslist/full", { ...data, _id });
         showNotification({
           open: true,
           msj: res.data.message,
@@ -136,6 +136,7 @@ const OrderListForm = ({
             <textarea
               placeholder="Escribir breve detalle del producto"
               value={articulo}
+              required={true}
               className="min-h-[60px] "
               onChange={(e) => setArticulo(e.target.value)}
             />
@@ -150,6 +151,7 @@ const OrderListForm = ({
               aria-label="Seleccion de clientes"
               className="max-w-xs"
               inputValue={customer}
+              isRequired={true}
               onInputChange={(value) => setCustomer(value)}
             >
               {newCustomers.map((client) => (
@@ -176,6 +178,7 @@ const OrderListForm = ({
               type="date"
               value={orderEntryDate}
               labelPlacement="outside"
+              isRequired={true}
               onChange={handleDateChange}
             />
             <input type="hidden" id="date" name="date" value={date} />

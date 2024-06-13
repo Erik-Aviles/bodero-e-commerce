@@ -140,13 +140,15 @@ export default withSwal((props, ref) => {
         {isLoading || !orders ? (
           <Spinner />
         ) : (
-          <TableOrder
-            fetchOrders={getOrders}
-            downloadPdf={downloadPdf}
-            disminuirCantidadProductos={disminuirCantidadProductos}
-            orders={newOrders}
-            deleteOrder={deleteOrder}
-          />
+          <section className="max-w-4xl mx-auto mt-4">
+            <TableOrder
+              fetchOrders={getOrders}
+              downloadPdf={downloadPdf}
+              disminuirCantidadProductos={disminuirCantidadProductos}
+              orders={newOrders}
+              deleteOrder={deleteOrder}
+            />
+          </section>
         )}
       </Layout>
     </>

@@ -395,6 +395,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
                 type="text"
                 labelPlacement="outside"
                 value={code}
+                isRequired={true}
                 placeholder="Código principal (*)"
                 onChange={handleChangeCode}
                 // onChange={(e) => setCode(e.target.value)}
@@ -534,6 +535,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
               <Input
                 type="text"
                 value={title}
+                isRequired={true}
                 placeholder="Nombre"
                 labelPlacement="outside"
                 onChange={(e) => setTitle(e.target.value)}
@@ -545,6 +547,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
               <Input
                 type="text"
                 value={brand}
+                isRequired={true}
                 placeholder="Marca"
                 labelPlacement="outside"
                 className="mb-3.5 xs:mb-0"
@@ -571,6 +574,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
                   <Input
                     type="number"
                     value={quantity}
+                    isRequired={true}
                     placeholder="Cantidad"
                     labelPlacement="outside"
                     onChange={(e) => setQuantity(e.target.value)}
@@ -582,18 +586,22 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
                     <label className="my-1 block">Stock</label>
                     <Input
                       type="number"
+                      title="No editable"
                       labelPlacement="outside"
-                      style={{ cursor: "no-drop" }}
+                      isReadOnly={true}
                       value={product?.quantity}
+                      style={{ cursor: "no-drop" }}
                     />
                   </div>
                   <div>
                     <label className="my-1 block">Ulm. cant.</label>
                     <Input
                       type="number"
+                      title="No editable"
                       labelPlacement="outside"
-                      style={{ cursor: "no-drop" }}
                       value={product?.lastquantity}
+                      style={{ cursor: "no-drop" }}
+                      isReadOnly={true}
                     />
                   </div>
                 </div>
@@ -635,6 +643,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
               <textarea
                 placeholder="Escribir descripción"
                 value={description}
+                required={true}
                 className="min-h-[70px] "
                 onChange={(e) => setDescription(e.target.value)}
               />
@@ -670,6 +679,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
                     </div>
                   }
                   value={price}
+                  isRequired={true}
                   onChange={handlePrecioChange}
                   placeholder="0.00"
                 />
@@ -693,15 +703,17 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
               <div className="basis-2/6">
                 <label className="my-1 block">P. Neto</label>
                 <Input
+                  title="No editable"
                   type="number"
                   labelPlacement="outside"
                   style={{ cursor: "no-drop" }}
                   startContent={
-                    <div className="cursor-not-allowed flex items-center">
+                    <div className="flex items-center">
                       <span className="text-default-400 text-sm">$</span>
                     </div>
                   }
                   value={!price ? 0 : netPrice}
+                  isReadOnly={true}
                   placeholder="0.00"
                 />
               </div>
@@ -715,6 +727,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
                   className="text-sm"
                   id="profitabilitySelect"
                   value={profitability}
+                  required={true}
                   onChange={handleProfitabilityChange}
                 >
                   {profitabilityToChoose.length &&
@@ -728,7 +741,6 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
               <div className="basis-2/6 mr-1 sm:mr-0">
                 <label className="my-1 block">P. Venta</label>
                 <Input
-                  title="No editable"
                   type="number"
                   labelPlacement="outside"
                   startContent={
@@ -754,6 +766,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
                     </div>
                   }
                   value={!salePrice ? 0 : profit}
+                  isReadOnly={true}
                   placeholder="0.00"
                 />
               </div>
@@ -786,7 +799,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
               }
             >
               {!offerPrice || offerPrice === 0
-                ? "Registra una oferta!"
+                ? "Aplica una oferta!"
                 : offerPrice > netPrice
                 ? "Oferta aceptada!"
                 : "Oferta no recomendada!"}
