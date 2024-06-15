@@ -37,7 +37,7 @@ export default async function handle(req, res) {
         }
       );
 
-      const forgetUrl = `${process.env.PUBLIC_URL}/cambiar-contrasena?token=${token}`;
+      const forgetUrl = `${process.env.NEXT_PUBLIC_URL}/cambiar-contrasena?token=${token}`;
 
       //@ts-ignore
       await resend.emails.send({
