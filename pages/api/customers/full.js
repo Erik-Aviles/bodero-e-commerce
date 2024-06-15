@@ -40,8 +40,15 @@ export default async function handle(req, res) {
       } = req.body;
 
       //validar que esten todos los campos
-      if (!name || !lastname || !phone) {
+      if (!name || !lastname || !identifications) {
         return res.status(400).json({ message: messages.error.needProps });
+      }
+
+      // Validar que "identifications" tenga al menos 10 dígitos
+      if (identifications.length > 10) {
+        return res.status(400).json({
+          message: messages.error.identificationTooLong,
+        });
       }
 
       const customerFind = await Customer.findOne({ identifications });

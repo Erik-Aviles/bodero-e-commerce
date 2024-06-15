@@ -23,6 +23,7 @@ export const routeList = [
     path: "/orderslist",
     icon: <OrderListIcon />,
   },
+  { id: "7", route: "Ventas", path: "/orders", icon: <OrderIcon /> },
   {
     id: "5",
     route: "Clientes",
@@ -35,5 +36,4 @@ export const routeList = [
     path: "/users",
     icon: <UsersIcon />,
   },
-  { id: "7", route: "Ventas", path: "/orders", icon: <OrderIcon /> },
 ];

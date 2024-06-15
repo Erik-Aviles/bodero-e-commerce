@@ -1,5 +1,5 @@
 import NotificationContext from "@/context/NotificationContext";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import ButtonClose from "../buttons/ButtonClose";
 import { Autocomplete, AutocompleteItem, Input } from "@nextui-org/react";
@@ -146,26 +146,26 @@ const OrderListForm = ({
           <legend className="text-center text-secondary">
             Seleccionar cliente
           </legend>
-          <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+          <div className="flex w-full flex-col">
             <Autocomplete
-              aria-label="Seleccion de clientes"
-              className="max-w-xs"
-              inputValue={customer}
               isRequired={true}
-              onInputChange={(value) => setCustomer(value)}
+              aria-label="Seleccion de clientes"
+              label="Clientes"
+              defaultItems={newCustomers.sort((a, b) =>
+                a.name.localeCompare(b.name)
+              )}
+              selectedKey={customer}
+              onSelectionChange={setCustomer}
             >
-              {newCustomers.map((client) => (
-                <AutocompleteItem
-                  className="max-w-xs "
-                  key={client._id}
-                  value={client._id}
-                >
-                  {`${justFirstWord(capitalize(client.name))} ` +
-                    ` ${justFirstWord(capitalize(client.lastname))} - CI:${
-                      client?.identifications
-                    }`}
+              {(item) => (
+                <AutocompleteItem key={item._id}>
+                  {`${justFirstWord(capitalize(item.name))} ` +
+                    ` ${justFirstWord(capitalize(item.lastname))} ` +
+                    (item?.identifications
+                      ? `- ${item?.identifications}`
+                      : "- Sin cedula")}
                 </AutocompleteItem>
-              ))}
+              )}
             </Autocomplete>
           </div>
         </fieldset>

@@ -41,7 +41,11 @@ const ModalOrderListProduct = ({ order, fetchOrders }) => {
                   textSmall={
                     !order
                       ? "Los campos con (*) son obligatorios."
-                      : `Editar el pedido de: "${capitalize(order?.customer)} `
+                      : `Editar el pedido: "${capitalize(
+                          order?.articulo.length > 30
+                            ? order?.articulo.substring(0, 30) + "..."
+                            : order?.articulo
+                        )}`
                   }
                   order={order}
                   toggleModal={toggleModal}

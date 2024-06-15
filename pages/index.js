@@ -16,10 +16,10 @@ export default function Home() {
     "/api/categories/size",
     fetcher
   );
-  /*   const { data: sizeUsers, isLoading: isLoadUsers } = useSWR(
+  const { data: sizeUsers, isLoading: isLoadUsers } = useSWR(
     "/api/users/size",
     fetcher
-  );*/
+  );
   const { data: sizeCustomers, isLoading: isLoadCustomers } = useSWR(
     "/api/customers/size",
     fetcher
@@ -71,7 +71,7 @@ export default function Home() {
                     isLoading={
                       (title === "productos" && isLoadProducts) ||
                       (title === "categorias" && isLoadCategories) ||
-                      (href === "/users" && "") ||
+                      (href === "/users" && isLoadUsers) ||
                       (href === "/customers" && isLoadCustomers) ||
                       (href === "/orderslist" && isLoadOrdersList) ||
                       (href === "/orders" && isLoadOrders)
@@ -79,7 +79,7 @@ export default function Home() {
                     itemCount={
                       (title === "productos" && sizeProducts) ||
                       (title === "categorias" && sizeCategories) ||
-                      (href === "/users" && "1") ||
+                      (href === "/users" && sizeUsers) ||
                       (href === "/customers" && sizeCustomers) ||
                       (href === "/orderslist" && sizeOrdersList) ||
                       (href === "/orders" && sizeOrders)

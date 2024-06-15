@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -14,17 +14,12 @@ import {
   Chip,
 } from "@nextui-org/react";
 
-import {
-  DeleteRIcon,
-  DownloadIcon,
-  EyeIcon,
-  PlusIcon,
-  SearchIcon,
-  VerifyIcon,
-} from "../Icons";
+import { DeleteRIcon, SearchIcon, VerifyIcon } from "../Icons";
 import { columnsOrdersList } from "@/resources/columnTables";
 import ModalOrderListProduct from "../modals/ModalOrderListProduct";
 import removeAccents from "@/utils/removeAccents";
+import { justFirstWord } from "@/utils/justFirstWord";
+import { capitalize } from "@/utils/utils";
 
 const statusColorMap = {
   true: "success",
@@ -44,6 +39,7 @@ export default function TableOrderList({
   orders,
   deleteOrder,
   fetchOrders,
+  newCustomers,
 }) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
@@ -87,13 +83,32 @@ export default function TableOrderList({
 
   const renderCell = useCallback((order, columnKey) => {
     const cellValue = order[columnKey];
+
+    const filteredResult = newCustomers.filter((objeto) =>
+      objeto?._id.includes(order?.customer)
+    );
+
     switch (columnKey) {
       case "customer":
         return (
           <div className="flex flex-col ">
-            <p className="text-bold text-tiny text-primary-400 whitespace-nowrap capitalize">
-              {order?.customer}
-            </p>
+            {filteredResult.length !== 0 ? (
+              <>
+                <p className="text-bold text-tiny text-primary-400 whitespace-nowrap">
+                  {`${justFirstWord(capitalize(filteredResult[0]?.name))} ` +
+                    `${justFirstWord(capitalize(filteredResult[0]?.lastname))}`}
+                </p>
+                <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
+                  {filteredResult[0]?.identifications
+                    ? filteredResult[0]?.identifications
+                    : "Sin cedula"}
+                </span>
+              </>
+            ) : (
+              <p className=" break-words text-error text-bold text-tiny capitalize">
+                {"Cliente Registrado"}
+              </p>
+            )}
           </div>
         );
 
@@ -118,7 +133,7 @@ export default function TableOrderList({
           <div className="flex flex-col gap-1">
             {cellValue === true && (
               <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
-                {new Date(order.orderDeliveryDate).toLocaleString()}
+                {new Date(order?.orderDeliveryDate).toLocaleString()}
               </span>
             )}
             <Chip
@@ -127,7 +142,7 @@ export default function TableOrderList({
               variant="faded"
               isDisabled={cellValue === true ? true : false}
               color={statusColorMap[cellValue]}
-              onClick={() => verifyOrderDelivery(order._id)}
+              onClick={() => verifyOrderDelivery(order?._id)}
             >
               {cellValue === false ? "Pendiente" : "Entregado"}
             </Chip>
@@ -136,6 +151,7 @@ export default function TableOrderList({
       case "actions":
         return (
           <div className="flex items-center gap-3 ">
+            <ModalOrderListProduct order={order} fetchOrders={fetchOrders} />
             <Tooltip color="danger" content="Eliminar">
               <span className="text-lg text-danger cursor-pointer active:opacity-50">
                 <DeleteRIcon
@@ -144,7 +160,6 @@ export default function TableOrderList({
                 />
               </span>
             </Tooltip>
-            <ModalOrderListProduct order={order} fetchOrders={fetchOrders} />
           </div>
         );
       default:
@@ -242,7 +257,7 @@ export default function TableOrderList({
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 max-h-[450px]",
+        wrapper: "-z-1 sm:h-[calc(100vh-315px)] sm:overflow-auto ",
         th: "text-warning uppercase",
       }}
       topContent={topContent}

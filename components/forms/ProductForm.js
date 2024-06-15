@@ -38,8 +38,8 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
   const [offerPrice, setOfferPrice] = useState(product?.offerPrice || "");
   const [profit, setProfit] = useState(product?.profit || 0);
   const [brand, setBrand] = useState(product?.brand || "");
-  const [category, setCategory] = useState(product?.category || "");
   const [quantity, setQuantity] = useState(product?.quantity || 0);
+  const [category, setCategory] = useState(product?.category || "");
 
   const [location, setLocation] = useState(product?.location || "");
   const [compatibility, setCompatibility] = useState(
@@ -502,23 +502,21 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
             <legend className="text-center text-secondary">
               SELECCIONAR CATEGORIA
             </legend>
+
             <Autocomplete
-              aria-label="Seleccion de categorias"
-              inputValue={category}
-              onInputChange={(value) => setCategory(value)}
+              aria-label="Seleccion de categoria"
+              label="Selecionar"
+              defaultItems={newCategories.sort((a, b) =>
+                a.name.localeCompare(b.name)
+              )}
+              selectedKey={category}
+              onSelectionChange={setCategory}
             >
-              {newCategories.length > 0 &&
-                newCategories
-                  .sort((a, b) => a.name.localeCompare(b.name))
-                  .map((category) => (
-                    <AutocompleteItem
-                      className="max-w-xs "
-                      key={category._id}
-                      value={category._id}
-                    >
-                      {capitalize(category?.name)}
-                    </AutocompleteItem>
-                  ))}
+              {(item) => (
+                <AutocompleteItem key={item._id} value={item._id}>
+                  {capitalize(item.name)}
+                </AutocompleteItem>
+              )}
             </Autocomplete>
           </fieldset>
         </div>

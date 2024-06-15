@@ -23,6 +23,7 @@ import { capitalize } from "@/utils/utils";
 import removeAccents from "@/utils/removeAccents";
 import ModalRegisterStockProduct from "../modals/ModalRegisterStockProduct";
 import ModalProducts from "../modals/ModalProducts";
+import { useRouter } from "next/router";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "actions",
@@ -37,6 +38,9 @@ const INITIAL_VISIBLE_COLUMNS = [
 ];
 
 export default function TableProduct({ products, deleteProduct, formatPrice }) {
+  const router = useRouter();
+  const path = router.pathname;
+
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = useState(
@@ -378,7 +382,12 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
         <div className="flex flex-col gap-2 sm:flex-row justify-between items-end">
           <Input
             isClearable
-            className="w-full sm:max-w-[45%] order-1"
+            autoFocus={path === "/products" && true}
+            className={[
+              {
+                input: "w-full sm:max-w-[45%] order-1 focus:bg-default-200/50",
+              },
+            ]}
             placeholder="Buscar por nombre, codigo o codigo web"
             startContent={<SearchIcon className="mr-1" />}
             value={filterValue}
@@ -501,7 +510,7 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 h-[385px]  ",
+        wrapper: "-z-1 sm:max-h-[calc(100vh-300px)] sm:overflow-auto ",
         th: "text-warning uppercase",
       }}
       sortDescriptor={sortDescriptor}

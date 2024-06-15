@@ -23,7 +23,7 @@ import removeAccents from "@/utils/removeAccents";
 export default function TableCategory({ deleteCaterory, categories }) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(6);
 
   const [page, setPage] = useState(1);
 
@@ -200,7 +200,7 @@ export default function TableCategory({ deleteCaterory, categories }) {
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 min-h-[280px]  ",
+        wrapper: "-z-1 sm:h-[calc(100vh-250px)] sm:overflow-auto ",
         th: "text-warning uppercase",
       }}
       // selectedKeys={selectedKeys}

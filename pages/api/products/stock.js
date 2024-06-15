@@ -3,9 +3,10 @@ import { Product } from "@/models/Product";
 
 export default async function handler(req, res) {
   const { method } = req;
-  await moogoseConnect();
+
   if (method === "PUT") {
     try {
+      await moogoseConnect();
       const { _id, lastquantity } = req.body;
 
       if (!_id || _id.trim() === "") {

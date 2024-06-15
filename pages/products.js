@@ -35,7 +35,7 @@ export default function Products() {
         {isLoading || !newProduct ? (
           <Spinner />
         ) : (
-          <section className="max-w-5xl mx-auto ">
+          <section className="w-full md:px-4 ">
             <TableProduct
               products={newProduct}
               deleteProduct={deleteProduct}

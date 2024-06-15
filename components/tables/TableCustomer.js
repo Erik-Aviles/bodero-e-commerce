@@ -112,10 +112,10 @@ export default function TableCustomer({ customers, deleteCustomer }) {
         return (
           <div className="flex flex-col">
             <p className="text-bold text-small whitespace-nowrap">
-              {cellValue}
+              {cellValue ? cellValue : "Sin cedula"}
             </p>
             <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
-              {customer?.email}
+              {customer?.email ? customer?.email : "Sin correo "}
             </span>
           </div>
         );
@@ -126,7 +126,7 @@ export default function TableCustomer({ customers, deleteCustomer }) {
               {cellValue}
             </p>
             <span className="text-bold text-tiny text-default-400 capitalize">
-              {customer?.address}
+              {customer?.address ? customer?.address : "Sin dirección"}
             </span>
           </div>
         );
@@ -134,7 +134,7 @@ export default function TableCustomer({ customers, deleteCustomer }) {
         return (
           <div className="flex flex-col ">
             <p className="min-w-[250px] max-w-[280px] break-words text-bold text-small">
-              {cellValue}
+              {cellValue ? cellValue : "Sin observaciones"}
             </p>
           </div>
         );
@@ -233,21 +233,6 @@ export default function TableCustomer({ customers, deleteCustomer }) {
         </div>
         <div>
           <div className="flex justify-between gap-5 items-center">
-            {/*  <div className="flex flex-wrap items-center gap-2 text-default-400 text-small ">
-              <span className="flex items-center gap-1">
-                Principal:
-                <article className="w-4 h-4 bg-purple-700 rounded-full"></article>
-              </span>
-              <span className="flex items-center gap-1">
-                Web:
-                <article className="w-4 h-4 bg-pink-700 rounded-full"></article>
-              </span>
-              <span className="flex items-center gap-1">
-                Empresarial:
-                <article className="w-4 h-4 bg-sky-700 rounded-full"></article>
-              </span>
-            </div> */}
-
             <span className="text-default-400 text-small">
               Total, {customers.length} Clientes.
             </span>
@@ -316,7 +301,7 @@ export default function TableCustomer({ customers, deleteCustomer }) {
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 h-[385px]  ",
+        wrapper: "-z-1 sm:h-[calc(100vh-300px)]",
         th: "text-warning uppercase",
       }}
       sortDescriptor={sortDescriptor}

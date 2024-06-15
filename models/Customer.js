@@ -4,10 +4,10 @@ import mongoose, { Schema, model, models } from "mongoose";
 
 const CustomerSchema = new Schema(
   {
-    name: { type: String, required: true, trim: true },
+    name: { type: String, required: true },
     lastname: {
       type: String,
-      trim: true,
+      required: true,
     },
 
     identifications: { type: String, trim: true, unique: true },
@@ -17,7 +17,6 @@ const CustomerSchema = new Schema(
     },
     address: {
       type: String,
-      trim: true,
     },
     phone: {
       type: String,
@@ -29,7 +28,6 @@ const CustomerSchema = new Schema(
     observations: {
       type: String,
       maxlength: [80, "La observación debe tener como máximo 80 caracteres."],
-      trim: true,
     },
   },
   {

@@ -9,11 +9,13 @@ import Head from "next/head";
 import axios from "axios";
 import useSWR from "swr";
 import TableOrderList from "@/components/tables/TableOrderList";
+import useCustomers from "@/hooks/useCustomers";
 
 export default withSwal((props, ref) => {
   const { swal } = props;
   const { showNotification } = useContext(NotificationContext);
   const [newOrdersList, setNewOrdersList] = useState([]);
+  const { newCustomers, getCustomers } = useCustomers();
 
   const {
     data: orderlist,
@@ -27,6 +29,12 @@ export default withSwal((props, ref) => {
       setNewOrdersList(orderlist);
     }
   }, [orderlist]);
+
+  useEffect(() => {
+    if (newCustomers) {
+      getCustomers();
+    }
+  }, []);
 
   const getOrdersList = async () => {
     try {
@@ -64,8 +72,10 @@ export default withSwal((props, ref) => {
     swal
       .fire({
         title: "Estas seguro?",
-        text: `Eliminar el pedido de "${capitalize(
-          order?.customer
+        text: `Eliminar el pedido: "${capitalize(
+          order?.articulo.length > 30
+            ? order?.articulo.substring(0, 30) + "..."
+            : order?.articulo
         )} "Esta acción no se puede deshacer."`,
         showCancelButton: true,
         cancelButtonText: "Cancelar",
@@ -103,9 +113,11 @@ export default withSwal((props, ref) => {
           <section className="max-w-4xl mx-auto mt-4">
             <TableOrderList
               orders={newOrdersList}
-              verifyOrderDelivery={verifyOrderDelivery}
+              newCustomers={newCustomers}
               fetchOrders={getOrdersList}
+              getCustomers={getCustomers}
               deleteOrder={deleteOrder}
+              verifyOrderDelivery={verifyOrderDelivery}
             />
           </section>
         )}

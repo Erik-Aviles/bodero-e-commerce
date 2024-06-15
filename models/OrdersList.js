@@ -1,10 +1,9 @@
-import moment from "moment-timezone";
 import mongoose, { Schema, model, models } from "mongoose";
 
 const OrdersListSchema = new Schema(
   {
     customer: { type: String, ref: "Customer" },
-    articulo: { type: String, required: true, trim: true },
+    articulo: { type: String, required: true },
     orderEntryDate: {
       type: Date,
     },

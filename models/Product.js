@@ -5,7 +5,6 @@ const ProductShema = new Schema(
     title: {
       type: String,
       required: true,
-      trim: true,
     },
     code: {
       type: String,
@@ -52,7 +51,6 @@ const ProductShema = new Schema(
     brand: {
       type: String,
       required: true,
-      trim: true,
     },
     category: { type: String, ref: "Category" },
     color: [{ type: Object }],
@@ -61,7 +59,7 @@ const ProductShema = new Schema(
     quantityUpdated: { type: Date },
     lastquantity: { type: Number },
     lastquantityUpdated: { type: Date, default: Date.now },
-    location: { type: String, trim: true },
+    location: { type: String },
     compatibility: [{ type: Object }],
     description: { type: String, required: true },
     descriptionAdditional: { type: String },
