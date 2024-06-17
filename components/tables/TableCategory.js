@@ -72,7 +72,7 @@ export default function TableCategory({ deleteCaterory, categories }) {
             <p className="text-bold text-small ">
               {new Date(category?.createdAt).toLocaleString()}
             </p>
-            <span className="text-bold text-tiny text-default-400 break-all capitalize">
+            <span className="text-bold text-tiny text-default-400 break-all">
               {new Date(category?.updatedAt).toLocaleString()}
             </span>
           </div>
@@ -80,7 +80,7 @@ export default function TableCategory({ deleteCaterory, categories }) {
       case "description":
         return (
           <div className="flex flex-col ">
-            <p className="min-w-[250px] max-w-[280px] break-words text-bold text-small">
+            <p className="min-w-[250px] max-w-[280px] break-words text-bold text-small capitalize">
               {cellValue}
             </p>
           </div>
@@ -157,11 +157,6 @@ export default function TableCategory({ deleteCaterory, categories }) {
   const bottomContent = useMemo(() => {
     return (
       <div className="py-2 px-2 flex justify-between items-center">
-        {/*  <span className="w-[30%] text-small text-default-400">
-          {selectedKeys === "all"
-            ? "Todos los elementos seleccionados"
-            : `${selectedKeys.size} de ${categories.length} selección`}
-        </span> */}
         <Pagination
           isCompact
           showControls
@@ -203,8 +198,6 @@ export default function TableCategory({ deleteCaterory, categories }) {
         wrapper: "-z-1 sm:h-[calc(100vh-250px)] sm:overflow-auto ",
         th: "text-warning uppercase",
       }}
-      // selectedKeys={selectedKeys}
-      // selectionMode="multiple"
       topContent={topContent}
       topContentPlacement="outside"
       onSelectionChange={setSelectedKeys}

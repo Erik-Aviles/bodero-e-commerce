@@ -374,6 +374,7 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
 
   const onClear = useCallback(() => {
     setFilterValue("");
+    setPage(1);
   }, []);
 
   const topContent = useMemo(() => {
@@ -510,7 +511,7 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 sm:max-h-[calc(100vh-300px)] sm:overflow-auto ",
+        wrapper: "-z-1 sm:h-[calc(100vh-300px)] sm:overflow-auto ",
         th: "text-warning uppercase",
       }}
       sortDescriptor={sortDescriptor}

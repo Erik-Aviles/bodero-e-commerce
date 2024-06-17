@@ -35,42 +35,6 @@ const CategoryProvider = withSwal(({ children, swal }) => {
       console.error("Error al obtener las categorias:", error);
     }
   };
-
-  const handeDeleteImage = async (index) => {
-    const updateImages = image[index];
-    try {
-      const data = await axios.delete(
-        `/api/uploadcat?url=${encodeURIComponent(updateImages)}`
-      );
-      const updatedImages = image.filter((img, idx) => idx !== index);
-      setImage(updatedImages);
-    } catch (error) {
-      showNotification({
-        open: true,
-        msj: "Hubo un error al eliminar imagen",
-        status: "error",
-      });
-    }
-  };
-
-  const handleUpload = async (e) => {
-    const files = e.target?.files;
-    if (files?.length > 0) {
-      setIsUploading(true);
-      const data = new FormData();
-      for (const file of files) {
-        data.append("file", file);
-      }
-      try {
-        const res = await axios.post("/api/uploadcat", data);
-        setImage((oldImages) => [...oldImages, ...res.data?.links]);
-      } catch (error) {
-        console.error("Error cargando la imagen:", error);
-      }
-      setIsUploading(false);
-    }
-  };
-
   function deleteCaterory(value) {
     swal
       .fire({
@@ -106,8 +70,6 @@ const CategoryProvider = withSwal(({ children, swal }) => {
         isLoading,
         getCategories,
         deleteCaterory,
-        handleUpload,
-        handeDeleteImage,
       }}
     >
       {children}

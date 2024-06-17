@@ -10,7 +10,7 @@ import axios from "axios";
 import { capitalize } from "@/utils/utils";
 
 const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
-  const { getCategories, handleUpload, handeDeleteImage } = useCategories();
+  const { getCategories } = useCategories();
   const { showNotification } = useContext(NotificationContext);
   const authRouter = useAuthFetch();
 
@@ -31,6 +31,9 @@ const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
       formData: data,
     });
     getCategories();
+    setImage("");
+    setDescription("");
+    setName("");
     toggleModal();
   }
 
@@ -51,6 +54,9 @@ const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
           status: "success",
         });
         getCategories();
+        setImage("");
+        setDescription("");
+        setName("");
         toggleModal();
       } catch (error) {
         console.log(error);
@@ -61,6 +67,35 @@ const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
         });
       }
     }
+  }
+
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    const files = e.target?.files;
+    if (files?.length > 0) {
+      setIsUploading(true);
+      const data = new FormData();
+      for (const file of files) {
+        data.append("file", file);
+      }
+      const res = await axios.post("/api/uploadcloudinary", data);
+      setImage((oldImages) => {
+        return [...oldImages, ...res.data?.links];
+      });
+    }
+
+    setIsUploading(false);
+  };
+
+  function handeDeleteImage(index) {
+    const updateImages = [...image];
+    updateImages.splice(index, 1);
+    setImage(updateImages);
+    showNotification({
+      open: true,
+      msj: "Imagen eliminada con exito!",
+      status: "success",
+    });
   }
 
   const onClear = useCallback(() => {
@@ -111,26 +146,17 @@ const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
           </div>
 
           <div className="bg-grayLight border-container flex justify-center items-center gap-3 ">
-            {image.length > 0 &&
-              image?.map((imageUrl, index) => (
+            {!!image?.length &&
+              image.map((link, index) => (
                 <div
-                  key={index}
+                  key={link}
                   className="relative group w-24 h-24 flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md"
                 >
                   <img
-                    src={imageUrl}
+                    src={link}
                     alt={`Imagen de ${name}`}
                     className="rounded-md object-contain h-32 w-44 p-2"
                   />
-
-                  {/*  <Image
-                                src={imageUrl}
-                                alt={`Imagen de ${name}`}
-                                title={`Imagen de ${name}`}
-                                width={80}
-                                height={80}
-                                className="rounded-md object-contain h-32 w-44 p-2"
-                              /> */}
                   <div className="absolute top-2 right-2 cursor-pointer opacity-0  group-hover:opacity-100 ">
                     <button
                       type="button"
@@ -148,13 +174,8 @@ const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
             ) : (
               <label className="w-24 h-24 flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
                 <UpLoadIcon />
-                <span>Cargar imagen</span>
-                <input
-                  type="file"
-                  multiple
-                  onChange={handleUpload}
-                  className="hidden"
-                />
+                <span>Subir imagen</span>
+                <input type="file" onChange={handleUpload} className="hidden" />
               </label>
             )}
           </div>
@@ -179,7 +200,3 @@ const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
 };
 
 export default CategoryForm;
-
-{
-  /* <div className="p-2 bg-gray-100 flex justify-end rounded-lg shadow-lg"></div> */
-}
