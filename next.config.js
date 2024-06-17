@@ -2,7 +2,11 @@
 const nextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
-    domains: ["images.unsplash.com", "bodero-ecommence-admin.s3.amazonaws.com"],
+    domains: [
+      "images.unsplash.com",
+      "bodero-ecommence-admin.s3.amazonaws.com",
+      "res.cloudinary.com",
+    ],
   },
 };
 
