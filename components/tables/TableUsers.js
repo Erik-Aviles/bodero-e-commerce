@@ -14,18 +14,12 @@ import {
   User,
 } from "@nextui-org/react";
 
-import { DeleteRIcon, EdithIcon, PlusIcon, SearchIcon } from "../Icons";
-import { columnsCategory } from "@/resources/columnTables";
-import { capitalize } from "@/utils/utils";
-import ModalCategories from "../modals/ModalCategories";
+import { DeleteRIcon, SearchIcon } from "../Icons";
+import { columnUser } from "@/resources/columnTables";
 import removeAccents from "@/utils/removeAccents";
+import ModalUsers from "../modals/ModalUsers";
 
-export default function TableCategory({
-  deleteCaterory,
-  editCategory,
-  categories,
-  fetchCategories,
-}) {
+export default function TableUser({ users, deleteUser }) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -35,17 +29,17 @@ export default function TableCategory({
   const hasSearchFilter = Boolean(filterValue);
 
   const filteredItems = useMemo(() => {
-    let resultadoFiltrado = [...categories];
+    let resultadoFiltrado = [...users];
 
     if (hasSearchFilter) {
       resultadoFiltrado = resultadoFiltrado.filter((objeto) =>
-        removeAccents(objeto.name.toLowerCase()).includes(
+        removeAccents(objeto.fullname.toLowerCase()).includes(
           removeAccents(filterValue.toLowerCase())
         )
       );
     }
     return resultadoFiltrado;
-  }, [categories, filterValue]);
+  }, [users, filterValue]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -56,30 +50,41 @@ export default function TableCategory({
     return filteredItems.slice(start, end);
   }, [page, filteredItems, rowsPerPage]);
 
-  const renderCell = useCallback((category, columnKey) => {
-    const cellValue = category[columnKey];
+  const renderCell = useCallback((user, columnKey) => {
+    const cellValue = user[columnKey];
 
     switch (columnKey) {
-      case "name":
+      case "fullname":
         return (
           <User
-            className="flex flex-row-reverse justify-between whitespace-nowrap min-w-[100px] "
-            avatarProps={{ radius: "lg", src: category?.image?.[0] }}
-            description={""}
-            name={capitalize(cellValue)}
+            className="flex text-small flex-row-reverse justify-between whitespace-nowrap min-w-[100px]"
+            avatarProps={{
+              radius: "lg",
+              src: user?.avatar[0],
+            }}
+            description={user?.email.toLowerCase()}
+            name={cellValue.toUpperCase()}
           >
-            {capitalize(cellValue)}
+            {cellValue}
           </User>
         );
       case "createdAt":
         return (
           <div className="flex flex-col min-w-[140px]">
             <p className="text-bold text-small ">
-              {new Date(category?.createdAt).toLocaleString()}
+              {new Date(user?.createdAt).toLocaleString()}
             </p>
             <span className="text-bold text-tiny text-default-400 break-all capitalize">
-              {new Date(category?.updatedAt).toLocaleString()}
+              {new Date(user?.updatedAt).toLocaleString()}
             </span>
+          </div>
+        );
+      case "role":
+        return (
+          <div className="flex flex-col min-w-[140px]">
+            <p className="text-bold text-small capitalize">
+              {cellValue === "user" ? "Secretari@" : "Administrador"}
+            </p>
           </div>
         );
       case "actions":
@@ -89,18 +94,11 @@ export default function TableCategory({
               <span className="text-lg text-danger cursor-pointer active:opacity-50">
                 <DeleteRIcon
                   className=" w-[22px] h-[22px]"
-                  onClick={(e) => deleteCaterory(category)}
+                  onClick={(e) => deleteUser(user)}
                 />
               </span>
             </Tooltip>
-            <Tooltip content="Editar">
-              <span className="text-lg text-primary cursor-pointer active:opacity-50">
-                <EdithIcon
-                  className=" w-[22px] h-[22px]"
-                  onClick={() => editCategory(category)}
-                />
-              </span>
-            </Tooltip>
+            <ModalUsers user={user} />
           </div>
         );
       default:
@@ -132,6 +130,7 @@ export default function TableCategory({
 
   const onClear = useCallback(() => {
     setFilterValue("");
+    setPage(1);
   }, []);
 
   const topContent = useMemo(() => {
@@ -140,14 +139,14 @@ export default function TableCategory({
         <div className="flex flex-col sm:flex-row justify-between gap-3 items-end">
           <div className=" flex items-end gap-4">
             <span className="text-default-400 text-small">
-              Total, {categories.length} Categorias.
+              Total, {users.length} Usuarios.
             </span>
-            <ModalCategories fetchCategories={fetchCategories} />
+            <ModalUsers />
           </div>
           <Input
             isClearable
             className="w-full sm:max-w-[45%] order-1"
-            placeholder="Buscar categorias"
+            placeholder="Buscar nombre"
             startContent={<SearchIcon className="mr-1" />}
             value={filterValue}
             onClear={() => onClear()}
@@ -156,16 +155,11 @@ export default function TableCategory({
         </div>
       </div>
     );
-  }, [filterValue, categories.length, onSearchChange, hasSearchFilter]);
+  }, [filterValue, users.length, onSearchChange, hasSearchFilter]);
 
   const bottomContent = useMemo(() => {
     return (
       <div className="py-2 px-2 flex justify-between items-center">
-        {/*  <span className="w-[30%] text-small text-default-400">
-          {selectedKeys === "all"
-            ? "Todos los elementos seleccionados"
-            : `${selectedKeys.size} de ${categories.length} selección`}
-        </span> */}
         <Pagination
           isCompact
           showControls
@@ -199,21 +193,19 @@ export default function TableCategory({
 
   return (
     <Table
-      aria-label="Es una tabla de categrias"
+      aria-label="Es una tabla de usuarios"
       isHeaderSticky
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "min-h-[280px]  ",
+        wrapper: "-z-1 sm:h-[calc(100vh-300px)]",
         th: "text-warning uppercase",
       }}
-      // selectedKeys={selectedKeys}
-      // selectionMode="multiple"
       topContent={topContent}
       topContentPlacement="outside"
       onSelectionChange={setSelectedKeys}
     >
-      <TableHeader columns={columnsCategory}>
+      <TableHeader columns={columnUser}>
         {(column) => (
           <TableColumn
             key={column.uid}

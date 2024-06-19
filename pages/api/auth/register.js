@@ -12,10 +12,10 @@ export default async function handle(req, res) {
     try {
       await moogoseConnect();
       const body = await req.body;
-      const { lastname, name, email, password, confirmPassword } = body;
+      const { fullname, email, password, confirmPassword, role, avatar } = body;
 
       //validar que esten todos los campos
-      if (!name || !lastname || !email || !password || !confirmPassword) {
+      if (!fullname || !email || !password || !confirmPassword) {
         return res.status(400).json({
           message: messages.error.needProps,
         });
@@ -48,8 +48,7 @@ export default async function handle(req, res) {
 
       //crear usuario
       const newUser = new User({
-        name,
-        lastname,
+        fullname,
         email,
         password: hashedPassword,
         avatar,

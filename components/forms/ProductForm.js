@@ -3,7 +3,7 @@ import { profitabilityToChoose, taxToChoose } from "@/resources/valuesToChoose";
 import NotificationContext from "@/context/NotificationContext";
 import { ReactSortable } from "react-sortablejs";
 import { DeleteIcon, UpLoadIcon } from "../Icons";
-import Spinner from "../Spinner";
+import Spinner from "../snnipers/Spinner";
 import axios from "axios";
 import { Autocomplete, AutocompleteItem, Input } from "@nextui-org/react";
 import { capitalize } from "@/utils/utils";

@@ -56,11 +56,18 @@ const columnsCustomer = [
   { name: "Compras", uid: "myShopping_list" },
   { name: "Observaciones", uid: "observations" },
 ];
+const columnUser = [
+  { name: "Acción", uid: "actions" },
+  { name: "Nombres", uid: "fullname", sortable: true },
+  { name: "Fechas", uid: "createdAt" },
+  { name: "Rol", uid: "role" },
+];
 
 export {
   columnsProduct,
   columnsCategory,
   columnsOrder,
-  columnsCustomer,
   columnsOrdersList,
+  columnsCustomer,
+  columnUser,
 };

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import NotificationContext from "@/context/NotificationContext";
 import TableOrder from "@/components/tables/TableOrder";
 import { withSwal } from "react-sweetalert2";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/snnipers/Spinner";
 import { capitalize } from "@/utils/utils";
 import { fetcher } from "@/utils/fetcher";
 import Layout from "@/components/Layout";

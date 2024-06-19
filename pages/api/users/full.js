@@ -26,7 +26,7 @@ export default async function handle(req, res) {
   if (method === "PUT") {
     try {
       await moogoseConnect();
-      const { name, lastname, password, email, avatar, role, _id } = req.body;
+      const { fullname, password, email, avatar, role, _id } = req.body;
 
       if (!_id || _id.trim() === "") {
         return res.status(400).json({ message: messages.error.idNotValid });
@@ -35,8 +35,7 @@ export default async function handle(req, res) {
       const updateData = await User.updateOne(
         { _id },
         {
-          name,
-          lastname,
+          fullname,
           password,
           email,
           avatar,

@@ -20,7 +20,7 @@ import { capitalize } from "@/utils/utils";
 import ModalCategories from "../modals/ModalCategories";
 import removeAccents from "@/utils/removeAccents";
 
-export default function TableCategory({ deleteCaterory, categories }) {
+export default function TableCategory({ categories, deleteCaterory }) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
   const [rowsPerPage, setRowsPerPage] = useState(6);

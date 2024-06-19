@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useSession } from "next-auth/react";
 import CartDashboard from "@/components/CartDashboard";
 import Layout from "@/components/Layout";
-import Loading from "@/components/Loading";
+import Loading from "@/components/snnipers/Loading";
 import { fetcher } from "@/utils/fetcher";
 import useSWR from "swr";
 import { dashList } from "@/resources/dashList";

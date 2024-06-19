@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Layout from "@/components/Layout";
 import Head from "next/head";
 import TableProduct from "@/components/tables/TableProduct";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/snnipers/Spinner";
 import useProducts from "@/hooks/useProducts";
 
 export default function Products() {

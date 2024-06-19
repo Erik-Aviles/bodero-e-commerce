@@ -23,7 +23,7 @@ const Loading = () => {
             fill="none"
             points="20,1 40,40 1,40"
           ></polygon>
-          <text fill="#fff" x="5" y="47">
+          <text fill="#fff" x="5" y="50">
             Cargando
           </text>
         </svg>

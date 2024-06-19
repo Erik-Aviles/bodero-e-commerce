@@ -3,21 +3,13 @@ import bcrypt from "bcryptjs";
 
 const UserSchema = new Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
-    lastname: {
+    fullname: {
       type: String,
       required: true,
     },
     email: { type: String, trim: true, required: true, unique: true },
     password: { type: String, trim: true, required: true },
-    avatar: {
-      type: String,
-      default:
-        "https://res.cloudinary.com/devatchannel/image/upload/v1602752402/avatar/avatar_cugq40.png",
-    },
+    avatar: [{ type: String }],
     role: {
       type: String,
       default: "user",

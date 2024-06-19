@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/snnipers/Spinner";
 import Layout from "@/components/Layout";
 import Head from "next/head";
 import TableCustomer from "@/components/tables/TableCustomer";

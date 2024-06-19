@@ -5,6 +5,7 @@ import { NotificationProvider } from "@/context/NotificationContext";
 import { CustomerProvider } from "@/context/CustomerContext";
 import { ProductProvider } from "@/context/ProductContext";
 import { CategoryProvider } from "@/context/CategoryContext";
+import { UserProvider } from "@/context/UserContext";
 
 export default function App({
   Component,
@@ -14,13 +15,15 @@ export default function App({
     <NextUIProvider>
       <NotificationProvider>
         <SessionProvider session={session}>
-          <ProductProvider>
-            <CategoryProvider>
-              <CustomerProvider>
-                <Component {...pageProps} />
-              </CustomerProvider>
-            </CategoryProvider>
-          </ProductProvider>
+          <UserProvider>
+            <ProductProvider>
+              <CategoryProvider>
+                <CustomerProvider>
+                  <Component {...pageProps} />
+                </CustomerProvider>
+              </CategoryProvider>
+            </ProductProvider>
+          </UserProvider>
         </SessionProvider>
       </NotificationProvider>
     </NextUIProvider>

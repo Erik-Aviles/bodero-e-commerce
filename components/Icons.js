@@ -581,16 +581,15 @@ export const DeleteIcon = ({ className, ...rest }) => (
     />
   </svg>
 );
-export const UpLoadIcon = ({ className, ...rest }) => (
+export const UpLoadIcon = ({ size = 32 }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     stroke="currentColor"
     strokeWidth={1.5}
     viewBox="0 0 24 24"
-    width="1em"
-    className={`w-8 h-8 ${className}`}
-    {...rest}
+    width={size}
+    height={size}
   >
     <path
       strokeLinecap="round"

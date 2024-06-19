@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import TableCategory from "@/components/tables/TableCategory";
 import useCategories from "@/hooks/useCategories";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/snnipers/Spinner";
 import Layout from "@/components/Layout";
 import Head from "next/head";
 

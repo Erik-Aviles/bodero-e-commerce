@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import NotificationContext from "@/context/NotificationContext";
 import { withSwal } from "react-sweetalert2";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/snnipers/Spinner";
 import { capitalize } from "@/utils/utils";
 import { fetcher } from "@/utils/fetcher";
 import Layout from "@/components/Layout";

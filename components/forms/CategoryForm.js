@@ -1,13 +1,14 @@
 import React, { useCallback, useContext, useState } from "react";
 import NotificationContext from "@/context/NotificationContext";
 import { DeleteIcon, UpLoadIcon } from "../Icons";
-import Spinner from "../Spinner";
+import Spinner from "../snnipers/Spinner";
 import { Input } from "@nextui-org/react";
 import ButtonClose from "../buttons/ButtonClose";
 import useAuthFetch from "@/hooks/useAuthFetch";
 import useCategories from "@/hooks/useCategories";
 import axios from "axios";
 import { capitalize } from "@/utils/utils";
+import { Loader } from "../snnipers/Loader";
 
 const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
   const { getCategories } = useCategories();
@@ -59,7 +60,6 @@ const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
         setName("");
         toggleModal();
       } catch (error) {
-        console.log(error);
         showNotification({
           open: true,
           msj: error.response.data.message,
@@ -169,7 +169,7 @@ const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
               ))}
             {isUploading ? (
               <div className="w-24 h-24 flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
-                <Spinner />
+                <Loader />
               </div>
             ) : (
               <label className="w-24 h-24 flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
