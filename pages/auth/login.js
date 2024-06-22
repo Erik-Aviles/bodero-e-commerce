@@ -59,7 +59,7 @@ export default function Login() {
                 />
               </figure>
               <h1 className="m-0 text-xl font-bold text-gray-900 sm:text-3xl md:text-4xl capitalize">
-                "Bodero Racing Development"
+                {"Bodero Racing Development"}
               </h1>
 
               <div className="w-full flex flex-col items-center justify-center gap-4 ">
