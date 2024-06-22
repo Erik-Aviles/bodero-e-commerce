@@ -1,4 +1,4 @@
-import { getServerSession } from "next-auth/next";
+/* import { getServerSession } from "next-auth/next";
 import { authOptions } from "./auth/[...nextauth]";
 
 export default async function (req, res) {
@@ -13,3 +13,4 @@ export default async function (req, res) {
     });
   }
 }
+ */

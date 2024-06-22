@@ -8,11 +8,7 @@ export default async function handle(req, res) {
 
   if (method === "GET") {
     try {
-      const headersList = await req.headers;
-      const token = headersList["token"];
-
-      // const headersList = headers();
-      // const token = headersList.get("token");
+      const token = req.cookies.get("myTokenName");
 
       //validar que haya token
       if (!token) {
@@ -22,7 +18,8 @@ export default async function handle(req, res) {
       }
 
       try {
-        const isTokenValid = jwt.verify(token, process.env.SECRET);
+        const tokenValue = token?.value;
+        const isTokenValid = jwt.verify(tokenValue, process.env.SECRET);
 
         const { data } = isTokenValid;
 

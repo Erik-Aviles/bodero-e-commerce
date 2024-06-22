@@ -1,11 +1,11 @@
 import Head from "next/head";
-import { useSession } from "next-auth/react";
 import CartDashboard from "@/components/CartDashboard";
 import Layout from "@/components/Layout";
 import Loading from "@/components/snnipers/Loading";
 import { fetcher } from "@/utils/fetcher";
 import useSWR from "swr";
 import { dashList } from "@/resources/dashList";
+import useSession from "@/hooks/useSession";
 
 export default function Home() {
   const { data: sizeProducts, isLoading: isLoadProducts } = useSWR(
@@ -32,9 +32,9 @@ export default function Home() {
     "/api/orderslist/size",
     fetcher
   );
-  const { data: session, status } = useSession();
+  const { session, isLoading } = useSession();
 
-  if (status === "loading") {
+  if (isLoading && !session) {
     return <Loading />;
   }
 

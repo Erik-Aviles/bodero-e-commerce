@@ -1,6 +1,7 @@
 import { moogoseConnect } from "@/lib/mongoose";
 import { User } from "@/models/User";
 import messages from "@/utils/messages";
+import bcrypt from "bcryptjs";
 // import { isAdminRequest } from "@/pages/api/auth/[...nextauth]";
 
 export default async function handle(req, res) {
@@ -26,7 +27,7 @@ export default async function handle(req, res) {
   if (method === "PUT") {
     try {
       await moogoseConnect();
-      const { fullname, password, email, avatar, role, _id } = req.body;
+      const { fullname, email, avatar, role, _id } = req.body;
 
       if (!_id || _id.trim() === "") {
         return res.status(400).json({ message: messages.error.idNotValid });
@@ -36,7 +37,6 @@ export default async function handle(req, res) {
         { _id },
         {
           fullname,
-          password,
           email,
           avatar,
           role,

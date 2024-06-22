@@ -1,5 +1,5 @@
 import NotificationContext from "../context/NotificationContext";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { useContext } from "react";
 import axios from "axios";
 
@@ -9,7 +9,11 @@ export default function useAuthFetch() {
 
   const authRouter = async ({ endpoint, formData, redirectRoute, options }) => {
     try {
-      const { data } = await axios.post(`/api/${endpoint}`, formData, options);
+      const { data } = await axios.post(
+        `/api/auth/${endpoint}`,
+        formData,
+        options
+      );
 
       showNotification({ open: true, msj: data.message, status: "success" });
 

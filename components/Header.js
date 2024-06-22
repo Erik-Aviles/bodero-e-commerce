@@ -1,14 +1,15 @@
 import React from "react";
-import { useSession } from "next-auth/react";
 import { justFirstWord } from "@/utils/justFirstWord";
+import avatarLocal from "../public/images/avatar/avatarUser.png";
 import { HamburguerIcon } from "./Icons";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "@/public/logo.jpg";
+import useSession from "@/hooks/useSession";
 
 const Header = ({ setShowNav }) => {
-  const { data: session } = useSession();
-
+  const { session } = useSession();
+  const user = session?.session?.data;
   return (
     <>
       <header className="sticky top-0 z-30 md:relative bg-white w-full p-2 ">
@@ -26,25 +27,25 @@ const Header = ({ setShowNav }) => {
         <div className="flex items-center pt-2 sm:justify-between sm:gap-4">
           <h1 className="text-xl font-bold text-primary sm:text-2xl">
             Bienvenid@
-            {session?.user?.name
-              ? ", " + justFirstWord(session?.user?.name)
+            {user?.fullname
+              ? ", " + justFirstWord(user?.fullname.toUpperCase())
               : ""}
             !
           </h1>
           <div className=" flex flex-1 items-center gap-8 justify-end">
             <article className="group flex shrink-0 items-center rounded-lg transition">
-              <img
+              <Image
                 width={30}
                 height={30}
-                alt={session?.user?.name}
-                src={session?.user?.image}
+                alt={user?.fullname}
+                src={user?.avatar[0] ? user?.avatar[0] : avatarLocal}
                 className="h-10 w-10 rounded-full object-cover "
               />
               <p className="ms-2 hidden text-left text-xs sm:block">
-                <strong className="block font-medium">
-                  {session?.user?.name}
+                <strong className="block font-medium capitalize">
+                  {user?.fullname}
                 </strong>
-                <span className="text-grayDark">{session?.user?.email}</span>
+                <span className="text-grayDark">{user?.email}</span>
               </p>
             </article>
           </div>

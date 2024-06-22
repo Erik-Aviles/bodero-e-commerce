@@ -1,8 +1,9 @@
 import { moogoseConnect } from "@/lib/mongoose";
 import messages from "@/utils/messages";
+import { serialize } from "cookie";
 import { User } from "@/models/User";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export default async function handle(req, res) {
   const { method } = req;
@@ -24,7 +25,7 @@ export default async function handle(req, res) {
 
       // validar si existe el email en la base de datos
       if (!userFind) {
-        return res.status(400).json({
+        return res.status(401).json({
           message: messages.error.userNotFound,
         });
       }
@@ -33,38 +34,41 @@ export default async function handle(req, res) {
 
       // validar que la consetraña sea la correcta
       if (!isCorrect) {
-        return res.status(400).json({
+        return res.status(401).json({
           message: messages.error.incorrectPassword,
         });
       }
 
-      const { password: userPass, ...rest } = userFind._doc;
+      if (userFind.role === "admin") {
+        const { password: userPass, ...rest } = userFind._doc;
+        //Genera un token de usuario(inicio de sesión)
+        const token = jwt.sign(
+          {
+            data: rest,
+          },
+          process.env.SECRET,
+          {
+            expiresIn: 86400,
+          }
+        );
+        const serialized = serialize("myTokenName", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+          maxAge: 86400,
+          path: "/",
+        });
 
-      //Genera un token de usuario(inicio de sesión)
-      const token = jwt.sign(
-        {
-          data: rest,
-        },
-        process.env.SECRET,
-        {
-          expiresIn: 86400,
-        }
-      );
-
-      const response = res.status(200).json({
-        userLogged: rest,
-        message: messages.success.userLogged,
-      });
-
-      response.cookies.set("auth_cookie", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge: 86400,
-        path: "/",
-      });
-
-      return response;
+        res.setHeader("Set-Cookie", serialized);
+        return res.status(200).json({
+          userLogged: rest,
+          message: messages.success.userLogged,
+        });
+      } else {
+        return res.status(401).json({
+          message: messages.error.notAuthorized,
+        });
+      }
     } catch (error) {
       return res.status(500).json({ message: messages.error.default, error });
     }

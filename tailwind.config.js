@@ -16,7 +16,8 @@ module.exports = {
         start: "start 0.5s forwards",
       },
       colors: {
-        primary: "#354b72",
+        primary: "#13006C",
+        primary2: "#444CF7",
         primaryLight: "#97a8bc",
         secundary: "#d3662e",
         secundaryLight: "#bba691",

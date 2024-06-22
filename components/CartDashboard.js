@@ -10,7 +10,7 @@ const CartDashboard = ({ href, title, src, alt, itemCount, isLoading }) => {
         <Image
           width={80}
           height={80}
-          className="object-contain"
+          className="object-contain w-auto"
           src={src}
           alt={alt}
         />

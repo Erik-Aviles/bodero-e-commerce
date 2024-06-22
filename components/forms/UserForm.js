@@ -10,6 +10,7 @@ import { DeleteIcon, EditIcon, UpLoadIcon } from "../Icons";
 import { Loader } from "../snnipers/Loader";
 import Image from "next/image";
 import { ClipLoader } from "react-spinners";
+import Link from "next/link";
 
 const UserForm = ({ user, titulo, textSmall, toggleModal }) => {
   const { getUsers } = useUsers();
@@ -31,8 +32,6 @@ const UserForm = ({ user, titulo, textSmall, toggleModal }) => {
     let data = {
       fullname: fullname.toLowerCase(),
       email,
-      password,
-      confirmPassword,
       role,
       avatar,
     };
@@ -243,39 +242,43 @@ const UserForm = ({ user, titulo, textSmall, toggleModal }) => {
                 />
               </div>
 
-              <div className="xs:flex xs:gap-2">
-                <div className="w-full">
-                  <label className="my-1 block">
-                    Contraseña
-                    {!user && " (*)"}
-                  </label>
-                  <Input
-                    type="text"
-                    value={password}
-                    isRequired={!user && true}
-                    placeholder={
-                      !user ? "Escribir contraseña" : "Nueva contraseña"
-                    }
-                    labelPlacement="outside"
-                    onChange={(e) => setPassword(e.target.value.toLowerCase())}
-                  />
+              {!user && (
+                <div className="xs:flex xs:gap-2">
+                  <div className="w-full">
+                    <label className="my-1 block">
+                      Contraseña
+                      {!user && " (*)"}
+                    </label>
+                    <Input
+                      type="text"
+                      value={password}
+                      isRequired={!user && true}
+                      placeholder={
+                        !user ? "Escribir contraseña" : "Nueva contraseña"
+                      }
+                      labelPlacement="outside"
+                      onChange={(e) =>
+                        setPassword(e.target.value.toLowerCase())
+                      }
+                    />
+                  </div>
+                  <div className="w-full">
+                    <label className="my-1 block">
+                      Repetir contraseña {!user && " (*)"}
+                    </label>
+                    <Input
+                      type="text"
+                      value={confirmPassword}
+                      isRequired={!user && true}
+                      placeholder="Repetir contraseña"
+                      labelPlacement="outside"
+                      onChange={(e) =>
+                        setConfirmPassword(e.target.value.toLowerCase())
+                      }
+                    />
+                  </div>
                 </div>
-                <div className="w-full">
-                  <label className="my-1 block">
-                    Repetir contraseña {!user && " (*)"}
-                  </label>
-                  <Input
-                    type="text"
-                    value={confirmPassword}
-                    isRequired={!user && true}
-                    placeholder="Repetir contraseña"
-                    labelPlacement="outside"
-                    onChange={(e) =>
-                      setConfirmPassword(e.target.value.toLowerCase())
-                    }
-                  />
-                </div>
-              </div>
+              )}
             </fieldset>
           </div>
           <div className="flex gap-1 mb-1">
@@ -287,9 +290,9 @@ const UserForm = ({ user, titulo, textSmall, toggleModal }) => {
             </button>
             <button
               type="submit"
-              disabled={isSavedUser}
+              disabled={isSavedUser || isUploading}
               className={
-                isSavedUser
+                isSavedUser || isUploading
                   ? "cursor-not-allowed flex justify-center items-center btn-primary hover:bg-primary/60 py-1 xs:w-40 basis-1/2"
                   : "btn-primary flex justify-center items-center hover:bg-primary/60 py-1 xs:w-40 basis-1/2"
               }
