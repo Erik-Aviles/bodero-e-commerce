@@ -1,13 +1,13 @@
-import NotificationContext from "@/context/NotificationContext";
 import React, { useContext, useEffect, useState } from "react";
-import axios from "axios";
-import ButtonClose from "../buttons/ButtonClose";
 import { Autocomplete, AutocompleteItem, Input } from "@nextui-org/react";
-import { justFirstWord } from "@/utils/justFirstWord";
-import { capitalize } from "@/utils/utils";
-import moment from "moment";
+import NotificationContext from "@/context/NotificationContext";
 import ModalCustomers from "../modals/ModalCustomers";
 import useCustomers from "@/hooks/useCustomers";
+import { justFirstWord } from "@/utils/justFirstWord";
+import ButtonClose from "../buttons/ButtonClose";
+import { capitalize } from "@/utils/utils";
+import moment from "moment";
+import axios from "axios";
 
 const OrderListForm = ({
   order,
@@ -33,10 +33,10 @@ const OrderListForm = ({
     order?.orderDeliveryDate || ""
   );
 
-  //crear pedido
-  async function SaveOrder(e) {
+  //registrar pedido
+  async function saveOrder(e) {
     e.preventDefault();
-    let data = {
+    let rest = {
       customer,
       articulo,
       date,
@@ -45,12 +45,11 @@ const OrderListForm = ({
         : moment(orderEntryDate, moment.HTML5_FMT.DATE).locale("en").format(),
       orderDeliveryDate,
     };
-
     try {
-      const res = await axios.post("/api/orderslist/full", data);
+      const { data } = await axios.post("/api/orderslist/full", rest);
       showNotification({
         open: true,
-        msj: res.data.message,
+        msj: data.message,
         status: "success",
       });
       fetchOrders();
@@ -59,6 +58,7 @@ const OrderListForm = ({
       setDate("");
       setOrderEntryDate("");
       setOrderDeliveryDate("");
+      toggleModal();
     } catch (error) {
       showNotification({
         open: true,
@@ -69,9 +69,9 @@ const OrderListForm = ({
   }
 
   //editar pedido
-  async function EditCustomer(e) {
+  async function editCustomer(e) {
     e.preventDefault();
-    let data = {
+    let rest = {
       customer,
       articulo,
       date,
@@ -81,23 +81,29 @@ const OrderListForm = ({
       orderDeliveryDate,
     };
     const _id = order._id;
-    if (_id) {
-      try {
-        const res = await axios.put("/api/orderslist/full", { ...data, _id });
-        showNotification({
-          open: true,
-          msj: res.data.message,
-          status: "success",
-        });
-        fetchOrders();
-        toggleModal();
-      } catch (error) {
-        showNotification({
-          open: true,
-          msj: error.response.data.message,
-          status: "error",
-        });
-      }
+    try {
+      const { data } = await axios.put("/api/orderslist/full", {
+        ...rest,
+        _id,
+      });
+      showNotification({
+        open: true,
+        msj: `Pedido: ${capitalize(rest.articulo)}, ${data.message}`,
+        status: "success",
+      });
+      fetchOrders();
+      setCustomer("");
+      setArticulo("");
+      setDate("");
+      setOrderEntryDate("");
+      setOrderDeliveryDate("");
+      toggleModal();
+    } catch (error) {
+      showNotification({
+        open: true,
+        msj: error.response.data.message,
+        status: "error",
+      });
     }
   }
 
@@ -125,7 +131,7 @@ const OrderListForm = ({
       </header>
       {/* Cuerpo de la informacion del pedido */}
       <form
-        onSubmit={!order ? SaveOrder : EditCustomer}
+        onSubmit={!order ? saveOrder : editCustomer}
         className="flex flex-col gap-2"
       >
         <fieldset className="bg-grayLight flex flex-col border-container ">

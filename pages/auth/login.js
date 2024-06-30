@@ -1,33 +1,65 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { SubmitButton } from "@/components/formsAuth/SubmitButton";
+import NotificationContext from "@/context/NotificationContext";
+import { Form } from "@/components/formsAuth/FormContext";
+import { Input } from "@/components/formsAuth/Input";
+import { signIn, useSession } from "next-auth/react";
+import useLoading from "@/hooks/useLoading";
+import { useRouter } from "next/router";
+import logo from "@/public/logo.jpg";
 import Image from "next/image";
 import Head from "next/head";
-import logo from "@/public/logo.jpg";
-import { Form } from "@/components/formsAuth/FormContext";
-import useAuthFetch from "@/hooks/useAuthFetch";
-import useLoading from "@/hooks/useLoading";
-import { Input } from "@/components/formsAuth/Input";
-import { SubmitButton } from "@/components/formsAuth/SubmitButton";
+import axios from "axios";
 
-export default function Login() {
+export default function LoginPage() {
   const { isLoading, startLoading, finishtLoading } = useLoading();
-  const authFetch = useAuthFetch();
+  const { showNotification } = useContext(NotificationContext);
+
+  const { status } = useSession();
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = async (e) => {
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/");
+    }
+  }, []);
+
+  const sendMessage = async () => {
+    startLoading();
+    const data = {
+      email: email.toLowerCase(),
+    };
+    await axios.post(`/api/send`, data);
+    finishtLoading();
+  };
+
+  const login = async (e) => {
     e.preventDefault();
-    let data = {
+    const data = {
       email: email.toLowerCase(),
       password,
     };
-    startLoading();
-    await authFetch({
-      endpoint: "login",
-      formData: data,
-      redirectRoute: "/",
+    signIn("credentials", { ...data, redirect: false }).then((callback) => {
+      if (callback?.error) {
+        showNotification({
+          open: true,
+          msj: callback?.error,
+          status: "error",
+        });
+      }
+      if (callback?.ok && !callback?.error) {
+        showNotification({
+          open: true,
+          msj: "Bienvenido al sistema!",
+          status: "success",
+        });
+        sendMessage();
+        router.push("/");
+      }
     });
-
-    finishtLoading();
   };
 
   return (
@@ -64,7 +96,7 @@ export default function Login() {
 
               <div className="w-full flex flex-col items-center justify-center gap-4 ">
                 <Form
-                  onSubmit={handleSubmit}
+                  onSubmit={login}
                   title="Iniciar sesión"
                   description="Solo usuarios registrados y autorizados."
                 >
@@ -84,7 +116,7 @@ export default function Login() {
                     placeholder="Escribir contraseña"
                     onChange={(e) => setPassword(e.target.value)}
                   />
-                  <SubmitButton buttonText="Verificar" isLoading={isLoading} />
+                  <SubmitButton buttonText="Iniciar" isLoading={isLoading} />
                 </Form>
               </div>
             </div>

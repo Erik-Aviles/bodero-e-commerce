@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import Nav from "@/components/Nav";
+import { useSession } from "next-auth/react";
+import Loading from "./snnipers/Loading";
 import Header from "@/components/Header";
-import useSession from "@/hooks/useSession";
-import Login from "@/pages/auth/login";
+import Nav from "@/components/Nav";
 
 export default function Layout({ children }) {
-  const { session } = useSession();
-
   const [showNav, setShowNav] = useState(false);
+  const { status } = useSession();
 
-  if (session?.message === "Autorizado!") {
+  if (status === "authenticated") {
     return (
       <div className="bg-grayLight min-h-screen">
         <div className="grid grid-cols-7 md:flex divide-y divide-gray-300 ">
@@ -22,6 +21,6 @@ export default function Layout({ children }) {
       </div>
     );
   } else {
-    return <Login />;
+    return <Loading />;
   }
 }

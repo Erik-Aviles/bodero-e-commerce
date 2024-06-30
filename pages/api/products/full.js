@@ -5,18 +5,21 @@ import messages from "@/utils/messages";
 
 export default async function handle(req, res) {
   const { method } = req;
-  await moogoseConnect();
 
+  //Obtener productos
   if (method === "GET") {
     if (req.query?.id) {
-      res.json(await Product.findOne({ _id: req.query.id }));
+      await moogoseConnect();
+      return res.json(await Product.findOne({ _id: req.query.id }));
     } else {
       try {
         await moogoseConnect();
         const products = await Product.find({}, null, { sort: { _id: -1 } });
         return res.status(200).json(products);
-      } catch (err) {
-        return res.status(500).json({ err: err.message });
+      } catch (error) {
+        return res
+          .status(500)
+          .json({ message: messages.error.default, error: error.message });
       }
     }
   }
@@ -24,6 +27,7 @@ export default async function handle(req, res) {
   //Registrar
   if (method === "POST") {
     try {
+      await moogoseConnect();
       const {
         title,
         code,
@@ -82,16 +86,17 @@ export default async function handle(req, res) {
       return res
         .status(200)
         .json({ newProduct, message: messages.success.addedProduct });
-    } catch (err) {
+    } catch (error) {
       return res
         .status(500)
-        .json({ message: messages.error.default, err: err.message });
+        .json({ message: messages.error.default, error: error.message });
     }
   }
 
   //Editar
   if (method === "PUT") {
     try {
+      await moogoseConnect();
       const {
         title,
         code,
@@ -122,6 +127,10 @@ export default async function handle(req, res) {
         return res.status(400).json({ message: messages.error.idNotValid });
       }
 
+      //validar que esten todos los campos
+      if (!title || !code || !price || !profitability || !brand || !description)
+        return res.status(400).json({ message: messages.error.needProps });
+
       const updateData = {
         title,
         code,
@@ -150,19 +159,28 @@ export default async function handle(req, res) {
       // Encuentra y actualiza el producto
       await Product.updateOne({ _id }, updateData);
 
-      return res.status(200).json(true);
-    } catch (err) {
+      return res.status(200).json({
+        message: messages.success.updateSuccessfully,
+      });
+    } catch (error) {
       return res.status(500).json({
         message: messages.error.errorUpdatedProduct,
-        err: err.message,
+        error: error.message,
       });
     }
   }
 
   //Eliminar
   if (method === "DELETE") {
-    const { _id } = req.query;
-    await Product.deleteOne({ _id });
-    return res.status(200).json(true);
+    try {
+      await moogoseConnect();
+      const { _id } = req.query;
+      await Product.deleteOne({ _id });
+      return res.status(200).json(true);
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: messages.error.default, error: error.message });
+    }
   }
 }

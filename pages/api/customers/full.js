@@ -16,8 +16,10 @@ export default async function handle(req, res) {
         await moogoseConnect();
         const customers = await Customer.find({}, null, { sort: { _id: -1 } });
         return res.status(200).json(customers);
-      } catch (err) {
-        return res.status(500).json({ err: err.message });
+      } catch (error) {
+        return res
+          .status(500)
+          .json({ message: messages.error.default, error: error.message });
       }
     }
   }
@@ -72,6 +74,7 @@ export default async function handle(req, res) {
         myShopping_list,
         observations,
       });
+
       return res
         .status(200)
         .json({ newCustomer, message: messages.success.addedCustomer });
@@ -104,29 +107,27 @@ export default async function handle(req, res) {
         return res.status(400).json({ message: messages.error.idNotValid });
       }
 
-      const updateData = await Customer.updateOne(
-        { _id },
-        {
-          name,
-          lastname,
-          identifications,
-          address,
-          phone,
-          email,
-          myVehicles_list,
-          myProductOrder_list,
-          myShopping_list,
-          observations,
-        }
-      );
+      const updateData = {
+        name,
+        lastname,
+        identifications,
+        address,
+        phone,
+        email,
+        myVehicles_list,
+        myProductOrder_list,
+        myShopping_list,
+        observations,
+      };
+
+      // Encuentra y actualiza al cliente
+      await Customer.updateOne({ _id }, updateData);
       return res.status(200).json({
-        updateData,
-        message: messages.success.clientEditedSuccessfully,
+        message: messages.success.updateSuccessfully,
       });
-    } catch (err) {
+    } catch (error) {
       return res.status(500).json({
         message: messages.error.errorUpdatedCustomer,
-        err: err.message,
       });
     }
   }
@@ -138,8 +139,10 @@ export default async function handle(req, res) {
       const { _id } = req.query;
       await Customer.deleteOne({ _id });
       return res.status(200).json("ok");
-    } catch (err) {
-      return res.status(500).json({ err: err.message });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: messages.error.default, error: error.message });
     }
   }
 }

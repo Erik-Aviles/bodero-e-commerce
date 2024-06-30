@@ -6,43 +6,59 @@ import messages from "@/utils/messages";
 export default async function handle(req, res) {
   const { method } = req;
 
+  //Obtener categorias
   if (method === "GET") {
-    try {
+    if (req.query?.id) {
       await moogoseConnect();
-      const categories = await Category.find({}, null, { sort: { _id: -1 } });
-      return res.status(200).json(categories);
-    } catch (err) {
-      return res.status(500).json({ err: err.message });
+      return res.json(await Category.findOne({ _id: req.query.id }));
+    } else {
+      try {
+        await moogoseConnect();
+        const categories = await Category.find({}, null, { sort: { _id: -1 } });
+        return res.status(200).json(categories);
+      } catch (error) {
+        return res
+          .status(500)
+          .json({ message: messages.error.default, error: error.message });
+      }
     }
   }
 
-  //Enviar-Guardar
+  //Registrar
   if (method === "POST") {
     try {
       await moogoseConnect();
       const { name, description, image } = req.body;
-      //validar que esten todos los campos
 
+      //validar que esten todos los campos
       if (!name) {
         return res.status(400).json({
           message: messages.error.needProps,
         });
       }
+
       const categoryFind = await Category.findOne({ name });
+
       // validar si existe el email en la base de datos
       if (categoryFind) {
         return res.status(400).json({
           message: messages.error.categoryAlreadyExist,
         });
       }
-      const categoryDoc = await Category.create({
-        name,
+
+      const newCategory = await Category.create({
+        name: name.toLowerCase(),
         description,
         image,
       });
-      res.json({ categoryDoc, message: messages.success.addedCategory });
+
+      return res
+        .status(200)
+        .json({ newCategory, message: messages.success.addedCategory });
     } catch (err) {
-      return res.status(500).json({ err: err.message });
+      return res
+        .status(500)
+        .json({ message: messages.error.default, err: err.message });
     }
   }
 
@@ -64,7 +80,9 @@ export default async function handle(req, res) {
 
       // Encuentra y actualiza la categoria
       await Category.updateOne({ _id }, updateData);
-      return res.status(200).json(true);
+      return res.status(200).json({
+        message: messages.success.updateSuccessfully,
+      });
     } catch (err) {
       return res.status(500).json({
         message: messages.error.errorUpdatedCategory,
@@ -79,9 +97,11 @@ export default async function handle(req, res) {
       await moogoseConnect();
       const { _id } = req.query;
       await Category.deleteOne({ _id });
-      res.json("ok");
-    } catch (err) {
-      return res.status(500).json({ err: err.message });
+      return res.status(200).json("ok");
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: messages.error.default, error: error.message });
     }
   }
 }

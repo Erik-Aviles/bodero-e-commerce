@@ -5,20 +5,11 @@ import logo from "@/public/logo.jpg";
 import Image from "next/image";
 import { routeList } from "@/resources/routeList";
 import NavLink from "./NavLink";
-import useAuthFetch from "@/hooks/useAuthFetch";
+import { signOut } from "next-auth/react";
 
 const Nav = ({ show, setShowNav }) => {
-  const authFetch = useAuthFetch();
   const inactiveLink =
     "flex gap-2 px-2 py-3 md:py-2 text-base hover:bg-[#97a8bc]/10 ";
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await authFetch({
-      endpoint: "logout",
-      redirectRoute: "/auth/login",
-    });
-  };
 
   return (
     <>
@@ -49,7 +40,10 @@ const Nav = ({ show, setShowNav }) => {
           {routeList.map(({ id, route, path, icon }) => (
             <NavLink key={id} path={path} icon={icon} route={route} />
           ))}
-          <button className={inactiveLink} onClick={handleSubmit}>
+          <button
+            className={inactiveLink}
+            onClick={() => signOut({ callbackUrl: "/" })}
+          >
             <LogoutIcon />
             Salir
           </button>

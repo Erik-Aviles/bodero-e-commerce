@@ -1,4 +1,3 @@
-import { PasswordRecoveryTemplate } from "@/components/PasswordRecoveryTemplate";
 import { moogoseConnect } from "@/lib/mongoose";
 import messages from "@/utils/messages";
 import { User } from "@/models/User";
@@ -44,7 +43,7 @@ export default async function handle(req, res) {
         from: process.env.SECRET_EMAIL,
         to: email,
         subject: "Cambio de contraseña",
-        react: PasswordRecoveryTemplate({ buttonUrl: forgetUrl }),
+        react: EmailTemplate({ buttonUrl: forgetUrl }),
       });
 
       return res.status(200).json({

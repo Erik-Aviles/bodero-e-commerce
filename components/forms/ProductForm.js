@@ -1,33 +1,33 @@
-import React, { useContext, useEffect, useState } from "react";
 import { profitabilityToChoose, taxToChoose } from "@/resources/valuesToChoose";
-import NotificationContext from "@/context/NotificationContext";
-import { ReactSortable } from "react-sortablejs";
-import { DeleteIcon, UpLoadIcon } from "../Icons";
-import Spinner from "../snnipers/Spinner";
-import axios from "axios";
 import { Autocomplete, AutocompleteItem, Input } from "@nextui-org/react";
-import { capitalize } from "@/utils/utils";
+import React, { useContext, useEffect, useState } from "react";
+import NotificationContext from "@/context/NotificationContext";
 import ModalCategories from "../modals/ModalCategories";
 import ButtonClose from "../buttons/ButtonClose";
-import useProducts from "@/hooks/useProducts";
 import useCategories from "@/hooks/useCategories";
+import { DeleteIcon, UpLoadIcon } from "../Icons";
+import { ReactSortable } from "react-sortablejs";
+import useProducts from "@/hooks/useProducts";
+import useLoading from "@/hooks/useLoading";
+import { capitalize } from "@/utils/utils";
+import axios from "axios";
 
 const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
+  const { isLoading, startLoading, finishtLoading } = useLoading();
   const { getProducts } = useProducts();
   const { newCategories } = useCategories();
   const { showNotification } = useContext(NotificationContext);
 
-  const [codeVerify, setCodeVerify] = useState("");
-  const [codeWebVerify, setCodeWebVerify] = useState("");
-  const [codeEnterpriseVerify, setCodeEnterpriseVerify] = useState("");
+  const initialCodes = { code: [], codeWeb: [], codeEnterprise: [] };
+  const [codes, setCodes] = useState(initialCodes);
 
-  const [title, setTitle] = useState(product?.title || "");
   const [code, setCode] = useState(product?.code || "");
   const [codeEnterprise, setCodeEnterprise] = useState(
     product?.codeEnterprise || ""
   );
   const [codeWeb, setCodeWeb] = useState(product?.codeWeb || "");
 
+  const [title, setTitle] = useState(product?.title || "");
   const [price, setPrice] = useState(product?.price || "");
   const [tax, setTax] = useState(product?.tax || 0);
   const [profitability, setProfitability] = useState(
@@ -55,22 +55,35 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
   const [size, setSize] = useState(product?.size || []);
 
   const [isUpLoanding, setIsUpLoanding] = useState(false);
+
   const [verify, setVerify] = useState(false);
   const [verifyWeb, setWebVerify] = useState(false);
   const [verifyEnterprise, setEnterpriseVerify] = useState(false);
 
   useEffect(() => {
-    axios.get("/api/products/full").then((res) => {
-      const data = res.data;
-      const code = data.map((item) => item.code);
-      const codeWeb = data.map((item) => item.codeWeb);
-      const codeEnterprise = data.map((item) => item.codeEnterprise);
-
-      setCodeVerify(code);
-      setCodeWebVerify(codeWeb);
-      setCodeEnterpriseVerify(codeEnterprise);
-    });
+    fetchDataCodes();
   }, []);
+
+  const fetchDataCodes = async () => {
+    try {
+      const response = await axios.get("/api/products/full");
+      const data = response.data;
+
+      const updatedCodes = data.reduce(
+        (acc, item) => {
+          acc.code.push(item.code.toLowerCase());
+          acc.codeWeb.push(item.codeWeb.toLowerCase());
+          acc.codeEnterprise.push(item.codeEnterprise.toLowerCase());
+          return acc;
+        },
+        { code: [], codeWeb: [], codeEnterprise: [] }
+      );
+
+      setCodes(updatedCodes);
+    } catch (error) {
+      console.error("Error obteniendo los codigos: ", error);
+    }
+  };
 
   useEffect(() => {
     if (!price) {
@@ -88,49 +101,10 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
     calcularProfit(salePrice, netPrice);
   }, [salePrice]);
 
-  const handleChangeCode = (e) => {
-    const { value } = e.target;
-    setCode(value);
-    const exists = codeVerify.some(
-      (item) => item.toLowerCase() === value.toLowerCase() && item !== ""
-    );
-    if (exists) {
-      setVerify(true);
-    } else {
-      setVerify(false);
-    }
-  };
-
-  const handleChangeCodeWeb = (e) => {
-    const { value } = e.target;
-    setCodeWeb(value);
-    const exists = codeWebVerify.some(
-      (item) => item.toLowerCase() === value.toLowerCase() && item !== ""
-    );
-    if (exists) {
-      setWebVerify(true);
-    } else {
-      setWebVerify(false);
-    }
-  };
-
-  const handleChangeCodeEnterprise = (e) => {
-    const { value } = e.target;
-    setCodeEnterprise(value);
-    const exists = codeEnterpriseVerify.some(
-      (item) => item.toLowerCase() === value.toLowerCase() && item !== ""
-    );
-    if (exists) {
-      setEnterpriseVerify(true);
-    } else {
-      setEnterpriseVerify(false);
-    }
-  };
-
-  //guardar producto
+  //registrar producto
   async function saveProduct(e) {
     e.preventDefault();
-    let data = {
+    let rest = {
       title: title.toLowerCase(),
       code,
       codeEnterprise,
@@ -155,13 +129,15 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
       images,
     };
     try {
-      const res = await axios.post("/api/products/full", data);
-      getProducts();
+      const { data } = await axios.post(`/api/products/full`, rest);
       showNotification({
         open: true,
-        msj: res.data.message,
+        msj: data?.message,
         status: "success",
       });
+      getProducts();
+      resetCodesVerified();
+      fetchDataCodes();
       setTitle("");
       setCode("");
       setCodeEnterprise("");
@@ -195,7 +171,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
   //editar producto
   async function edithProduct(e) {
     e.preventDefault();
-    let data = {
+    let rest = {
       title: title.toLowerCase(),
       code,
       codeEnterprise,
@@ -220,10 +196,13 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
     const _id = product?._id;
     if (_id) {
       try {
-        await axios.put("/api/products/full", { ...data, _id });
+        const { data } = await axios.put("/api/products/full", {
+          ...rest,
+          _id,
+        });
         showNotification({
           open: true,
-          msj: `"${capitalize(data.title)}", editado con exito!`,
+          msj: `Producto: ${capitalize(rest.title)}, ${data?.message}`,
           status: "success",
         });
         getProducts();
@@ -231,11 +210,47 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
       } catch (error) {
         showNotification({
           open: true,
-          msj: error.response.data.message,
+          msj: error.response?.data?.message,
           status: "error",
         });
       }
     }
+  }
+
+  //subir imagen
+  async function upLoadImages(e) {
+    startLoading();
+    const files = e.target?.files;
+    if (files?.length > 0) {
+      setIsUpLoanding(true);
+      const data = new FormData();
+      for (const file of files) {
+        data.append("file", file);
+      }
+      const res = await axios.post("/api/upload", data);
+      setImages((oldImages) => {
+        return [...oldImages, ...res.data?.links];
+      });
+    }
+    setIsUpLoanding(false);
+    finishtLoading();
+  }
+
+  //cambiar orden imagen
+  function updateImagesOrder(images) {
+    setImages(images);
+  }
+
+  //eliminar imagen
+  function handeDeleteImage(index) {
+    const updateImages = [...images];
+    updateImages.splice(index, 1);
+    setImages(updateImages);
+    showNotification({
+      open: true,
+      msj: "Imagen eliminada con exito!",
+      status: "success",
+    });
   }
 
   function addCompatibility() {
@@ -243,6 +258,28 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
       return [...prev, { title: "", model: "" }];
     });
   }
+
+  const handleChangeCode = (e) => {
+    const value = e.target.value.toLowerCase();
+    setCode(value);
+    setVerify(codes.code.includes(value));
+  };
+
+  const handleChangeCodeWeb = (e) => {
+    const value = e.target.value.toLowerCase();
+    setCodeWeb(value);
+    setWebVerify(codes.codeWeb.includes(value));
+  };
+
+  const handleChangeCodeEnterprise = (e) => {
+    const value = e.target.value.toLowerCase();
+    setCodeEnterprise(value);
+    setEnterpriseVerify(codes.codeEnterprise.includes(value));
+  };
+
+  const resetCodesVerified = () => {
+    setCodes(initialCodes);
+  };
 
   function handleCompatibilityTitleChange(index, compatibility, newTitle) {
     setCompatibility((prev) => {
@@ -273,37 +310,6 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
 
   function handleSizeChange(event) {
     setSize(event.target.value);
-  }
-
-  async function upLoadImages(e) {
-    const files = e.target?.files;
-    if (files?.length > 0) {
-      setIsUpLoanding(true);
-      const data = new FormData();
-      for (const file of files) {
-        data.append("file", file);
-      }
-      const res = await axios.post("/api/upload", data);
-      setImages((oldImages) => {
-        return [...oldImages, ...res.data?.links];
-      });
-    }
-    setIsUpLoanding(false);
-  }
-
-  function updateImagesOrder(images) {
-    setImages(images);
-  }
-
-  function handeDeleteImage(index) {
-    const updateImages = [...images];
-    updateImages.splice(index, 1);
-    setImages(updateImages);
-    showNotification({
-      open: true,
-      msj: "Imagen eliminada con exito!",
-      status: "success",
-    });
   }
 
   const handlePrecioChange = (event) => {
@@ -833,12 +839,12 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
             </ReactSortable>
             {isUpLoanding ? (
               <div className="w-24 h-24 text-center flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
-                <Spinner />
+                <Loader />
               </div>
             ) : (
               <label className="w-24 h-24 text-center flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
                 <UpLoadIcon />
-                <span>Cargar imagen</span>
+                <span>Subir imagen</span>
                 <input onChange={upLoadImages} type="file" className="hidden" />
               </label>
             )}
@@ -854,8 +860,9 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
             <button
               type="submit"
               className="btn-primary hover:bg-primary/60 py-1 xs:w-40 basis-1/2"
+              disabled={isLoading}
             >
-              Guardar
+              {isLoading ? "Esperar..." : "Guardar"}
             </button>
           </div>
         </div>

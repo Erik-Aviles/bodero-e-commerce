@@ -1,46 +1,57 @@
 import React, { useCallback, useContext, useState } from "react";
 import NotificationContext from "@/context/NotificationContext";
 import { DeleteIcon, UpLoadIcon } from "../Icons";
-import Spinner from "../snnipers/Spinner";
-import { Input } from "@nextui-org/react";
-import ButtonClose from "../buttons/ButtonClose";
-import useAuthFetch from "@/hooks/useAuthFetch";
 import useCategories from "@/hooks/useCategories";
-import axios from "axios";
-import { capitalize } from "@/utils/utils";
+import ButtonClose from "../buttons/ButtonClose";
+import useLoading from "@/hooks/useLoading";
 import { Loader } from "../snnipers/Loader";
+import { capitalize } from "@/utils/utils";
+import { Input } from "@nextui-org/react";
+import axios from "axios";
 
 const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
+  const { isLoading, startLoading, finishtLoading } = useLoading();
   const { getCategories } = useCategories();
   const { showNotification } = useContext(NotificationContext);
-  const authRouter = useAuthFetch();
 
   const [name, setName] = useState(category?.name || "");
   const [description, setDescription] = useState(category?.description || "");
   const [image, setImage] = useState(category?.image || []);
   const [isUploading, setIsUploading] = useState(false);
 
+  //registrar categoria
   async function saveCategory(e) {
     e.preventDefault();
-    const data = {
+    const rest = {
       name: name.toLowerCase(),
       description,
       image,
     };
-    await authRouter({
-      endpoint: "categories/full",
-      formData: data,
-    });
-    getCategories();
-    setImage("");
-    setDescription("");
-    setName("");
-    toggleModal();
+    try {
+      const { data } = await axios.post("/api/categories/full", rest);
+      showNotification({
+        open: true,
+        msj: data?.message,
+        status: "success",
+      });
+      getCategories();
+      setName("");
+      setImage("");
+      setDescription("");
+      toggleModal();
+    } catch (error) {
+      showNotification({
+        open: true,
+        msj: error.response.data.message,
+        status: "error",
+      });
+    }
   }
 
+  //editar categoria
   async function edithCategory(e) {
     e.preventDefault();
-    let data = {
+    let rest = {
       name: name.toLowerCase(),
       description,
       image,
@@ -48,10 +59,13 @@ const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
     const _id = category._id;
     if (_id) {
       try {
-        await axios.put("/api/categories/full", { ...data, _id });
+        const { data } = await axios.put("/api/categories/full", {
+          ...rest,
+          _id,
+        });
         showNotification({
           open: true,
-          msj: `Categoria: ${capitalize(data.name)}, modificada con exito!`,
+          msj: `Categoria: ${capitalize(rest.name)}, ${data?.message}`,
           status: "success",
         });
         getCategories();
@@ -69,8 +83,10 @@ const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
     }
   }
 
+  //subir imagen
   const handleUpload = async (e) => {
     e.preventDefault();
+    startLoading();
     const files = e.target?.files;
     if (files?.length > 0) {
       setIsUploading(true);
@@ -85,8 +101,10 @@ const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
     }
 
     setIsUploading(false);
+    finishtLoading();
   };
 
+  //eliminar imagen
   function handeDeleteImage(index) {
     const updateImages = [...image];
     updateImages.splice(index, 1);
@@ -190,8 +208,9 @@ const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
           <button
             type="submit"
             className="btn-primary hover:bg-primary/60 py-1 xs:w-40 basis-1/2"
+            disabled={isLoading}
           >
-            Guardar
+            {isLoading ? "Esperar..." : "Guardar"}
           </button>
         </div>
       </form>

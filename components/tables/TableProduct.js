@@ -114,11 +114,14 @@ export default function TableProduct({ products, deleteProduct, formatPrice }) {
         return (
           <User
             className="flex flex-row-reverse justify-between min-w-[230px] max-w-[315px]"
-            avatarProps={{ radius: "lg", src: product.images?.[0] }}
+            avatarProps={{
+              radius: "lg",
+              src: product?.images.at(0),
+            }}
             description={capitalize(product?.brand)}
             name={capitalize(cellValue)}
           >
-            {product?.title}
+            {cellValue}
           </User>
         );
       case "id":

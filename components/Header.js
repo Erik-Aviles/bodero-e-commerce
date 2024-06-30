@@ -5,11 +5,12 @@ import { HamburguerIcon } from "./Icons";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "@/public/logo.jpg";
-import useSession from "@/hooks/useSession";
+import { useSession } from "next-auth/react";
 
 const Header = ({ setShowNav }) => {
-  const { session } = useSession();
-  const user = session?.session?.data;
+  const { data: session } = useSession();
+  const user = session?.user;
+
   return (
     <>
       <header className="sticky top-0 z-30 md:relative bg-white w-full p-2 ">
@@ -28,7 +29,7 @@ const Header = ({ setShowNav }) => {
           <h1 className="text-xl font-bold text-primary sm:text-2xl">
             Bienvenid@
             {user?.fullname
-              ? ", " + justFirstWord(user?.fullname.toUpperCase())
+              ? ", " + justFirstWord(user?.fullname?.toUpperCase())
               : ""}
             !
           </h1>

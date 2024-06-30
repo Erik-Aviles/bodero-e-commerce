@@ -36,3 +36,4 @@ categoriesDos.js
 next-env.d.ts
 
 .vercel
+.yarn

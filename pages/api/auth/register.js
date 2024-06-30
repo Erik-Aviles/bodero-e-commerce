@@ -64,11 +64,13 @@ export default async function handle(req, res) {
         newUser: rest,
         message: messages.success.userCreated,
       });
-    } catch (error) {
-      return res.status(500).json({ message: messages.error.default, error });
+    } catch (err) {
+      return res
+        .status(500)
+        .json({ message: messages.error.default, err: err.message });
     }
+  } else {
+    res.setHeader("Allow", ["POST"]);
+    res.status(405).end(`Método ${method}, no permitido`);
   }
-
-  res.setHeader("Allow", ["POST"]);
-  res.status(405).end(`Método ${method}, no permitido`);
 }

@@ -19,8 +19,8 @@ input, ::placeholder {
   @apply text-[10px] leading-4
 }
 
-textarea, select{
-  @apply relative w-full inline-flex tap-highlight-transparent flex-row items-center shadow-sm pr-2 pl-3 gap-3 bg-default-100 hover:bg-default-200 focus:bg-default-100 h-unit-10 min-h-unit-10 rounded-medium transition-background motion-reduce:transition-none !duration-150 outline-none focus:ring-2 focus:ring-focus focus:ring-offset-1 ;
+textarea, select {
+  @apply relative w-full inline-flex tap-highlight-transparent flex-row items-center shadow-sm pr-2 pl-3 gap-3 bg-default-100 hover:bg-default-200 focus:bg-default-100 h-10 min-h-10 rounded-medium transition-background motion-reduce:transition-none !duration-150 outline-none focus:ring-2 focus:ring-focus focus:ring-offset-1 ;
 }
 /* textarea, select{
   @apply border border-grayDark/75 rounded-sm py-1 px-2 w-full text-[14px] sm:text-[16px];

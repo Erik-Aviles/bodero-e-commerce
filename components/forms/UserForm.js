@@ -1,20 +1,22 @@
 import { Autocomplete, AutocompleteItem, Input } from "@nextui-org/react";
-import ButtonClose from "../buttons/ButtonClose";
-import { useContext, useState } from "react";
-import NotificationContext from "@/context/NotificationContext";
-import axios from "axios";
-import useUsers from "@/hooks/useUsers";
 import avatarLocal from "@/public/images/avatar/avatarUser.png";
-import { roleList } from "@/resources/roleList";
+import NotificationContext from "@/context/NotificationContext";
 import { DeleteIcon, EditIcon, UpLoadIcon } from "../Icons";
+import ButtonClose from "../buttons/ButtonClose";
+import { roleList } from "@/resources/roleList";
 import { Loader } from "../snnipers/Loader";
-import Image from "next/image";
+import { useContext, useState } from "react";
+import { capitalize } from "@/utils/utils";
+import useLoading from "@/hooks/useLoading";
 import { ClipLoader } from "react-spinners";
-import Link from "next/link";
+import useUsers from "@/hooks/useUsers";
+import Image from "next/image";
+import axios from "axios";
 
 const UserForm = ({ user, titulo, textSmall, toggleModal }) => {
-  const { getUsers } = useUsers();
+  const { isLoading, startLoading, finishtLoading } = useLoading();
 
+  const { getUsers } = useUsers();
   const { showNotification } = useContext(NotificationContext);
 
   const [fullname, setFullname] = useState(user?.fullname || "");
@@ -24,44 +26,11 @@ const UserForm = ({ user, titulo, textSmall, toggleModal }) => {
   const [avatar, setAvatar] = useState(user?.avatar || []);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isUploading, setIsUploading] = useState(false);
-  const [isSavedUser, setIsSavedUser] = useState(false);
-
-  //editar usuario
-  async function EditUser(e) {
-    e.preventDefault();
-    let data = {
-      fullname: fullname.toLowerCase(),
-      email,
-      role,
-      avatar,
-    };
-    const _id = user._id;
-    if (_id) {
-      try {
-        const _id = user._id;
-        setIsSavedUser(true);
-        const res = await axios.put("/api/users/full", { ...data, _id });
-        showNotification({
-          open: true,
-          msj: res.data.message,
-          status: "success",
-        });
-        getUsers();
-        toggleModal();
-      } catch (error) {
-        showNotification({
-          open: true,
-          msj: error.response.data.message,
-          status: "error",
-        });
-      }
-    }
-  }
 
   //registrar usuario
-  async function SaveUser(e) {
+  async function saveUser(e) {
     e.preventDefault();
-    let data = {
+    let rest = {
       fullname: fullname.toLowerCase(),
       email,
       password,
@@ -70,11 +39,10 @@ const UserForm = ({ user, titulo, textSmall, toggleModal }) => {
       avatar,
     };
     try {
-      setIsSavedUser(true);
-      const res = await axios.post("/api/auth/register", data);
+      const { data } = await axios.post("/api/auth/register", rest);
       showNotification({
         open: true,
-        msj: res.data.message,
+        msj: `Usuario: ${capitalize(rest.fullname)}, ${data.message}`,
         status: "success",
       });
       getUsers();
@@ -92,12 +60,44 @@ const UserForm = ({ user, titulo, textSmall, toggleModal }) => {
         status: "error",
       });
     }
-    setIsSavedUser(false);
   }
 
-  //guardar foto de perfil
+  //editar usuario
+  async function editUser(e) {
+    e.preventDefault();
+    let rest = {
+      fullname: fullname.toLowerCase(),
+      email,
+      role,
+      avatar,
+    };
+    const _id = user._id;
+    try {
+      const { data } = await axios.put("/api/users/full", { ...rest, _id });
+      showNotification({
+        open: true,
+        msj: `Usuario: ${capitalize(rest.fullname)}, ${data.message}`,
+        status: "success",
+      });
+      getUsers();
+      setFullname("");
+      setEmail("");
+      setRole("");
+      setAvatar([]);
+      toggleModal();
+    } catch (error) {
+      showNotification({
+        open: true,
+        msj: error.response.data.message,
+        status: "error",
+      });
+    }
+  }
+
+  //subir imagen
   const handleUpload = async (e) => {
     e.preventDefault();
+    startLoading();
     const files = e.target?.files;
     if (files?.length > 0) {
       setIsUploading(true);
@@ -110,11 +110,11 @@ const UserForm = ({ user, titulo, textSmall, toggleModal }) => {
         return [...oldImages, ...res.data?.links];
       });
     }
-
     setIsUploading(false);
+    finishtLoading();
   };
 
-  //eliminar foto de perfil
+  //eliminar imagen
   function handeDeleteImage(index) {
     const updateAvatar = [...avatar];
     updateAvatar.splice(index, 1);
@@ -135,7 +135,7 @@ const UserForm = ({ user, titulo, textSmall, toggleModal }) => {
       <p className="text-primary text-xs pb-3">{textSmall}</p>
       <form
         className="flex flex-col gap-2 "
-        onSubmit={!user ? SaveUser : EditUser}
+        onSubmit={!user ? saveUser : editUser}
       >
         <div className="flex flex-col gap-2 w-full overflow-auto ">
           <div className="flex flex-col md:flex-row gap-2">
@@ -181,9 +181,9 @@ const UserForm = ({ user, titulo, textSmall, toggleModal }) => {
                         />
                       )}
                     </div>
-                    {avatar.length === 0 && (
+                    {avatar.at(0) || isUploading ? null : (
                       <label className="m-0 absolute bottom-2 right-2 bg-white  border border-secundary flex gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-md py-1 px-2">
-                        {!avatar ? <UpLoadIcon size={12} /> : <EditIcon />}
+                        <UpLoadIcon size={12} />
                         <span>Subir</span>
                         <input
                           type="file"
@@ -290,14 +290,14 @@ const UserForm = ({ user, titulo, textSmall, toggleModal }) => {
             </button>
             <button
               type="submit"
-              disabled={isSavedUser || isUploading}
+              disabled={isLoading}
               className={
-                isSavedUser || isUploading
+                isLoading
                   ? "cursor-not-allowed flex justify-center items-center btn-primary hover:bg-primary/60 py-1 xs:w-40 basis-1/2"
                   : "btn-primary flex justify-center items-center hover:bg-primary/60 py-1 xs:w-40 basis-1/2"
               }
             >
-              {isSavedUser ? <ClipLoader color="white" size={18} /> : "Guardar"}
+              {isLoading ? "Esperar..." : "Guardar"}
             </button>
           </div>
         </div>

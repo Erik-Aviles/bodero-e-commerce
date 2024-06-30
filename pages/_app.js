@@ -1,20 +1,17 @@
 import "@/styles/globals.css";
-import { NextUIProvider } from "@nextui-org/react";
 import { NotificationProvider } from "@/context/NotificationContext";
 import { CustomerProvider } from "@/context/CustomerContext";
-import { ProductProvider } from "@/context/ProductContext";
 import { CategoryProvider } from "@/context/CategoryContext";
+import { ProductProvider } from "@/context/ProductContext";
 import { UserProvider } from "@/context/UserContext";
-import { SessionProvider } from "@/context/SessionContext";
+import { NextUIProvider } from "@nextui-org/react";
+import Provider from "@/context/Provider";
 
-export default function App({
-  Component,
-  pageProps: { session, ...pageProps },
-}) {
+export default function App({ Component, pageProps: { ...pageProps } }) {
   return (
     <NextUIProvider>
       <NotificationProvider>
-        <SessionProvider session={session}>
+        <Provider>
           <UserProvider>
             <ProductProvider>
               <CategoryProvider>
@@ -24,7 +21,7 @@ export default function App({
               </CategoryProvider>
             </ProductProvider>
           </UserProvider>
-        </SessionProvider>
+        </Provider>
       </NotificationProvider>
     </NextUIProvider>
   );

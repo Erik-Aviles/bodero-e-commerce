@@ -1,13 +1,14 @@
+import NotificationContext from "@/context/NotificationContext";
 import { Input } from "@nextui-org/react";
 import ButtonClose from "../buttons/ButtonClose";
 import { useContext, useState } from "react";
-import NotificationContext from "@/context/NotificationContext";
-import axios from "axios";
 import useCustomers from "@/hooks/useCustomers";
+import { justFirstWord } from "@/utils/justFirstWord";
+import { capitalize } from "@/utils/utils";
+import axios from "axios";
 
 const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
   const { getCustomers } = useCustomers();
-
   const { showNotification } = useContext(NotificationContext);
 
   const [name, setName] = useState(customer?.name || "");
@@ -22,45 +23,10 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
     customer?.observations || ""
   );
 
-  //editar cliente
-  async function EditCustomer(e) {
-    e.preventDefault();
-    let data = {
-      name: name.toLowerCase(),
-      lastname: lastname.toLowerCase(),
-      identifications,
-      address,
-      phone,
-      email,
-      observations,
-    };
-    const _id = customer._id;
-    if (_id) {
-      try {
-        const _id = customer._id;
-        const res = await axios.put("/api/customers/full", { ...data, _id });
-        showNotification({
-          open: true,
-          msj: res.data.message,
-          status: "success",
-        });
-        getCustomers();
-        toggleModal();
-      } catch (error) {
-        showNotification({
-          open: true,
-          msj: error.response.data.message,
-          status: "error",
-        });
-      }
-    }
-  }
-
   //registrar cliente
-
   async function saveCustomer(e) {
     e.preventDefault();
-    let data = {
+    let rest = {
       name: name.toLowerCase(),
       lastname: lastname.toLowerCase(),
       identifications,
@@ -70,14 +36,57 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
       observations,
     };
     try {
-      const res = await axios.post("/api/customers/full", data);
-      getCustomers();
+      const { data } = await axios.post("/api/customers/full", rest);
       showNotification({
         open: true,
-        msj: res.data.message,
+        msj: data?.message,
+        status: "success",
+      });
+      getCustomers();
+      setName("");
+      setLastname("");
+      setIdentifications("");
+      setAddress("");
+      setPhone("");
+      setEmail("");
+      setObservations("");
+      toggleModal();
+    } catch (error) {
+      showNotification({
+        open: true,
+        msj: error.response.data.message,
+        status: "error",
+      });
+    }
+  }
+
+  //editar cliente
+  async function editCustomer(e) {
+    e.preventDefault();
+    let rest = {
+      name: name.toLowerCase(),
+      lastname: lastname.toLowerCase(),
+      identifications,
+      address,
+      phone,
+      email,
+      observations,
+    };
+    try {
+      const _id = customer._id;
+      const { data } = await axios.put("/api/customers/full", {
+        ...rest,
+        _id,
+      });
+      showNotification({
+        open: true,
+        msj: `Cliente: ${justFirstWord(capitalize(rest.name))}, ${
+          data.message
+        }`,
         status: "success",
       });
       toggleModal();
+      getCustomers();
       setName("");
       setLastname("");
       setIdentifications("");
@@ -103,7 +112,7 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
       <p className="text-primary text-xs pb-3">{textSmall}</p>
       <form
         className="flex flex-col gap-2 "
-        onSubmit={!customer ? saveCustomer : EditCustomer}
+        onSubmit={!customer ? saveCustomer : editCustomer}
       >
         <div className="flex flex-col gap-2 w-full overflow-auto ">
           <div className="flex flex-col md:flex-row gap-2">

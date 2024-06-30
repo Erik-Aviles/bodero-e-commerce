@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+/* import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
 export default async function middleware(req) {
@@ -15,7 +15,8 @@ export default async function middleware(req) {
     console.error(error);
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
-}
+} */
+export { default } from "next-auth/middleware";
 
 export const config = {
   matcher: [

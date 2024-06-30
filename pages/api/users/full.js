@@ -18,12 +18,14 @@ export default async function handle(req, res) {
         const users = await User.find({}, null, { sort: { _id: -1 } });
         return res.status(200).json(users);
       } catch (error) {
-        return res.status(500).json({ message: messages.error.default, error });
+        return res
+          .status(500)
+          .json({ message: messages.error.default, error: error.message });
       }
     }
   }
 
-  //Editar usuario
+  //Editar
   if (method === "PUT") {
     try {
       await moogoseConnect();
@@ -33,18 +35,16 @@ export default async function handle(req, res) {
         return res.status(400).json({ message: messages.error.idNotValid });
       }
 
-      const updateData = await User.updateOne(
-        { _id },
-        {
-          fullname,
-          email,
-          avatar,
-          role,
-        }
-      );
+      const updateData = {
+        fullname,
+        email,
+        avatar,
+        role,
+      };
+
+      await User.updateOne({ _id }, updateData);
       return res.status(200).json({
-        updateData,
-        message: messages.success.userModifiedSuccessfully,
+        message: messages.success.updateSuccessfully,
       });
     } catch (err) {
       return res.status(500).json({
@@ -54,7 +54,7 @@ export default async function handle(req, res) {
     }
   }
 
-  //Eliminar usuarios
+  //Eliminar
   if (method === "DELETE") {
     try {
       await moogoseConnect();
@@ -62,7 +62,9 @@ export default async function handle(req, res) {
       await User.deleteOne({ _id });
       return res.status(200).json("ok");
     } catch (error) {
-      return res.status(500).json({ message: messages.error.default, error });
+      return res
+        .status(500)
+        .json({ message: messages.error.default, error: error.message });
     }
   }
 }

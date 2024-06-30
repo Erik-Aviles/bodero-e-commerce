@@ -5,11 +5,12 @@ import messages from "@/utils/messages";
 
 export default async function handle(req, res) {
   const { method } = req;
-  await moogoseConnect();
 
+  //Obtener Lista de pedidos
   if (method === "GET") {
     if (req.query?.id) {
-      res.json(await OrdersList.findOne({ _id: req.query.id }));
+      await moogoseConnect();
+      return res.json(await OrdersList.findOne({ _id: req.query.id }));
     } else {
       try {
         await moogoseConnect();
@@ -17,14 +18,17 @@ export default async function handle(req, res) {
           sort: { _id: -1 },
         });
         return res.status(200).json(orderlist);
-      } catch (err) {
-        return res.status(500).json({ err: err.message });
+      } catch (error) {
+        return res
+          .status(500)
+          .json({ message: messages.error.default, error: error.message });
       }
     }
   }
 
   //Registrar
   if (method === "POST") {
+    await moogoseConnect();
     try {
       const {
         customer,
@@ -60,6 +64,7 @@ export default async function handle(req, res) {
 
   //Editar
   if (method === "PUT") {
+    await moogoseConnect();
     try {
       const {
         customer,
@@ -74,20 +79,20 @@ export default async function handle(req, res) {
       if (!_id || _id.trim() === "") {
         return res.status(400).json({ message: messages.error.idNotValid });
       }
-      const updateData = await OrdersList.updateOne(
-        { _id },
-        {
-          customer,
-          articulo,
-          date,
-          orderEntryDate,
-          orderDeliveryDate,
-          delivered,
-        }
-      );
+
+      const updateData = {
+        customer,
+        articulo,
+        date,
+        orderEntryDate,
+        orderDeliveryDate,
+        delivered,
+      };
+
+      // Encuentra y actualiza el pedido
+      await OrdersList.updateOne({ _id }, updateData);
       return res.status(200).json({
-        updateData,
-        message: messages.success.orderListEditedSuccessfully,
+        message: messages.success.updateSuccessfully,
       });
     } catch (err) {
       return res.status(500).json({
@@ -104,8 +109,10 @@ export default async function handle(req, res) {
       const { _id } = req.query;
       await OrdersList.deleteOne({ _id });
       return res.status(200).json("ok");
-    } catch (err) {
-      return res.status(500).json({ err: err.message });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: messages.error.default, error: error.message });
     }
   }
 }
