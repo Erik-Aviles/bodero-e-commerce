@@ -11,6 +11,7 @@ import useProducts from "@/hooks/useProducts";
 import useLoading from "@/hooks/useLoading";
 import { capitalize } from "@/utils/utils";
 import axios from "axios";
+import { Loader } from "../snnipers/Loader";
 
 const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
   const { isLoading, startLoading, finishtLoading } = useLoading();
