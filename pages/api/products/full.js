@@ -5,15 +5,14 @@ import messages from "@/utils/messages";
 
 export default async function handle(req, res) {
   const { method } = req;
+  await moogoseConnect();
 
   //Obtener productos
   if (method === "GET") {
     if (req.query?.id) {
-      await moogoseConnect();
       return res.json(await Product.findOne({ _id: req.query.id }));
     } else {
       try {
-        await moogoseConnect();
         const products = await Product.find({}, null, { sort: { _id: -1 } });
         return res.status(200).json(products);
       } catch (error) {
@@ -27,7 +26,6 @@ export default async function handle(req, res) {
   //Registrar
   if (method === "POST") {
     try {
-      await moogoseConnect();
       const {
         title,
         code,
@@ -96,7 +94,6 @@ export default async function handle(req, res) {
   //Editar
   if (method === "PUT") {
     try {
-      await moogoseConnect();
       const {
         title,
         code,
@@ -173,7 +170,6 @@ export default async function handle(req, res) {
   //Eliminar
   if (method === "DELETE") {
     try {
-      await moogoseConnect();
       const { _id } = req.query;
       await Product.deleteOne({ _id });
       return res.status(200).json(true);

@@ -1,10 +1,11 @@
 import { moogoseConnect } from "@/lib/mongoose";
 import { User } from "@/models/User";
+import messages from "@/utils/messages";
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
+    await moogoseConnect();
     try {
-      await moogoseConnect();
       const users = await User.find();
       const sizeUsers = users?.length;
       return res.status(200).json(sizeUsers);
