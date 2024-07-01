@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
-import EmailProvider from "next-auth/providers/email";
 import CredentialsProvider from "next-auth/providers/credentials";
+import EmailProvider from "next-auth/providers/email";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/lib/mongobd";
 import { moogoseConnect } from "@/lib/mongoose";
@@ -8,6 +8,7 @@ import { User } from "@/models/User";
 import bcrypt from "bcryptjs";
 
 export const authOptions = {
+  adapter: MongoDBAdapter(clientPromise),
   providers: [
     CredentialsProvider({
       name: "credencials",
@@ -20,11 +21,10 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        await moogoseConnect();
         if (!credentials.email && !credentials.password) {
           throw new Error("Por favor ingrese un correo y una contraseña");
         }
-        await moogoseConnect();
-
         const userFind = await User.findOne({ email: credentials.email });
 
         if (!userFind) {
@@ -47,7 +47,6 @@ export const authOptions = {
       from: process.env.EMAIL_FROM,
     }),
   ],
-  adapter: MongoDBAdapter(clientPromise),
   callbacks: {
     jwt({ token, user, profile, session }) {
       if (user) token.user = user;
