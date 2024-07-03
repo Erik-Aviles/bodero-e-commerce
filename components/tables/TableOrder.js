@@ -14,17 +14,8 @@ import {
   Chip,
 } from "@nextui-org/react";
 
-import {
-  DeleteRIcon,
-  DownloadIcon,
-  EyeIcon,
-  PlusIcon,
-  SearchIcon,
-  VerifyIcon,
-} from "../Icons";
+import { DeleteRIcon, VerifyIcon } from "../Icons";
 import { columnsOrder } from "@/resources/columnTables";
-import { capitalize } from "@/utils/utils";
-import Link from "next/link";
 import ShowOrderDetail from "../show/ShowOrderDetail";
 import { formatToCurrency } from "@/utils/formatToCurrency";
 
@@ -34,16 +25,16 @@ const statusColorMap = {
 };
 
 const INITIAL_VISIBLE_COLUMNS = [
+  "paid",
   "name",
   "createdAt",
   "amount",
   "quantity",
-  "paid",
   "actions",
 ];
 
 export default function TableOrder({
-  disminuirCantidadProductos,
+  reduceQuantityProducts,
   downloadPdf,
   orders,
   deleteOrder,
@@ -152,7 +143,7 @@ export default function TableOrder({
             variant="faded"
             isDisabled={cellValue === true ? true : false}
             color={statusColorMap[order?.paid]}
-            onClick={() => disminuirCantidadProductos(order)}
+            onClick={() => reduceQuantityProducts(order)}
           >
             {cellValue === false ? "No" : "Sí"}
           </Chip>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import TableCategory from "@/components/tables/TableCategory";
 import useCategories from "@/hooks/useCategories";
 import Spinner from "@/components/snnipers/Spinner";
@@ -6,12 +6,7 @@ import Layout from "@/components/Layout";
 import Head from "next/head";
 
 export default function Categories() {
-  const { newCategories, error, isLoading, getCategories, deleteCaterory } =
-    useCategories();
-
-  useEffect(() => {
-    getCategories();
-  }, []);
+  const { newCategories, error, isLoading, deleteCaterory } = useCategories();
 
   if (error) return <div>Falló al cargar las categorias</div>;
 

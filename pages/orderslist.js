@@ -1,21 +1,21 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import NotificationContext from "@/context/NotificationContext";
-import { withSwal } from "react-sweetalert2";
+import TableOrderList from "@/components/tables/TableOrderList";
+import useCustomers from "@/hooks/useCustomers";
 import Spinner from "@/components/snnipers/Spinner";
-import { capitalize } from "@/utils/utils";
+import { withSwal } from "react-sweetalert2";
 import { fetcher } from "@/utils/fetcher";
 import Layout from "@/components/Layout";
 import Head from "next/head";
 import axios from "axios";
 import useSWR from "swr";
-import TableOrderList from "@/components/tables/TableOrderList";
-import useCustomers from "@/hooks/useCustomers";
+import useDeleteItem from "@/hooks/useDeleteItem";
 
 export default withSwal((props, ref) => {
   const { swal } = props;
+  const deleteItem = useDeleteItem();
   const { showNotification } = useContext(NotificationContext);
-  const [newOrdersList, setNewOrdersList] = useState([]);
-  const { newCustomers, getCustomers } = useCustomers();
+  const { newCustomers } = useCustomers();
 
   const {
     data: orderlist,
@@ -24,79 +24,42 @@ export default withSwal((props, ref) => {
     mutate,
   } = useSWR("/api/orderslist/full", fetcher);
 
-  useEffect(() => {
-    if (orderlist) {
-      setNewOrdersList(orderlist);
-    }
-  }, [orderlist]);
-
-  useEffect(() => {
-    if (newCustomers) {
-      getCustomers();
-    }
-  }, []);
-
-  const getOrdersList = async () => {
-    try {
-      const response = await axios.get("/api/orderslist/full");
-      setNewOrdersList(response.data);
-      mutate(); // Actualizar manualmente la caché de SWR
-    } catch (error) {
-      console.error("Error al obtener las ordenes:", error);
-    }
-  };
-
   if (error) return <div>FalLo al cargar las Ordenes</div>;
 
-  const verifyOrderDelivery = (orderId) => {
+  const verifyOrderDelivery = async (orderId) => {
     if (orderId) {
-      const data = {
+      const items = {
         delivered: true,
         orderDeliveryDate: Date.now(),
+        _id: orderId,
       };
       try {
-        axios.put("/api/orderslist/full", { ...data, _id: orderId });
+        await axios.put("/api/orderslist/full", items);
+        mutate();
         showNotification({
           open: true,
           msj: "Pedido ha sido entregado!",
           status: "success",
         });
-        getOrdersList();
       } catch (error) {
         console.error(error);
+        showNotification({
+          open: true,
+          msj: "Error al marcar pedido como entregado.",
+          status: "error",
+        });
       }
     }
   };
 
-  function deleteOrder(order) {
-    swal
-      .fire({
-        title: "Estas seguro?",
-        text: `Eliminar el pedido: "${capitalize(
-          order?.articulo.length > 30
-            ? order?.articulo.substring(0, 30) + "..."
-            : order?.articulo
-        )} "Esta acción no se puede deshacer."`,
-        showCancelButton: true,
-        cancelButtonText: "Cancelar",
-        confirmButtonColor: "#fe0000",
-        confirmButtonText: "Si, Eliminar",
-        reverseButtons: true,
-      })
-      .then(async (result) => {
-        if (result.isConfirmed) {
-          const { _id } = order;
-          await axios.delete("/api/orderslist/full?_id=" + _id);
-          showNotification({
-            open: true,
-            msj: `Pedido de "${capitalize(
-              order?.customer
-            )}", eliminado con exito!`,
-            status: "success",
-          });
-        }
-        getOrdersList();
-      });
+  function deleteOrder(item) {
+    deleteItem({
+      swal,
+      getItems: mutate,
+      item,
+      apiEndpoint: "orderslist",
+      itemNameKey: "articulo",
+    });
   }
 
   return (
@@ -112,10 +75,9 @@ export default withSwal((props, ref) => {
         ) : (
           <section className="max-w-4xl mx-auto mt-4">
             <TableOrderList
-              orders={newOrdersList}
+              orders={orderlist}
               newCustomers={newCustomers}
-              fetchOrders={getOrdersList}
-              getCustomers={getCustomers}
+              fetchOrders={mutate}
               deleteOrder={deleteOrder}
               verifyOrderDelivery={verifyOrderDelivery}
             />

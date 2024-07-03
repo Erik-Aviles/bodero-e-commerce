@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Layout from "@/components/Layout";
 import Head from "next/head";
 import TableProduct from "@/components/tables/TableProduct";
@@ -6,20 +6,10 @@ import Spinner from "@/components/snnipers/Spinner";
 import useProducts from "@/hooks/useProducts";
 
 export default function Products() {
-  const {
-    newProduct,
-    error,
-    isLoading,
-    getProducts,
-    formatPrice,
-    deleteProduct,
-  } = useProducts();
+  const { newProduct, error, isLoading, formatPrice, deleteProduct } =
+    useProducts();
 
-  useEffect(() => {
-    getProducts();
-  }, []);
-
-  if (error) return <div>Fallo al cargar los productos</div>;
+  if (error) return <div>Falló al cargar los productos</div>;
 
   return (
     <>

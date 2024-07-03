@@ -1,17 +1,13 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
-import NotificationContext from "./NotificationContext";
+import React, { createContext } from "react";
 import { fetcher } from "@/utils/fetcher";
 import { withSwal } from "react-sweetalert2";
 import useSWR from "swr";
-import axios from "axios";
-import { capitalize } from "@/utils/utils";
+import useDeleteItem from "@/hooks/useDeleteItem";
 
 const CustomerContext = createContext();
 
 const CustomerProvider = withSwal(({ children, swal }) => {
-  const { showNotification } = useContext(NotificationContext);
-  const [newCustomers, setNewCustomers] = useState([]);
-
+  const deleteItem = useDeleteItem();
   const {
     data: customers,
     error,
@@ -19,51 +15,25 @@ const CustomerProvider = withSwal(({ children, swal }) => {
     mutate,
   } = useSWR("/api/customers/full", fetcher);
 
-  useEffect(() => {
-    if (customers) {
-      setNewCustomers(customers);
-    }
-  }, [customers]);
-
-  const getCustomers = async () => {
-    try {
-      const response = await axios.get("/api/customers/full");
-      setNewCustomers(response.data);
-      mutate(); // Actualizar manualmente la caché de SWR
-    } catch (error) {
-      console.error("Error al obtener los clientes:", error);
-    }
-  };
-
-  function deleteCustomer(value) {
-    swal
-      .fire({
-        title: "Estas seguro?",
-        text: `Quieres eliminar a "${capitalize(value?.name)}"?`,
-        showCancelButton: true,
-        cancelButtonText: "Cancelar",
-        confirmButtonColor: "#fe0000",
-        confirmButtonText: "Si, Eliminar",
-        reverseButtons: true,
-      })
-      .then(async (result) => {
-        if (result.isConfirmed) {
-          const { _id } = value;
-          await axios.delete("/api/customers/full?_id=" + _id);
-          showNotification({
-            open: true,
-            msj: `Cliente:
-              ${capitalize(value?.name)}, eliminada con exito!`,
-            status: "success",
-          });
-          getCustomers();
-        }
-      });
+  function deleteCustomer(item) {
+    deleteItem({
+      swal,
+      getItems: mutate,
+      item,
+      apiEndpoint: "customers",
+      itemNameKey: "name",
+    });
   }
 
   return (
     <CustomerContext.Provider
-      value={{ newCustomers, error, isLoading, getCustomers, deleteCustomer }}
+      value={{
+        newCustomers: customers,
+        error,
+        isLoading,
+        getCustomers: mutate,
+        deleteCustomer,
+      }}
     >
       {children}
     </CustomerContext.Provider>

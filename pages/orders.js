@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import NotificationContext from "@/context/NotificationContext";
 import TableOrder from "@/components/tables/TableOrder";
-import { withSwal } from "react-sweetalert2";
 import Spinner from "@/components/snnipers/Spinner";
-import { capitalize } from "@/utils/utils";
+import useDeleteItem from "@/hooks/useDeleteItem";
+import useProducts from "@/hooks/useProducts";
+import { withSwal } from "react-sweetalert2";
 import { fetcher } from "@/utils/fetcher";
 import Layout from "@/components/Layout";
 import Head from "next/head";
@@ -12,8 +13,9 @@ import useSWR from "swr";
 
 export default withSwal((props, ref) => {
   const { swal } = props;
+  const { getProducts } = useProducts();
   const { showNotification } = useContext(NotificationContext);
-  const [newOrders, setNewOrders] = useState([]);
+  const deleteItem = useDeleteItem();
 
   const { data: minimalProducts, error: errorGetMinimal } = useSWR(
     "/api/products/minimal",
@@ -27,98 +29,87 @@ export default withSwal((props, ref) => {
     mutate,
   } = useSWR("/api/orders/full", fetcher);
 
-  useEffect(() => {
-    if (orders) {
-      setNewOrders(orders);
-    }
-  }, [orders]);
-
-  const getOrders = async () => {
-    try {
-      const response = await axios.get("/api/orders/full");
-      setNewOrders(response.data);
-      mutate(); // Actualizar manualmente la caché de SWR
-    } catch (error) {
-      console.error("Error al obtener las ordenes:", error);
-    }
-  };
-
-  if (errorGetMinimal) return <div>FalLo al cargar los productos</div>;
+  if (errorGetMinimal) return <div>FalLo al cargar los Productos</div>;
 
   if (error) return <div>FalLo al cargar las Ordenes</div>;
 
-  const disminuirCantidadProductos = (orderId) => {
-    let newstock = 0;
-    let data = {};
-    let item = {};
-    let _id = [];
-    let id = orderId._id;
+  const reduceQuantityProducts = async (order) => {
+    const orderId = order._id;
 
-    orderId.line_items.forEach((item) => {
-      const producto = minimalProducts.find(
-        (producto) => producto._id === item.info_order.product_data.id
-      );
-      _id = producto._id;
-      newstock = producto.quantity - item?.quantity;
-      data = {
-        ...data,
-        quantity: newstock,
-        quantityUpdated: Date.now(),
-      };
+    const productUpdates = order.line_items
+      .map((item) => {
+        const product = minimalProducts.find(
+          (prod) => prod._id === item.info_order.product_data.id
+        );
 
-      if (_id) {
-        try {
-          axios.put("/api/products/full", { ...data, _id });
-          showNotification({
-            open: true,
-            msj: "Pedido ha sido aprobado!",
-            status: "success",
-          });
-        } catch (error) {
-          console.error(error);
+        if (product) {
+          const newstock = product.quantity - item.quantity;
+          const data = {
+            quantity: newstock,
+            quantityUpdated: Date.now(),
+            _id: product._id,
+          };
+          return data;
         }
-      }
-    });
+        return null;
+      })
+      .filter(Boolean);
 
-    if (id) {
-      item = {
-        ...newOrders,
-        paid: true,
-      };
+    if (productUpdates.length > 0) {
       try {
-        axios.put("/api/orders/full", { ...item, _id: id });
-        getOrders();
+        await Promise.all(
+          productUpdates.map((update) =>
+            axios.put("/api/products/full", update)
+          )
+        );
+        showNotification({
+          open: true,
+          msj: "Pedido ha sido aprobado!",
+          status: "success",
+        });
+        getProducts();
+        if (orderId) {
+          const items = {
+            paid: true,
+            _id: orderId,
+          };
+          try {
+            await axios.put("/api/orders/full", items);
+            mutate();
+          } catch (error) {
+            console.error(error);
+            showNotification({
+              open: true,
+              msj: "Error al actualizar el pedido.",
+              status: "error",
+            });
+          }
+        }
       } catch (error) {
         console.error(error);
+        showNotification({
+          open: true,
+          msj: "Error al actualizar los productos.",
+          status: "error",
+        });
       }
+    } else {
+      showNotification({
+        open: true,
+        msj: "No se encontraron productos para actualizar.",
+        status: "error",
+      });
     }
   };
 
-  function deleteOrder(order) {
-    swal
-      .fire({
-        title: "Estas seguro?",
-        text: `¿Realmente desea eliminar el pedido de "${capitalize(
-          order?.name
-        )}" de la base de datos? Esta acción no se puede deshacer.`,
-        showCancelButton: true,
-        cancelButtonText: "Cancelar",
-        confirmButtonColor: "#fe0000",
-        confirmButtonText: "Si, Eliminar",
-        reverseButtons: true,
-      })
-      .then(async (result) => {
-        if (result.isConfirmed) {
-          const { _id } = order;
-          await axios.delete("/api/orders/full?_id=" + _id);
-          showNotification({
-            open: true,
-            msj: `Pedido de "${capitalize(order?.name)}", eliminado con exito!`,
-            status: "success",
-          });
-        }
-        getOrders();
-      });
+  function deleteOrder(item) {
+    deleteItem({
+      swal,
+      getItems: mutate,
+      item,
+      apiEndpoint: "orders",
+      itemNameKey: "name",
+    });
   }
 
   function downloadPdf() {
@@ -142,10 +133,10 @@ export default withSwal((props, ref) => {
         ) : (
           <section className="max-w-4xl mx-auto mt-4">
             <TableOrder
-              fetchOrders={getOrders}
+              fetchOrders={mutate}
               downloadPdf={downloadPdf}
-              disminuirCantidadProductos={disminuirCantidadProductos}
-              orders={newOrders}
+              reduceQuantityProducts={reduceQuantityProducts}
+              orders={orders}
               deleteOrder={deleteOrder}
             />
           </section>

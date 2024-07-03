@@ -1,40 +1,19 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
-import NotificationContext from "./NotificationContext";
+import React, { createContext } from "react";
 import { fetcher } from "@/utils/fetcher";
 import { withSwal } from "react-sweetalert2";
 import useSWR from "swr";
-import axios from "axios";
-import { capitalize } from "@/utils/utils";
+import useDeleteItem from "@/hooks/useDeleteItem";
 
 const ProductContext = createContext();
 
 const ProductProvider = withSwal(({ children, swal }) => {
-  const { showNotification } = useContext(NotificationContext);
-
-  const [newProduct, setNewProduct] = useState([]);
-
+  const deleteItem = useDeleteItem();
   const {
     data: products,
     error,
     isLoading,
     mutate,
   } = useSWR("/api/products/full", fetcher);
-
-  useEffect(() => {
-    if (products) {
-      setNewProduct(products);
-    }
-  }, [products]);
-
-  const getProducts = async () => {
-    try {
-      const response = await axios.get("/api/products/full");
-      setNewProduct(response.data);
-      mutate(); // Actualizar manualmente la caché de SWR
-    } catch (error) {
-      console.error("Error al obtener los productos:", error);
-    }
-  };
 
   function formatPrice(price) {
     let precioFormateado = new Intl.NumberFormat("es-EC", {
@@ -44,41 +23,23 @@ const ProductProvider = withSwal(({ children, swal }) => {
     return precioFormateado;
   }
 
-  function deleteProduct(product) {
-    swal
-      .fire({
-        title: "Estas seguro?",
-        text: `¿Realmente desea eliminar "${capitalize(
-          product?.title
-        )}" de la base de datos? Esta acción no se puede deshacer.`,
-        showCancelButton: true,
-        cancelButtonText: "Cancelar",
-        confirmButtonColor: "#fe0000",
-        confirmButtonText: "Si, Eliminar",
-        reverseButtons: true,
-      })
-      .then(async (result) => {
-        if (result.isConfirmed) {
-          const { _id } = product;
-          await axios.delete("/api/products/full?_id=" + _id);
-          showNotification({
-            open: true,
-            msj: `Producto: "${capitalize(
-              product?.title
-            )}", eliminado con exito!`,
-            status: "success",
-          });
-        }
-        getProducts();
-      });
+  function deleteProduct(item) {
+    deleteItem({
+      swal,
+      getItems: mutate,
+      item,
+      apiEndpoint: "products",
+      itemNameKey: "title",
+    });
   }
+
   return (
     <ProductContext.Provider
       value={{
-        newProduct,
+        newProduct: products,
         error,
         isLoading,
-        getProducts,
+        getProducts: mutate,
         formatPrice,
         deleteProduct,
       }}

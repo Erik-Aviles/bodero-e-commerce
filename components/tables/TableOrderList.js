@@ -46,7 +46,7 @@ export default function TableOrderList({
   const [visibleColumns, setVisibleColumns] = useState(
     new Set(INITIAL_VISIBLE_COLUMNS)
   );
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [page, setPage] = useState(1);
 
@@ -84,7 +84,7 @@ export default function TableOrderList({
   const renderCell = useCallback((order, columnKey) => {
     const cellValue = order[columnKey];
 
-    const filteredResult = newCustomers.filter((objeto) =>
+    const filteredResult = newCustomers?.filter((objeto) =>
       objeto?._id.includes(order?.customer)
     );
 

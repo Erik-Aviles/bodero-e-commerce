@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Spinner from "@/components/snnipers/Spinner";
 import Layout from "@/components/Layout";
 import Head from "next/head";
@@ -6,14 +6,9 @@ import TableCustomer from "@/components/tables/TableCustomer";
 import useCustomers from "@/hooks/useCustomers";
 
 export default function Customers() {
-  const { newCustomers, error, isLoading, getCustomers, deleteCustomer } =
-    useCustomers();
+  const { newCustomers, error, isLoading, deleteCustomer } = useCustomers();
 
-  useEffect(() => {
-    getCustomers();
-  }, []);
-
-  if (error) return <p>Error al cargar clientes</p>;
+  if (error) return <p>Falló al cargar clientes</p>;
 
   return (
     <>

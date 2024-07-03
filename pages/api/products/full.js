@@ -124,10 +124,6 @@ export default async function handle(req, res) {
         return res.status(400).json({ message: messages.error.idNotValid });
       }
 
-      //validar que esten todos los campos
-      if (!title || !code || !price || !profitability || !brand || !description)
-        return res.status(400).json({ message: messages.error.needProps });
-
       const updateData = {
         title,
         code,
