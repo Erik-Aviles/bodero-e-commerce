@@ -49,25 +49,32 @@ export default withSwal((props, ref) => {
             quantityUpdated: Date.now(),
             _id: product._id,
           };
+          // console.log("Actualización de producto preparada: ", data);
           return data;
         }
+        // console.warn("Producto no encontrado para el artículo:", item);
         return null;
       })
       .filter(Boolean);
+    // console.log("Actualizaciones de producto por realizar:", productUpdates);
 
     if (productUpdates.length > 0) {
       try {
         await Promise.all(
-          productUpdates.map((update) =>
-            axios.put("/api/products/full", update)
-          )
+          productUpdates.map((update) => {
+            // console.log("Actualizando producto...:", update);
+            return axios.put("/api/products/full", update);
+          })
         );
         showNotification({
           open: true,
           msj: "Pedido ha sido aprobado!",
           status: "success",
         });
-        getProducts();
+        // console.log(
+        //   "Actualizaciones de productos exitosas, obteniendo productos..."
+        // );
+        await getProducts();
         if (orderId) {
           const items = {
             paid: true,
@@ -75,9 +82,9 @@ export default withSwal((props, ref) => {
           };
           try {
             await axios.put("/api/orders/full", items);
-            mutate();
+            await mutate();
           } catch (error) {
-            console.error(error);
+            // console.error("Error actualizando ventas:", error);
             showNotification({
               open: true,
               msj: "Error al actualizar el pedido.",
@@ -86,7 +93,7 @@ export default withSwal((props, ref) => {
           }
         }
       } catch (error) {
-        console.error(error);
+        // console.error("Error actualizando products:", error);
         showNotification({
           open: true,
           msj: "Error al actualizar los productos.",
@@ -133,7 +140,6 @@ export default withSwal((props, ref) => {
         ) : (
           <section className="max-w-4xl mx-auto mt-4">
             <TableOrder
-              fetchOrders={mutate}
               downloadPdf={downloadPdf}
               reduceQuantityProducts={reduceQuantityProducts}
               orders={orders}

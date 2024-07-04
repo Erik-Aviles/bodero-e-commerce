@@ -39,7 +39,7 @@ export default function useDeleteItem() {
               }, eliminado con éxito!`,
               status: "success",
             });
-            getItems();
+            await getItems();
           } catch (error) {
             console.error(`Error al eliminar el elemento:`, error);
           }
