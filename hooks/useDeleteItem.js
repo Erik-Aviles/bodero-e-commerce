@@ -30,6 +30,7 @@ export default function useDeleteItem() {
         if (result.isConfirmed) {
           try {
             await axios.delete(`/api/${apiEndpoint}/full?_id=${item._id}`);
+            await getItems();
             showNotification({
               open: true,
               msj: `${
@@ -39,7 +40,6 @@ export default function useDeleteItem() {
               }, eliminado con éxito!`,
               status: "success",
             });
-            await getItems();
           } catch (error) {
             console.error(`Error al eliminar el elemento:`, error);
           }
