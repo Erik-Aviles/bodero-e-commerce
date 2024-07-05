@@ -13,7 +13,7 @@ const UserProvider = withSwal(({ children, swal }) => {
     error,
     isLoading,
     mutate,
-  } = useSWR("/api/users/full", fetcher);
+  } = useSWR("/api/users/full", fetcher, { refreshInterval: 300000 });
 
   function deleteUser(item) {
     deleteItem({

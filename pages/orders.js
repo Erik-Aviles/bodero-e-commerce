@@ -21,14 +21,14 @@ export default withSwal((props, ref) => {
     data: minimalProducts,
     error: errorGetMinimal,
     mutate: getMinimal,
-  } = useSWR("/api/products/minimal", fetcher);
+  } = useSWR("/api/products/minimal", fetcher, { refreshInterval: 300000 });
 
   const {
     data: orders,
     error,
     isLoading,
     mutate,
-  } = useSWR("/api/orders/full", fetcher);
+  } = useSWR("/api/orders/full", fetcher, { refreshInterval: 300000 });
 
   if (errorGetMinimal) return <div>FalLo al cargar los Productos</div>;
 

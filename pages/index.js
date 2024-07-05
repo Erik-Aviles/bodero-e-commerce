@@ -8,27 +8,33 @@ import { dashList } from "@/resources/dashList";
 export default function Home() {
   const { data: sizeProducts, isLoading: isLoadProducts } = useSWR(
     "/api/products/size",
-    fetcher
+    fetcher,
+    { refreshInterval: 600000 }
   );
   const { data: sizeCategories, isLoading: isLoadCategories } = useSWR(
     "/api/categories/size",
-    fetcher
+    fetcher,
+    { refreshInterval: 600000 }
   );
   const { data: sizeUsers, isLoading: isLoadUsers } = useSWR(
     "/api/users/size",
-    fetcher
+    fetcher,
+    { refreshInterval: 600000 }
   );
   const { data: sizeCustomers, isLoading: isLoadCustomers } = useSWR(
     "/api/customers/size",
-    fetcher
+    fetcher,
+    { refreshInterval: 600000 }
   );
   const { data: sizeOrders, isLoading: isLoadOrders } = useSWR(
     "/api/orders/size",
-    fetcher
+    fetcher,
+    { refreshInterval: 600000 }
   );
   const { data: sizeOrdersList, isLoading: isLoadOrdersList } = useSWR(
     "/api/orderslist/size",
-    fetcher
+    fetcher,
+    { refreshInterval: 600000 }
   );
 
   return (

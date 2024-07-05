@@ -13,7 +13,7 @@ const CategoryProvider = withSwal(({ children, swal }) => {
     error,
     isLoading,
     mutate,
-  } = useSWR("/api/categories/full", fetcher);
+  } = useSWR("/api/categories/full", fetcher, { refreshInterval: 300000 });
 
   function deleteCaterory(item) {
     deleteItem({

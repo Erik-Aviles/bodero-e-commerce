@@ -13,7 +13,7 @@ const ProductProvider = withSwal(({ children, swal }) => {
     error,
     isLoading,
     mutate,
-  } = useSWR("/api/products/full", fetcher);
+  } = useSWR("/api/products/full", fetcher, { refreshInterval: 300000 });
 
   function formatPrice(price) {
     let precioFormateado = new Intl.NumberFormat("es-EC", {

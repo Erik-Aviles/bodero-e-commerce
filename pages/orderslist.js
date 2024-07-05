@@ -22,7 +22,7 @@ export default withSwal((props, ref) => {
     error,
     isLoading,
     mutate,
-  } = useSWR("/api/orderslist/full", fetcher);
+  } = useSWR("/api/orderslist/full", fetcher, { refreshInterval: 300000 });
 
   if (error) return <div>FalLo al cargar las Ordenes</div>;
 
