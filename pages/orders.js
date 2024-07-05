@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import NotificationContext from "@/context/NotificationContext";
 import TableOrder from "@/components/tables/TableOrder";
 import Spinner from "@/components/snnipers/Spinner";
@@ -17,10 +17,11 @@ export default withSwal((props, ref) => {
   const { showNotification } = useContext(NotificationContext);
   const deleteItem = useDeleteItem();
 
-  const { data: minimalProducts, error: errorGetMinimal } = useSWR(
-    "/api/products/minimal",
-    fetcher
-  );
+  const {
+    data: minimalProducts,
+    error: errorGetMinimal,
+    mutate: getMinimal,
+  } = useSWR("/api/products/minimal", fetcher);
 
   const {
     data: orders,
@@ -49,32 +50,26 @@ export default withSwal((props, ref) => {
             quantityUpdated: Date.now(),
             _id: product._id,
           };
-          // console.log("Actualización de producto preparada: ", data);
           return data;
         }
-        // console.warn("Producto no encontrado para el artículo:", item);
         return null;
       })
       .filter(Boolean);
-    // console.log("Actualizaciones de producto por realizar:", productUpdates);
 
     if (productUpdates.length > 0) {
       try {
         await Promise.all(
-          productUpdates.map((update) => {
-            // console.log("Actualizando producto...:", update);
-            return axios.put("/api/products/full", update);
-          })
+          productUpdates.map((update) =>
+            axios.put("/api/products/full", update)
+          )
         );
         showNotification({
           open: true,
           msj: "Pedido ha sido aprobado!",
           status: "success",
         });
-        // console.log(
-        //   "Actualizaciones de productos exitosas, obteniendo productos..."
-        // );
-        await getProducts();
+        getProducts();
+        getMinimal();
         if (orderId) {
           const items = {
             paid: true,
@@ -82,9 +77,8 @@ export default withSwal((props, ref) => {
           };
           try {
             await axios.put("/api/orders/full", items);
-            await mutate();
+            mutate();
           } catch (error) {
-            // console.error("Error actualizando ventas:", error);
             showNotification({
               open: true,
               msj: "Error al actualizar el pedido.",
@@ -93,7 +87,6 @@ export default withSwal((props, ref) => {
           }
         }
       } catch (error) {
-        // console.error("Error actualizando products:", error);
         showNotification({
           open: true,
           msj: "Error al actualizar los productos.",
