@@ -1,10 +1,8 @@
-import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import EmailProvider from "next-auth/providers/email";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/lib/mongobd";
-import { moogoseConnect } from "@/lib/mongoose";
 import { User } from "@/models/User";
+import NextAuth from "next-auth";
 import bcrypt from "bcryptjs";
 
 export const authOptions = {
@@ -21,7 +19,6 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        await moogoseConnect();
         if (!credentials.email && !credentials.password) {
           throw new Error("Por favor ingrese un correo y una contraseña");
         }
@@ -42,10 +39,6 @@ export const authOptions = {
         return userFind;
       },
     }),
-    EmailProvider({
-      server: process.env.EMAIL_SERVER,
-      from: process.env.EMAIL_FROM,
-    }),
   ],
   callbacks: {
     jwt({ token, user, profile, session }) {
@@ -58,7 +51,10 @@ export const authOptions = {
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
-  session: { strategy: "jwt" },
+  session: { strategy: "jwt", maxAge: 60 * 60 * 24 },
+  jwt: {
+    secret: process.env.NEXTAUTH_SECRET,
+  },
   debug: process.env.NODE_ENV === "development",
   pages: {
     signIn: "/auth/login",

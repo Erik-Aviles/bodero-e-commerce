@@ -107,8 +107,40 @@ table.basic a, table.basic button{
   animation: bounce 0.5s infinite;
 }
 
-/* //////////////////////// */
+/* pagina no existe */
+.errorpage {
+  text-shadow: 1px 1px 2px black;
+  background-image: url("https://res.cloudinary.com/imagen-category/image/upload/v1716601224/samples/balloons.jpg");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
 
+/* loading */
+.loading{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.loading svg{
+  font-size: 5px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  animation: text 1s ease-in-out infinite;
+}
+@keyframes text{
+  50%{ opacity: 0.1;}
+}
+.loading polygon{
+  stroke-dasharray: 22;
+  stroke-dashoffset: 1;
+  animation: dash 4s cubic-bezier(0.455, 0.03, 0.515, 0.955)
+  infinite alternate-reverse;
+}
+@keyframes dash{
+  to{stroke-dashoffset: 234;}
+}
 
 /* //////////////////////// */
 
@@ -128,5 +160,4 @@ table.basic a, table.basic button{
 /* grayDark: #9f9f9f; */
 /* blue: #3d56ee; */
 
-/* ----------- Loading ------------- */
-@import url("./loading.css");
+
