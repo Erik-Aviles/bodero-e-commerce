@@ -27,6 +27,10 @@ const ProductShema = new Schema(
       required: true,
       trim: true,
     },
+    minPrice: {
+      type: Number,
+      trim: true,
+    },
     tax: { type: Object },
     profitability: {
       type: Number,

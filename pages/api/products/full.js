@@ -32,12 +32,13 @@ export default async function handle(req, res) {
         codeEnterprise,
         codeWeb,
         price,
+        offerPrice,
         tax,
+        minPrice,
         profitability,
         netPrice,
         salePrice,
         profit,
-        offerPrice,
         brand,
         category,
         color,
@@ -55,6 +56,13 @@ export default async function handle(req, res) {
       if (!title || !code || !price || !profitability || !brand || !description)
         return res.status(400).json({ message: messages.error.needProps });
 
+      //validar que no exista valores en negativo
+      if ((quantity || price || salePrice || minPrice || offerPrice) < 0) {
+        return res
+          .status(400)
+          .json({ message: messages.error.unsupportedValue });
+      }
+
       const newProduct = await Product.create({
         title: title.toLowerCase(),
         code,
@@ -62,6 +70,7 @@ export default async function handle(req, res) {
         codeWeb,
         price,
         tax,
+        minPrice,
         profitability,
         netPrice,
         salePrice,
@@ -101,6 +110,7 @@ export default async function handle(req, res) {
         codeWeb,
         price,
         tax,
+        minPrice,
         profitability,
         netPrice,
         salePrice,
@@ -124,6 +134,13 @@ export default async function handle(req, res) {
         return res.status(400).json({ message: messages.error.idNotValid });
       }
 
+      //validar que no exista valores en negativo
+      if ((quantity || price || salePrice || minPrice || offerPrice) < 0) {
+        return res
+          .status(400)
+          .json({ message: messages.error.unsupportedValue });
+      }
+
       const updateData = {
         title,
         code,
@@ -131,6 +148,7 @@ export default async function handle(req, res) {
         codeWeb,
         price,
         tax,
+        minPrice,
         profitability,
         netPrice,
         salePrice,

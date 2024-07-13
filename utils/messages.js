@@ -1,6 +1,7 @@
 const messages = {
   error: {
     needProps: "Campos obligatorio vacío!",
+    unsupportedValue: "Hay valores -1!",
     default: "Ocurrió un error desconocido!",
     requireCaracteres: "La contraseña debe de ser minimo de 6 caracteres!",
     notProduct: "Producto no encontrado o no se realizó ninguna modificación!",
@@ -26,6 +27,7 @@ const messages = {
   },
   success: {
     addedProduct: "¡Producto registrado con exito!",
+    addedStock: "¡Stock registrado con exito!",
     addedOrderlist: "¡Pedido registrado con exito!",
     addedCustomer: "¡Cliente registrado con exito!",
     userCreated: "Usuario creado con exito!",

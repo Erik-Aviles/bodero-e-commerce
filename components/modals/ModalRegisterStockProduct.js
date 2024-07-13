@@ -1,10 +1,10 @@
-import React, { useContext, useState } from "react";
-import { DeleteIcon, StockIcon } from "../Icons";
 import NotificationContext from "@/context/NotificationContext";
-import axios from "axios";
+import React, { useContext, useState } from "react";
 import { Input, Tooltip } from "@nextui-org/react";
-import useProducts from "@/hooks/useProducts";
 import ButtonClose from "../buttons/ButtonClose";
+import useProducts from "@/hooks/useProducts";
+import { StockIcon } from "../Icons";
+import axios from "axios";
 
 const ModalRegisterStockProduct = ({ product }) => {
   const { getProducts } = useProducts();
@@ -23,10 +23,10 @@ const ModalRegisterStockProduct = ({ product }) => {
   async function saveStock(e) {
     e.preventDefault();
     if (product._id) {
-      if (stock === "" || null || undefined) {
+      if (stock === "" || null || undefined || 0 || stock < 1) {
         showNotification({
           open: true,
-          msj: `Favor, ingresar un valor!`,
+          msj: `Favor, ingresar un valor real!`,
           status: "error",
         });
         return;
@@ -34,11 +34,14 @@ const ModalRegisterStockProduct = ({ product }) => {
         const _id = product._id;
         const lastquantity = (product.lastquantity = stock);
         try {
-          await axios.put("/api/products/stock", { lastquantity, _id });
+          const { data } = await axios.put("/api/products/stock", {
+            lastquantity,
+            _id,
+          });
           setStock("");
           showNotification({
             open: true,
-            msj: `Valor "${stock}", ingresado con exito!`,
+            msj: `Cant.: ${stock}, ${data?.message}`,
             status: "success",
           });
           getProducts();
@@ -46,7 +49,7 @@ const ModalRegisterStockProduct = ({ product }) => {
         } catch (error) {
           showNotification({
             open: true,
-            msj: error.message,
+            msj: error.response?.data?.message,
             status: "error",
           });
         }

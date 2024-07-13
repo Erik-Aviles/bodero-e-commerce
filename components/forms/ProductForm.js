@@ -30,6 +30,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
 
   const [title, setTitle] = useState(product?.title || "");
   const [price, setPrice] = useState(product?.price || "");
+  const [minPrice, setMinPrice] = useState(product?.minPrice || "");
   const [tax, setTax] = useState(product?.tax || 0);
   const [profitability, setProfitability] = useState(
     product?.profitability || 0
@@ -61,13 +62,12 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
   const [verifyWeb, setWebVerify] = useState(false);
   const [verifyEnterprise, setEnterpriseVerify] = useState(false);
 
-  useEffect(() => {
-    fetchDataCodes();
-  }, []);
+  const [maxMInPrice, setMaxMInPrice] = useState(0);
+  const [maxOffert, setMaxOffert] = useState(0);
 
-  const fetchDataCodes = async () => {
+  const fetchDataCodes = async (signal) => {
     try {
-      const response = await axios.get("/api/products/full");
+      const response = await axios.get("/api/products/full", { signal });
       const data = response.data;
 
       const updatedCodes = data.reduce(
@@ -82,9 +82,24 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
 
       setCodes(updatedCodes);
     } catch (error) {
-      console.error("Error obteniendo los codigos: ", error);
+      if (axios.isCancel(error)) {
+        console.log("Respuesta cancelada:", error.message);
+      } else {
+        console.error("Error obteniendo los codigos: ", error);
+      }
     }
   };
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    fetchDataCodes(signal);
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
 
   useEffect(() => {
     if (!price) {
@@ -102,6 +117,14 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
     calcularProfit(salePrice, netPrice);
   }, [salePrice]);
 
+  useEffect(() => {
+    calcularMaxMIn(netPrice, 3, setMaxMInPrice);
+  }, [netPrice, minPrice]);
+
+  useEffect(() => {
+    calcularMaxMIn(minPrice, 3, setMaxOffert);
+  }, [minPrice, offerPrice]);
+
   //registrar producto
   async function saveProduct(e) {
     e.preventDefault();
@@ -111,6 +134,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
       codeEnterprise,
       codeWeb,
       price,
+      minPrice,
       tax,
       profitability,
       netPrice,
@@ -144,6 +168,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
       setCodeEnterprise("");
       setCodeWeb("");
       setPrice("");
+      setMinPrice(0);
       setTax(0);
       setProfitability(0);
       setNetPrice("");
@@ -178,6 +203,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
       codeEnterprise,
       codeWeb,
       price,
+      minPrice,
       tax,
       profitability,
       netPrice,
@@ -319,6 +345,16 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
     calcularPrecioNeto(nuevoPrice, tax);
   };
 
+  const handleMinPrecioChange = (event) => {
+    const newMinPrice = parseFloat(event.target.value);
+    setMinPrice(newMinPrice);
+  };
+
+  const handleOfferPriceChange = (event) => {
+    const newOfferPrice = parseFloat(event.target.value);
+    setOfferPrice(newOfferPrice);
+  };
+
   const handlePorcentajeChange = (event) => {
     const nuevoPorcentaje = parseInt(event.target.value);
     setTax(nuevoPorcentaje);
@@ -330,15 +366,18 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
     setProfitability(newProfitability);
     calcularPrecioVenta(netPrice, newProfitability);
   };
-  const handleOfferPriceChange = (event) => {
-    const newOfferPrice = parseFloat(event.target.value);
-    setOfferPrice(newOfferPrice);
-  };
 
   function calcularPorcentaje(valor, porc) {
     if (valor && porc) {
       const resultado = (valor * porc) / 100;
       return resultado;
+    }
+  }
+
+  function calcularMaxMIn(valor, porc, setMaxMin) {
+    if (valor) {
+      const value = parseFloat(calcularPorcentaje(valor, porc));
+      setMaxMin(valor + value);
     }
   }
 
@@ -423,7 +462,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
                 onChange={handleChangeCodeWeb}
               />
             </div>
-            {!verifyWeb ? (
+            {!verifyWeb || codeWeb.length === 0 ? (
               <span></span>
             ) : (
               <span className="text-error text-small">
@@ -440,7 +479,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
                 onChange={handleChangeCodeEnterprise}
               />
             </div>
-            {!verifyEnterprise ? (
+            {!verifyEnterprise || codeEnterprise.length === 0 ? (
               <span></span>
             ) : (
               <span className="text-error text-small">
@@ -778,7 +817,23 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
             </div>
             <div className="flex sm:gap-2 ">
               <div className="basis-2/6 mr-1 sm:mr-0">
-                <label className="my-1 block">P. Oferta</label>
+                <label className="my-1 block">P. Minimo P</label>
+                <Input
+                  title="Debe ser (>) a costo"
+                  type="number"
+                  labelPlacement="outside"
+                  startContent={
+                    <div className="pointer-events-none flex items-center">
+                      <span className="text-default-400 text-small">$</span>
+                    </div>
+                  }
+                  value={minPrice}
+                  onChange={handleMinPrecioChange}
+                  placeholder="0.00"
+                />
+              </div>
+              <div className="basis-2/6 mr-1 sm:mr-0">
+                <label className="my-1 block">P. Oferta P.</label>
                 <Input
                   title="Debe ser (>) a costo"
                   type="number"
@@ -793,22 +848,44 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
                   placeholder="0.00"
                 />
               </div>
+              <div className="basis-2/6 mr-1 sm:mr-0">{""}</div>
             </div>
-            <span
-              className={
-                !offerPrice || offerPrice === 0
-                  ? "text-primary text-small"
-                  : offerPrice > netPrice
-                  ? "text-success text-small"
-                  : "text-error text-small"
-              }
-            >
-              {!offerPrice || offerPrice === 0
-                ? "Aplica una oferta!"
-                : offerPrice > netPrice
-                ? "Oferta aceptada!"
-                : "Oferta no recomendada!"}
-            </span>
+            <div className="flex sm:gap-2 ">
+              <div className="basis-2/6 mr-1 sm:mr-0">
+                <span
+                  className={
+                    !minPrice || minPrice === 0
+                      ? "text-primary text-small"
+                      : minPrice >= maxMInPrice
+                      ? "text-success text-small"
+                      : "text-error text-small"
+                  }
+                >
+                  {!minPrice || minPrice === 0
+                    ? "Aplicar precio minimo!"
+                    : minPrice >= maxMInPrice
+                    ? "Minimo aceptado!"
+                    : "Minimo no recomendado!"}
+                </span>
+              </div>
+              <div className="basis-2/6 mr-1 sm:mr-0">
+                <span
+                  className={
+                    !offerPrice || offerPrice === 0
+                      ? "text-primary text-small"
+                      : offerPrice >= maxOffert
+                      ? "text-success text-small"
+                      : "text-error text-small"
+                  }
+                >
+                  {!offerPrice || offerPrice === 0
+                    ? "Aplica una oferta!"
+                    : offerPrice >= maxOffert
+                    ? "Oferta aceptada!"
+                    : "Oferta no recomendada!"}
+                </span>
+              </div>
+            </div>
           </fieldset>
           {/* imagenes*/}
           <fieldset className="bg-grayLight h-fit mb-[12px] border-2 border-secundary rounded-md flex justify-center items-center flex-wrap gap-3 p-2 ">

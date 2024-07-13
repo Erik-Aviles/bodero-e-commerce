@@ -4,7 +4,8 @@ const taxToChoose = [
 ];
 
 const profitabilityToChoose = [
-  { value: "", profitability: "" },
+  { value: "0", profitability: "0" },
+  { value: "2", profitability: "2%" },
   { value: "5", profitability: "5%" },
   { value: "10", profitability: "10%" },
   { value: "15", profitability: "15%" },

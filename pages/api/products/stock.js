@@ -1,5 +1,6 @@
 import { moogoseConnect } from "@/lib/mongoose";
 import { Product } from "@/models/Product";
+import messages from "@/utils/messages";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -10,9 +11,12 @@ export default async function handler(req, res) {
       const { _id, lastquantity } = req.body;
 
       if (!_id || _id.trim() === "") {
+        return res.status(400).json({ message: messages.error.idNotValid });
+      }
+      if (lastquantity < 0) {
         return res
           .status(400)
-          .json({ message: "ID no válida o falta la última cantidad" });
+          .json({ message: messages.error.unsupportedValue });
       }
 
       const product = await Product.findById(_id);
@@ -28,9 +32,7 @@ export default async function handler(req, res) {
 
       await product.save();
 
-      return res
-        .status(200)
-        .json({ message: "Producto actualizado exitosamente" });
+      return res.status(200).json({ message: messages.success.addedStock });
     } catch (err) {
       return res.status(500).json({
         message: "Error al actualizar el producto",
