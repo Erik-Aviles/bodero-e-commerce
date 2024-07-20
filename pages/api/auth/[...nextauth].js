@@ -1,5 +1,6 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
+import { moogoseConnect } from "@/lib/mongoose";
 import clientPromise from "@/lib/mongobd";
 import { User } from "@/models/User";
 import NextAuth from "next-auth";
@@ -19,6 +20,7 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        await moogoseConnect();
         if (!credentials.email && !credentials.password) {
           throw new Error("Por favor ingrese un correo y una contraseña");
         }
