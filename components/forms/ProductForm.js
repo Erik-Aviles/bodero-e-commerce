@@ -3,21 +3,21 @@ import { Autocomplete, AutocompleteItem, Input } from "@nextui-org/react";
 import React, { useContext, useEffect, useState } from "react";
 import NotificationContext from "@/context/NotificationContext";
 import ModalCategories from "../modals/ModalCategories";
-import ButtonClose from "../buttons/ButtonClose";
 import useCategories from "@/hooks/useCategories";
+import ButtonClose from "../buttons/ButtonClose";
 import { DeleteIcon, UpLoadIcon } from "../Icons";
 import { ReactSortable } from "react-sortablejs";
 import useProducts from "@/hooks/useProducts";
+import { Loader } from "../snnipers/Loader";
 import useLoading from "@/hooks/useLoading";
 import { capitalize } from "@/utils/utils";
 import axios from "axios";
-import { Loader } from "../snnipers/Loader";
 
 const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
   const { isLoading, startLoading, finishtLoading } = useLoading();
-  const { getProducts } = useProducts();
-  const { newCategories } = useCategories();
   const { showNotification } = useContext(NotificationContext);
+  const { mutateProducts } = useProducts();
+  const { categories } = useCategories();
 
   const initialCodes = { code: [], codeWeb: [], codeEnterprise: [] };
   const [codes, setCodes] = useState(initialCodes);
@@ -160,7 +160,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
         msj: data?.message,
         status: "success",
       });
-      getProducts();
+      mutateProducts();
       resetCodesVerified();
       fetchDataCodes();
       setTitle("");
@@ -232,7 +232,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
           msj: `Producto: ${capitalize(rest.title)}, ${data?.message}`,
           status: "success",
         });
-        getProducts();
+        mutateProducts();
         toggleModal();
       } catch (error) {
         showNotification({
@@ -552,7 +552,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
             <Autocomplete
               aria-label="Seleccion de categoria"
               label="Selecionar"
-              defaultItems={newCategories.sort((a, b) =>
+              defaultItems={categories.sort((a, b) =>
                 a.name.localeCompare(b.name)
               )}
               selectedKey={category}

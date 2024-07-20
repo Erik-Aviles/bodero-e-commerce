@@ -1,15 +1,28 @@
-import React from "react";
-import Layout from "@/components/Layout";
-import Head from "next/head";
 import TableProduct from "@/components/tables/TableProduct";
 import Spinner from "@/components/snnipers/Spinner";
+import useDeleteItem from "@/hooks/useDeleteItem";
 import useProducts from "@/hooks/useProducts";
+import { withSwal } from "react-sweetalert2";
+import Layout from "@/components/Layout";
+import Head from "next/head";
+import React from "react";
 
-export default function Products() {
-  const { newProduct, error, isLoading, formatPrice, deleteProduct } =
+const ProductsPage = withSwal(({ swal }) => {
+  const deleteItem = useDeleteItem();
+  const { products, isErrorProducts, isLoadingProducts, mutateProducts } =
     useProducts();
 
-  if (error) return <div>Falló al cargar los productos</div>;
+  const handleDeleteProduct = (item) => {
+    deleteItem({
+      swal,
+      getItems: mutateProducts,
+      item,
+      apiEndpoint: "products",
+      itemNameKey: "title",
+    });
+  };
+
+  if (isErrorProducts) return <div>Falló al cargar los productos</div>;
 
   return (
     <>
@@ -22,18 +35,18 @@ export default function Products() {
       </Head>
       <Layout>
         <h3>Panel de productos</h3>
-        {isLoading || !newProduct ? (
+        {isLoadingProducts ? (
           <Spinner />
         ) : (
           <section className="w-full md:px-4 ">
             <TableProduct
-              products={newProduct}
-              deleteProduct={deleteProduct}
-              formatPrice={formatPrice}
+              products={products}
+              deleteProduct={handleDeleteProduct}
             />
           </section>
         )}
       </Layout>
     </>
   );
-}
+});
+export default ProductsPage;

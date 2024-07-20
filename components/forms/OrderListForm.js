@@ -2,21 +2,17 @@ import React, { useContext, useEffect, useState } from "react";
 import { Autocomplete, AutocompleteItem, Input } from "@nextui-org/react";
 import NotificationContext from "@/context/NotificationContext";
 import ModalCustomers from "../modals/ModalCustomers";
-import useCustomers from "@/hooks/useCustomers";
 import { justFirstWord } from "@/utils/justFirstWord";
 import ButtonClose from "../buttons/ButtonClose";
+import useCustomers from "@/hooks/useCustomers";
 import { capitalize } from "@/utils/utils";
 import moment from "moment";
 import axios from "axios";
+import useOrderList from "@/hooks/useOrderList";
 
-const OrderListForm = ({
-  order,
-  titulo,
-  textSmall,
-  toggleModal,
-  fetchOrders,
-}) => {
-  const { newCustomers } = useCustomers();
+const OrderListForm = ({ order, titulo, textSmall, toggleModal }) => {
+  const { mutateOrderList } = useOrderList();
+  const { customers } = useCustomers();
   const { showNotification } = useContext(NotificationContext);
 
   const [customer, setCustomer] = useState(order?.customer || "");
@@ -52,7 +48,7 @@ const OrderListForm = ({
         msj: data.message,
         status: "success",
       });
-      fetchOrders();
+      mutateOrderList();
       setCustomer("");
       setArticulo("");
       setDate("");
@@ -91,7 +87,7 @@ const OrderListForm = ({
         msj: `Pedido: ${capitalize(rest.articulo)}, ${data.message}`,
         status: "success",
       });
-      fetchOrders();
+      mutateOrderList();
       setCustomer("");
       setArticulo("");
       setDate("");
@@ -157,7 +153,7 @@ const OrderListForm = ({
               isRequired={true}
               aria-label="Seleccion de clientes"
               label="Clientes"
-              defaultItems={newCustomers.sort((a, b) =>
+              defaultItems={customers.sort((a, b) =>
                 a.name.localeCompare(b.name)
               )}
               selectedKey={customer}

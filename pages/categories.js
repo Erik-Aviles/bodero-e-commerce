@@ -1,14 +1,32 @@
-import React from "react";
 import TableCategory from "@/components/tables/TableCategory";
-import useCategories from "@/hooks/useCategories";
 import Spinner from "@/components/snnipers/Spinner";
+import useCategories from "@/hooks/useCategories";
+import useDeleteItem from "@/hooks/useDeleteItem";
+import { withSwal } from "react-sweetalert2";
 import Layout from "@/components/Layout";
 import Head from "next/head";
+import React from "react";
 
-export default function Categories() {
-  const { newCategories, error, isLoading, deleteCaterory } = useCategories();
+const CategoriesPage = withSwal(({ swal }) => {
+  const deleteItem = useDeleteItem();
+  const {
+    categories,
+    isErrorSCategories,
+    isLoadingCategories,
+    mutateCategories,
+  } = useCategories();
 
-  if (error) return <div>Falló al cargar las categorias</div>;
+  const handleDeleteCategory = (item) => {
+    deleteItem({
+      swal,
+      getItems: mutateCategories,
+      item,
+      apiEndpoint: "categories",
+      itemNameKey: "name",
+    });
+  };
+
+  if (isErrorSCategories) return <div>Falló al cargar las categorias</div>;
 
   return (
     <>
@@ -21,17 +39,18 @@ export default function Categories() {
       </Head>
       <Layout>
         <h3>Panel de categoria</h3>
-        {isLoading || !newCategories ? (
+        {isLoadingCategories ? (
           <Spinner />
         ) : (
           <section className="max-w-4xl mx-auto">
             <TableCategory
-              categories={newCategories}
-              deleteCaterory={deleteCaterory}
+              categories={categories}
+              deleteCaterory={handleDeleteCategory}
             />
           </section>
         )}
       </Layout>
     </>
   );
-}
+});
+export default CategoriesPage;

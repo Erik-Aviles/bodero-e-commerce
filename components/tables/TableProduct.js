@@ -1,4 +1,11 @@
 import React, { useCallback, useMemo, useState } from "react";
+import { SearchIcon, ChevronDownIcon, DeleteRIcon } from "@/components/Icons";
+import ModalRegisterStockProduct from "../modals/ModalRegisterStockProduct";
+import { columnsProduct } from "@/resources/columnTables";
+import ModalProducts from "../modals/ModalProducts";
+import removeAccents from "@/utils/removeAccents";
+import { capitalize } from "@/utils/utils";
+import { useRouter } from "next/router";
 import {
   Table,
   TableHeader,
@@ -16,14 +23,7 @@ import {
   Pagination,
   Tooltip,
 } from "@nextui-org/react";
-import { SearchIcon, ChevronDownIcon, DeleteRIcon } from "@/components/Icons";
-
-import { columnsProduct } from "@/resources/columnTables";
-import { capitalize } from "@/utils/utils";
-import removeAccents from "@/utils/removeAccents";
-import ModalRegisterStockProduct from "../modals/ModalRegisterStockProduct";
-import ModalProducts from "../modals/ModalProducts";
-import { useRouter } from "next/router";
+import { formatPrice } from "@/utils/formatPrice";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "actions",
@@ -37,7 +37,7 @@ const INITIAL_VISIBLE_COLUMNS = [
   "compatibility",
 ];
 
-export default function TableProduct({ products, deleteProduct, formatPrice }) {
+export default function TableProduct({ products, deleteProduct }) {
   const router = useRouter();
   const path = router.pathname;
 

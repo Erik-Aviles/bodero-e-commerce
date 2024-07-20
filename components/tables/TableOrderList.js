@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
+import ModalOrderListProduct from "../modals/ModalOrderListProduct";
+import { DeleteRIcon, SearchIcon, VerifyIcon } from "../Icons";
+import { columnsOrdersList } from "@/resources/columnTables";
+import { justFirstWord } from "@/utils/justFirstWord";
+import removeAccents from "@/utils/removeAccents";
+import { capitalize } from "@/utils/utils";
 import {
   Table,
   TableHeader,
@@ -13,13 +19,6 @@ import {
   Input,
   Chip,
 } from "@nextui-org/react";
-
-import { DeleteRIcon, SearchIcon, VerifyIcon } from "../Icons";
-import { columnsOrdersList } from "@/resources/columnTables";
-import ModalOrderListProduct from "../modals/ModalOrderListProduct";
-import removeAccents from "@/utils/removeAccents";
-import { justFirstWord } from "@/utils/justFirstWord";
-import { capitalize } from "@/utils/utils";
 
 const statusColorMap = {
   true: "success",
@@ -38,7 +37,6 @@ export default function TableOrderList({
   verifyOrderDelivery,
   orders,
   deleteOrder,
-  fetchOrders,
   newCustomers,
 }) {
   const [filterValue, setFilterValue] = useState("");
@@ -92,7 +90,7 @@ export default function TableOrderList({
       case "customer":
         return (
           <div className="flex flex-col ">
-            {filteredResult.length !== 0 ? (
+            {filteredResult.length > 0 ? (
               <>
                 <p className="text-bold text-tiny text-primary-400 whitespace-nowrap">
                   {`${justFirstWord(capitalize(filteredResult[0]?.name))} ` +
@@ -106,7 +104,7 @@ export default function TableOrderList({
               </>
             ) : (
               <p className=" break-words text-error text-bold text-tiny capitalize">
-                {"Cliente Registrado"}
+                {"Cliente registrado"}
               </p>
             )}
           </div>
@@ -151,7 +149,7 @@ export default function TableOrderList({
       case "actions":
         return (
           <div className="flex items-center gap-3 ">
-            <ModalOrderListProduct order={order} fetchOrders={fetchOrders} />
+            <ModalOrderListProduct order={order} />
             <Tooltip color="danger" content="Eliminar">
               <span className="text-lg text-danger cursor-pointer active:opacity-50">
                 <DeleteRIcon
@@ -200,7 +198,7 @@ export default function TableOrderList({
           <span className="text-default-400 text-small">
             Total, {orders.length} Ordenes.
           </span>
-          <ModalOrderListProduct fetchOrders={fetchOrders} />
+          <ModalOrderListProduct />
         </div>
 
         <Input

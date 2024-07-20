@@ -1,14 +1,16 @@
-import UserContext from "@/context/UserContext";
-import { useContext } from "react";
+import { fetcher } from "@/utils/fetcher";
+import useSWR from "swr";
 
 const useUsers = () => {
-  const context = useContext(UserContext);
+  const apiUrl = "/api/users/full";
+  const { data, error, isLoading, mutate } = useSWR(apiUrl, fetcher);
 
-  if (!context) {
-    throw new Error("useUsers debe usarse dentro de un UserProvider");
-  }
-
-  return context;
+  return {
+    users: data,
+    isErrorUsers: error,
+    isLoadingUsers: isLoading,
+    mutateUsers: mutate,
+  };
 };
 
 export default useUsers;

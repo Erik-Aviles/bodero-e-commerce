@@ -1,14 +1,16 @@
-import CustomerContext from "@/context/CustomerContext";
-import { useContext } from "react";
+import { fetcher } from "@/utils/fetcher";
+import useSWR from "swr";
 
 const useCustomers = () => {
-  const context = useContext(CustomerContext);
+  const apiUrl = "/api/customers/full";
+  const { data, error, isLoading, mutate } = useSWR(apiUrl, fetcher);
 
-  if (!context) {
-    throw new Error("useCustomers debe usarse dentro de un CustomerProvider");
-  }
-
-  return context;
+  return {
+    customers: data,
+    isErrorCustomers: error,
+    isLoadingCustomers: isLoading,
+    mutateCustomers: mutate,
+  };
 };
 
 export default useCustomers;

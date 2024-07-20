@@ -1,14 +1,14 @@
 import NotificationContext from "@/context/NotificationContext";
-import { Input } from "@nextui-org/react";
-import ButtonClose from "../buttons/ButtonClose";
-import { useContext, useState } from "react";
-import useCustomers from "@/hooks/useCustomers";
 import { justFirstWord } from "@/utils/justFirstWord";
+import ButtonClose from "../buttons/ButtonClose";
+import useCustomers from "@/hooks/useCustomers";
+import { useContext, useState } from "react";
+import { Input } from "@nextui-org/react";
 import { capitalize } from "@/utils/utils";
 import axios from "axios";
 
 const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
-  const { getCustomers } = useCustomers();
+  const { mutateCustomers } = useCustomers();
   const { showNotification } = useContext(NotificationContext);
 
   const [name, setName] = useState(customer?.name || "");
@@ -42,7 +42,7 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
         msj: data?.message,
         status: "success",
       });
-      getCustomers();
+      mutateCustomers();
       setName("");
       setLastname("");
       setIdentifications("");
@@ -86,7 +86,7 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
         status: "success",
       });
       toggleModal();
-      getCustomers();
+      mutateCustomers();
       setName("");
       setLastname("");
       setIdentifications("");

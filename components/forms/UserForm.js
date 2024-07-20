@@ -15,8 +15,7 @@ import axios from "axios";
 
 const UserForm = ({ user, titulo, textSmall, toggleModal }) => {
   const { isLoading, startLoading, finishtLoading } = useLoading();
-
-  const { getUsers } = useUsers();
+  const { mutateUsers } = useUsers();
   const { showNotification } = useContext(NotificationContext);
 
   const [fullname, setFullname] = useState(user?.fullname || "");
@@ -45,7 +44,7 @@ const UserForm = ({ user, titulo, textSmall, toggleModal }) => {
         msj: `Usuario: ${capitalize(rest.fullname)}, ${data.message}`,
         status: "success",
       });
-      getUsers();
+      mutateUsers();
       setFullname("");
       setEmail("");
       setPassword("");
@@ -79,7 +78,7 @@ const UserForm = ({ user, titulo, textSmall, toggleModal }) => {
         msj: `Usuario: ${capitalize(rest.fullname)}, ${data.message}`,
         status: "success",
       });
-      getUsers();
+      mutateUsers();
       setFullname("");
       setEmail("");
       setRole("");

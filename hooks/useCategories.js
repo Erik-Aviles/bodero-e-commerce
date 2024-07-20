@@ -1,14 +1,16 @@
-import CategoryContext from "@/context/CategoryContext";
-import { useContext } from "react";
+import { fetcher } from "@/utils/fetcher";
+import useSWR from "swr";
 
 const useCategories = () => {
-  const context = useContext(CategoryContext);
+  const apiUrl = "/api/categories/full";
+  const { data, error, isLoading, mutate } = useSWR(apiUrl, fetcher);
 
-  if (!context) {
-    throw new Error("useCategories debe usarse dentro de un CategoryProvider");
-  }
-
-  return context;
+  return {
+    categories: data,
+    isErrorSCategories: error,
+    isLoadingCategories: isLoading,
+    mutateCategories: mutate,
+  };
 };
 
 export default useCategories;
