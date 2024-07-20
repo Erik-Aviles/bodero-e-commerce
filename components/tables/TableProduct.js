@@ -64,6 +64,7 @@ export default function TableProduct({ products, deleteProduct }) {
   }, [visibleColumns]);
 
   const filteredItems = useMemo(() => {
+    if (!products) return [];
     let filteredProducts = [...products];
 
     if (hasSearchFilter) {

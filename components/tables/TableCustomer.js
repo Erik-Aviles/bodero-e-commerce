@@ -57,6 +57,7 @@ export default function TableCustomer({ customers, deleteCustomer }) {
   }, [visibleColumns]);
 
   const filteredItems = useMemo(() => {
+    if (!customers) return [];
     let filteredCustomers = [...customers];
 
     if (hasSearchFilter) {
