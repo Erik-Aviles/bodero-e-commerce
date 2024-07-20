@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import NotificationContext from "@/context/NotificationContext";
 import TableOrder from "@/components/tables/TableOrder";
 import Spinner from "@/components/snnipers/Spinner";
@@ -7,32 +7,25 @@ import useProducts from "@/hooks/useProducts";
 import { withSwal } from "react-sweetalert2";
 import { fetcher } from "@/utils/fetcher";
 import Layout from "@/components/Layout";
+import useOrder from "@/hooks/useOrder";
 import Head from "next/head";
 import axios from "axios";
 import useSWR from "swr";
 
-export default withSwal((props, ref) => {
-  const { swal } = props;
-  const { getProducts } = useProducts();
+const OrdersPage = withSwal(({ swal }) => {
+  const { orders, isErrorOrders, isLoadingOrders, mutateOrders } = useOrder();
   const { showNotification } = useContext(NotificationContext);
+  const { mutateProducts } = useProducts();
   const deleteItem = useDeleteItem();
-
   const {
     data: minimalProducts,
     error: errorGetMinimal,
     mutate: getMinimal,
   } = useSWR("/api/products/minimal", fetcher, { refreshInterval: 300000 });
 
-  const {
-    data: orders,
-    error,
-    isLoading,
-    mutate,
-  } = useSWR("/api/orders/full", fetcher, { refreshInterval: 300000 });
-
   if (errorGetMinimal) return <div>FalLo al cargar los Productos</div>;
 
-  if (error) return <div>FalLo al cargar las Ordenes</div>;
+  if (isErrorOrders) return <div>FalLo al cargar las Ordenes</div>;
 
   const reduceQuantityProducts = async (order) => {
     const orderId = order._id;
@@ -68,7 +61,7 @@ export default withSwal((props, ref) => {
           msj: "Pedido ha sido aprobado!",
           status: "success",
         });
-        getProducts();
+        mutateProducts();
         getMinimal();
         if (orderId) {
           const items = {
@@ -77,7 +70,7 @@ export default withSwal((props, ref) => {
           };
           try {
             await axios.put("/api/orders/full", items);
-            mutate();
+            mutateOrders();
           } catch (error) {
             showNotification({
               open: true,
@@ -102,15 +95,15 @@ export default withSwal((props, ref) => {
     }
   };
 
-  function deleteOrder(item) {
+  const handleDeleteOrder = (item) => {
     deleteItem({
       swal,
-      getItems: mutate,
+      getItems: mutateOrders,
       item,
       apiEndpoint: "orders",
       itemNameKey: "name",
     });
-  }
+  };
 
   function downloadPdf() {
     showNotification({
@@ -128,15 +121,15 @@ export default withSwal((props, ref) => {
       <Layout>
         <h3>Panel de ordenes</h3>
 
-        {isLoading || !orders ? (
+        {isLoadingOrders || !orders ? (
           <Spinner />
         ) : (
           <section className="max-w-4xl mx-auto mt-4">
             <TableOrder
               downloadPdf={downloadPdf}
               reduceQuantityProducts={reduceQuantityProducts}
+              deleteOrder={handleDeleteOrder}
               orders={orders}
-              deleteOrder={deleteOrder}
             />
           </section>
         )}
@@ -144,3 +137,4 @@ export default withSwal((props, ref) => {
     </>
   );
 });
+export default OrdersPage;

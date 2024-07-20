@@ -7,8 +7,8 @@ import { StockIcon } from "../Icons";
 import axios from "axios";
 
 const ModalRegisterStockProduct = ({ product }) => {
-  const { getProducts } = useProducts();
   const { showNotification } = useContext(NotificationContext);
+  const { mutateProducts } = useProducts();
   const [showModal, setShowOrderModal] = useState(false);
   const [stock, setStock] = useState("");
 
@@ -44,7 +44,7 @@ const ModalRegisterStockProduct = ({ product }) => {
             msj: `Cant.: ${stock}, ${data?.message}`,
             status: "success",
           });
-          getProducts();
+          mutateProducts();
           toggleModal();
         } catch (error) {
           showNotification({

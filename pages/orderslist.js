@@ -1,30 +1,21 @@
 import React, { useContext } from "react";
 import NotificationContext from "@/context/NotificationContext";
 import TableOrderList from "@/components/tables/TableOrderList";
-import useCustomers from "@/hooks/useCustomers";
 import Spinner from "@/components/snnipers/Spinner";
+import useDeleteItem from "@/hooks/useDeleteItem";
+import useCustomers from "@/hooks/useCustomers";
+import useOrderList from "@/hooks/useOrderList";
 import { withSwal } from "react-sweetalert2";
-import { fetcher } from "@/utils/fetcher";
 import Layout from "@/components/Layout";
 import Head from "next/head";
 import axios from "axios";
-import useSWR from "swr";
-import useDeleteItem from "@/hooks/useDeleteItem";
 
-export default withSwal((props, ref) => {
-  const { swal } = props;
-  const deleteItem = useDeleteItem();
+const OrderListPage = withSwal(({ swal }) => {
+  const { orderlist, isErrorOrderList, isLoadingOrderList, mutateOrderList } =
+    useOrderList();
   const { showNotification } = useContext(NotificationContext);
-  const { newCustomers } = useCustomers();
-
-  const {
-    data: orderlist,
-    error,
-    isLoading,
-    mutate,
-  } = useSWR("/api/orderslist/full", fetcher, { refreshInterval: 300000 });
-
-  if (error) return <div>FalLo al cargar las Ordenes</div>;
+  const deleteItem = useDeleteItem();
+  const { customers } = useCustomers();
 
   const verifyOrderDelivery = async (orderId) => {
     if (orderId) {
@@ -35,7 +26,7 @@ export default withSwal((props, ref) => {
       };
       try {
         await axios.put("/api/orderslist/full", items);
-        mutate();
+        mutateOrderList();
         showNotification({
           open: true,
           msj: "Pedido ha sido entregado!",
@@ -52,15 +43,17 @@ export default withSwal((props, ref) => {
     }
   };
 
-  function deleteOrder(item) {
+  const handleDeleteOrder = (item) => {
     deleteItem({
       swal,
-      getItems: mutate,
+      getItems: mutateOrderList,
       item,
       apiEndpoint: "orderslist",
       itemNameKey: "articulo",
     });
-  }
+  };
+
+  if (isErrorOrderList) return <div>FalLo al cargar las Ordenes</div>;
 
   return (
     <>
@@ -70,15 +63,14 @@ export default withSwal((props, ref) => {
       <Layout>
         <h3>Panel de lista de pedidos</h3>
 
-        {isLoading || !orderlist ? (
+        {isLoadingOrderList ? (
           <Spinner />
         ) : (
           <section className="max-w-4xl mx-auto mt-4">
             <TableOrderList
               orders={orderlist}
-              newCustomers={newCustomers}
-              fetchOrders={mutate}
-              deleteOrder={deleteOrder}
+              newCustomers={customers}
+              deleteOrder={handleDeleteOrder}
               verifyOrderDelivery={verifyOrderDelivery}
             />
           </section>
@@ -87,3 +79,4 @@ export default withSwal((props, ref) => {
     </>
   );
 });
+export default OrderListPage;

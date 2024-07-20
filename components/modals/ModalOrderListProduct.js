@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { EdithIcon, PlusIcon } from "../Icons";
 import { Button, Tooltip } from "@nextui-org/react";
 import OrderListForm from "../forms/OrderListForm";
+import { EdithIcon, PlusIcon } from "../Icons";
 import { capitalize } from "@/utils/utils";
+import React, { useState } from "react";
 
-const ModalOrderListProduct = ({ order, fetchOrders }) => {
+const ModalOrderListProduct = ({ order }) => {
   const [showModal, setShowOrderModal] = useState(false);
 
   const toggleModal = () => {
@@ -49,7 +49,6 @@ const ModalOrderListProduct = ({ order, fetchOrders }) => {
                   }
                   order={order}
                   toggleModal={toggleModal}
-                  fetchOrders={fetchOrders}
                 />
               </div>
             </div>

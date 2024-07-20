@@ -41,11 +41,11 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    jwt({ token, user, profile, session }) {
+    async jwt({ token, user, profile, session }) {
       if (user) token.user = user;
       return token;
     },
-    session({ session, token, user }) {
+    async session({ session, token, user }) {
       session.user = token.user;
       return session;
     },
@@ -54,6 +54,7 @@ export const authOptions = {
   session: { strategy: "jwt", maxAge: 60 * 60 * 24 },
   jwt: {
     secret: process.env.NEXTAUTH_SECRET,
+    maxAge: 60 * 60 * 24,
   },
   debug: process.env.NODE_ENV === "development",
   pages: {

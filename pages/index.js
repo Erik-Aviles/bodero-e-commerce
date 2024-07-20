@@ -1,41 +1,20 @@
 import Head from "next/head";
+import { endpointsHome } from "@/resources/endpointsHome";
 import CartDashboard from "@/components/CartDashboard";
+import { dashList } from "@/resources/dashList";
 import Layout from "@/components/Layout";
 import { fetcher } from "@/utils/fetcher";
 import useSWR from "swr";
-import { dashList } from "@/resources/dashList";
 
 export default function Home() {
-  const { data: sizeProducts, isLoading: isLoadProducts } = useSWR(
-    "/api/products/size",
-    fetcher,
-    { refreshInterval: 600000 }
-  );
-  const { data: sizeCategories, isLoading: isLoadCategories } = useSWR(
-    "/api/categories/size",
-    fetcher,
-    { refreshInterval: 600000 }
-  );
-  const { data: sizeUsers, isLoading: isLoadUsers } = useSWR(
-    "/api/users/size",
-    fetcher,
-    { refreshInterval: 600000 }
-  );
-  const { data: sizeCustomers, isLoading: isLoadCustomers } = useSWR(
-    "/api/customers/size",
-    fetcher,
-    { refreshInterval: 600000 }
-  );
-  const { data: sizeOrders, isLoading: isLoadOrders } = useSWR(
-    "/api/orders/size",
-    fetcher,
-    { refreshInterval: 600000 }
-  );
-  const { data: sizeOrdersList, isLoading: isLoadOrdersList } = useSWR(
-    "/api/orderslist/size",
-    fetcher,
-    { refreshInterval: 600000 }
-  );
+  const refreshInterval = 600000;
+
+  const swrData = endpointsHome.reduce((acc, { key, url }) => {
+    const { data, isLoading } = useSWR(url, fetcher, { refreshInterval });
+    acc[key] = data;
+    acc[`isLoad${key.charAt(0).toUpperCase() + key.slice(1)}`] = isLoading;
+    return acc;
+  }, {});
 
   return (
     <>
@@ -68,20 +47,22 @@ export default function Home() {
                     src={src}
                     alt={alt}
                     isLoading={
-                      (title === "productos" && isLoadProducts) ||
-                      (title === "categorias" && isLoadCategories) ||
-                      (href === "/users" && isLoadUsers) ||
-                      (href === "/customers" && isLoadCustomers) ||
-                      (href === "/orderslist" && isLoadOrdersList) ||
-                      (href === "/orders" && isLoadOrders)
+                      (title === "productos" && swrData.isLoadSizeProducts) ||
+                      (title === "categorias" &&
+                        swrData.isLoadSizeCategories) ||
+                      (href === "/users" && swrData.isLoadSizeUsers) ||
+                      (href === "/customers" && swrData.isLoadSizeCustomers) ||
+                      (href === "/orderslist" &&
+                        swrData.isLoadSizeOrdersList) ||
+                      (href === "/orders" && swrData.isLoadSizeOrders)
                     }
                     itemCount={
-                      (title === "productos" && sizeProducts) ||
-                      (title === "categorias" && sizeCategories) ||
-                      (href === "/users" && sizeUsers) ||
-                      (href === "/customers" && sizeCustomers) ||
-                      (href === "/orderslist" && sizeOrdersList) ||
-                      (href === "/orders" && sizeOrders)
+                      (title === "productos" && swrData.sizeProducts) ||
+                      (title === "categorias" && swrData.sizeCategories) ||
+                      (href === "/users" && swrData.sizeUsers) ||
+                      (href === "/customers" && swrData.sizeCustomers) ||
+                      (href === "/orderslist" && swrData.sizeOrdersList) ||
+                      (href === "/orders" && swrData.sizeOrders)
                     }
                   />
                 ))}

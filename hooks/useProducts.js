@@ -1,14 +1,15 @@
-import ProductContext from "@/context/ProductContext";
-import { useContext } from "react";
+import { fetcher } from "@/utils/fetcher";
+import useSWR from "swr";
 
 const useProducts = () => {
-  const context = useContext(ProductContext);
+  const apiUrl = "/api/products/full";
+  const { data, error, isLoading, mutate } = useSWR(apiUrl, fetcher);
 
-  if (!context) {
-    throw new Error("useProducts debe usarse dentro de un ProductProvider");
-  }
-
-  return context;
+  return {
+    products: data,
+    isErrorProducts: error,
+    isLoadingProducts: isLoading,
+    mutateProducts: mutate,
+  };
 };
-
 export default useProducts;

@@ -1,14 +1,27 @@
 import React from "react";
+import TableCustomer from "@/components/tables/TableCustomer";
 import Spinner from "@/components/snnipers/Spinner";
+import useDeleteItem from "@/hooks/useDeleteItem";
+import useCustomers from "@/hooks/useCustomers";
+import { withSwal } from "react-sweetalert2";
 import Layout from "@/components/Layout";
 import Head from "next/head";
-import TableCustomer from "@/components/tables/TableCustomer";
-import useCustomers from "@/hooks/useCustomers";
 
-export default function Customers() {
-  const { newCustomers, error, isLoading, deleteCustomer } = useCustomers();
+const CustomersPage = withSwal(({ swal }) => {
+  const deleteItem = useDeleteItem();
+  const { customers, isErrorCustomers, isLoadingCustomers, mutateCustomers } =
+    useCustomers();
 
-  if (error) return <p>Falló al cargar clientes</p>;
+  const handleDeleteCustomer = (item) => {
+    deleteItem({
+      swal,
+      getItems: mutateCustomers,
+      item,
+      apiEndpoint: "customers",
+      itemNameKey: "name",
+    });
+  };
+  if (isErrorCustomers) return <p>Falló al cargar clientes</p>;
 
   return (
     <>
@@ -17,17 +30,18 @@ export default function Customers() {
       </Head>
       <Layout>
         <h3>Panel de clientes</h3>
-        {isLoading || !newCustomers ? (
+        {isLoadingCustomers ? (
           <Spinner />
         ) : (
           <section className="max-w-5xl mx-auto ">
             <TableCustomer
-              customers={newCustomers}
-              deleteCustomer={deleteCustomer}
+              customers={customers}
+              deleteCustomer={handleDeleteCustomer}
             />
           </section>
         )}
       </Layout>
     </>
   );
-}
+});
+export default CustomersPage;

@@ -11,7 +11,7 @@ import axios from "axios";
 
 const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
   const { isLoading, startLoading, finishtLoading } = useLoading();
-  const { getCategories } = useCategories();
+  const { mutateCategories } = useCategories();
   const { showNotification } = useContext(NotificationContext);
 
   const [name, setName] = useState(category?.name || "");
@@ -34,7 +34,7 @@ const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
         msj: data?.message,
         status: "success",
       });
-      getCategories();
+      mutateCategories();
       setName("");
       setImage("");
       setDescription("");
@@ -68,7 +68,7 @@ const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
           msj: `Categoria: ${capitalize(rest.name)}, ${data?.message}`,
           status: "success",
         });
-        getCategories();
+        mutateCategories();
         setImage("");
         setDescription("");
         setName("");
