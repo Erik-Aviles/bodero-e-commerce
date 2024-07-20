@@ -39,7 +39,7 @@ const CategoriesPage = withSwal(({ swal }) => {
       </Head>
       <Layout>
         <h3>Panel de categoria</h3>
-        {isLoadingCategories ? (
+        {isLoadingCategories || !categories ? (
           <Spinner />
         ) : (
           <section className="max-w-4xl mx-auto">

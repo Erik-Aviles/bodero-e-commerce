@@ -6,8 +6,7 @@ export default async function handler(req, res) {
   if (req.method === "GET") {
     await moogoseConnect();
     try {
-      const users = await User.find();
-      const sizeUsers = users?.length;
+      const sizeUsers = await User.countDocuments();
       return res.status(200).json(sizeUsers);
     } catch (error) {
       return res.status(500).json({ message: messages.error.default, error });

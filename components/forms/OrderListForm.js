@@ -153,7 +153,7 @@ const OrderListForm = ({ order, titulo, textSmall, toggleModal }) => {
               isRequired={true}
               aria-label="Seleccion de clientes"
               label="Clientes"
-              defaultItems={customers.sort((a, b) =>
+              defaultItems={customers?.sort((a, b) =>
                 a.name.localeCompare(b.name)
               )}
               selectedKey={customer}

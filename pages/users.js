@@ -29,7 +29,7 @@ const UsersPage = withSwal(({ swal }) => {
       </Head>
       <Layout>
         <h3>Panel de usuarios</h3>
-        {isLoadingUsers ? (
+        {isLoadingUsers || !users ? (
           <Spinner />
         ) : (
           <section className="max-w-4xl mx-auto">

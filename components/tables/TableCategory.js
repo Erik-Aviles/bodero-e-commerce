@@ -30,6 +30,7 @@ export default function TableCategory({ categories, deleteCaterory }) {
   const hasSearchFilter = Boolean(filterValue);
 
   const filteredItems = useMemo(() => {
+    if (!categories) return [];
     let resultadoFiltrado = [...categories];
 
     if (hasSearchFilter) {

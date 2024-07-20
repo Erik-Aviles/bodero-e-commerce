@@ -13,7 +13,9 @@ export default async function handle(req, res) {
     } else {
       try {
         await moogoseConnect();
-        const order = await Order.find().sort({ createdAt: -1 });
+        const order = await Order.find({}, null, {
+          sort: { _id: -1 },
+        });
         return res.status(200).json(order);
       } catch (error) {
         return res

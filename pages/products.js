@@ -35,7 +35,7 @@ const ProductsPage = withSwal(({ swal }) => {
       </Head>
       <Layout>
         <h3>Panel de productos</h3>
-        {isLoadingProducts ? (
+        {isLoadingProducts || !products ? (
           <Spinner />
         ) : (
           <section className="w-full md:px-4 ">

@@ -63,7 +63,7 @@ const OrderListPage = withSwal(({ swal }) => {
       <Layout>
         <h3>Panel de lista de pedidos</h3>
 
-        {isLoadingOrderList ? (
+        {isLoadingOrderList || !orderlist ? (
           <Spinner />
         ) : (
           <section className="max-w-4xl mx-auto mt-4">

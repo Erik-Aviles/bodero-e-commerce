@@ -59,6 +59,7 @@ export default function TableOrder({
   }, [visibleColumns]);
 
   const filteredItems = useMemo(() => {
+    if (!orders) return [];
     let resultadoFiltrado = [...orders];
 
     if (hasSearchFilter) {

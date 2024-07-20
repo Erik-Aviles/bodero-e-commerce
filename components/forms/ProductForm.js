@@ -552,7 +552,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
             <Autocomplete
               aria-label="Seleccion de categoria"
               label="Selecionar"
-              defaultItems={categories.sort((a, b) =>
+              defaultItems={categories?.sort((a, b) =>
                 a.name.localeCompare(b.name)
               )}
               selectedKey={category}

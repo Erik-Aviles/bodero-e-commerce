@@ -5,9 +5,9 @@ export default async function handler(req, res) {
   if (req.method === "GET") {
     try {
       await moogoseConnect();
-      const minimalOrders = await Order.find()
-        .sort({ createdAt: -1 })
-        .select("_id name paid line_items createdAt updatedAt");
+      const minimalOrders = await Order.find({}, null, {
+        sort: { _id: -1 },
+      }).select("_id name paid line_items createdAt updatedAt");
       return res.status(200).json(minimalOrders);
     } catch (err) {
       return res.status(500).json({ err: err.message });

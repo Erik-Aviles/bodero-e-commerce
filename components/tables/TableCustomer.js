@@ -84,6 +84,7 @@ export default function TableCustomer({ customers, deleteCustomer }) {
   }, [page, filteredItems, rowsPerPage]);
 
   const sortedItems = useMemo(() => {
+    if (!items) return [];
     return [...items].sort((a, b) => {
       const first = a[sortDescriptor.column];
       const second = b[sortDescriptor.column];

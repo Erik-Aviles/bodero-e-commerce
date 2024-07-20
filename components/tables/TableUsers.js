@@ -29,6 +29,7 @@ export default function TableUser({ users, deleteUser }) {
   const hasSearchFilter = Boolean(filterValue);
 
   const filteredItems = useMemo(() => {
+    if (!users) return [];
     let resultadoFiltrado = [...users];
 
     if (hasSearchFilter) {
