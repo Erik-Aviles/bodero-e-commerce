@@ -9,12 +9,15 @@ import useSWR from "swr";
 export default function Home() {
   const refreshInterval = 600000;
 
-  const swrData = endpointsHome.reduce((acc, { key, url }) => {
+  const swrData = {};
+  const swrLoadingStates = {};
+
+  endpointsHome.forEach(({ key, url }) => {
     const { data, isLoading } = useSWR(url, fetcher, { refreshInterval });
-    acc[key] = data;
-    acc[`isLoad${key.charAt(0).toUpperCase() + key.slice(1)}`] = isLoading;
-    return acc;
-  }, {});
+    swrData[key] = data;
+    swrLoadingStates[`isLoad${key.charAt(0).toUpperCase() + key.slice(1)}`] =
+      isLoading;
+  });
 
   return (
     <>
@@ -47,14 +50,16 @@ export default function Home() {
                     src={src}
                     alt={alt}
                     isLoading={
-                      (title === "productos" && swrData.isLoadSizeProducts) ||
+                      (title === "productos" &&
+                        swrLoadingStates.isLoadSizeProducts) ||
                       (title === "categorias" &&
-                        swrData.isLoadSizeCategories) ||
-                      (href === "/users" && swrData.isLoadSizeUsers) ||
-                      (href === "/customers" && swrData.isLoadSizeCustomers) ||
+                        swrLoadingStates.isLoadSizeCategories) ||
+                      (href === "/users" && swrLoadingStates.isLoadSizeUsers) ||
+                      (href === "/customers" &&
+                        swrLoadingStates.isLoadSizeCustomers) ||
                       (href === "/orderslist" &&
-                        swrData.isLoadSizeOrdersList) ||
-                      (href === "/orders" && swrData.isLoadSizeOrders)
+                        swrLoadingStates.isLoadSizeOrdersList) ||
+                      (href === "/orders" && swrLoadingStates.isLoadSizeOrders)
                     }
                     itemCount={
                       (title === "productos" && swrData.sizeProducts) ||

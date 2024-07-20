@@ -25,15 +25,20 @@ export default function LoginPage() {
     if (status === "authenticated") {
       router.push("/");
     }
-  }, []);
+  }, [status, router]);
 
   const sendMessage = async () => {
     startLoading();
     const data = {
       email: email.toLowerCase(),
     };
-    await axios.post(`/api/send`, data);
-    finishtLoading();
+    try {
+      await axios.post(`/api/send`, data);
+    } catch (error) {
+      console.error("Error al enviar el mensaje:", error);
+    } finally {
+      finishtLoading();
+    }
   };
 
   const login = async (e) => {
