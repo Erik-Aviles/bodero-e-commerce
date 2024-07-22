@@ -21,7 +21,6 @@ const UsersPage = withSwal(({ swal }) => {
     });
   };
 
-  if (isErrorUsers) return <div>Falló al cargar a los usuario</div>;
   return (
     <>
       <Head>

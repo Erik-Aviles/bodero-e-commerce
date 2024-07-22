@@ -21,7 +21,6 @@ const CustomersPage = withSwal(({ swal }) => {
       itemNameKey: "name",
     });
   };
-  if (isErrorCustomers) return <p>Falló al cargar clientes</p>;
 
   return (
     <>

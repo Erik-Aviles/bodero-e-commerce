@@ -53,8 +53,6 @@ const OrderListPage = withSwal(({ swal }) => {
     });
   };
 
-  if (isErrorOrderList) return <div>FalLo al cargar las Ordenes</div>;
-
   return (
     <>
       <Head>

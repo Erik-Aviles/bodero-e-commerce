@@ -26,8 +26,6 @@ const CategoriesPage = withSwal(({ swal }) => {
     });
   };
 
-  if (isErrorSCategories) return <div>Falló al cargar las categorias</div>;
-
   return (
     <>
       <Head>
