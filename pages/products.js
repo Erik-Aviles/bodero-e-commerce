@@ -22,9 +22,7 @@ const ProductsPage = withSwal(({ swal }) => {
     });
   };
 
-  if (isErrorProducts) {
-    console.error("Falló al cargar los productos");
-  }
+  if (isErrorProducts) return <div>Falló al cargar los productos</div>;
 
   return (
     <>

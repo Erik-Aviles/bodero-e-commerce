@@ -23,13 +23,9 @@ const OrdersPage = withSwal(({ swal }) => {
     mutate: getMinimal,
   } = useSWR("/api/products/minimal", fetcher, { refreshInterval: 300000 });
 
-  if (errorGetMinimal) {
-    console.error("FalLo al cargar los Productos minimos");
-  }
+  if (errorGetMinimal) return <div>FalLo al cargar los Productos</div>;
 
-  if (isErrorOrders) {
-    console.error("FalLo al cargar la lista de ventas");
-  }
+  if (isErrorOrders) return <div>FalLo al cargar las Ordenes</div>;
 
   const reduceQuantityProducts = async (order) => {
     const orderId = order._id;
