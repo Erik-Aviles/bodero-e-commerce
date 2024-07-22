@@ -3,7 +3,6 @@ import { Autocomplete, AutocompleteItem, Input } from "@nextui-org/react";
 import React, { useContext, useEffect, useState } from "react";
 import NotificationContext from "@/context/NotificationContext";
 import ModalCategories from "../modals/ModalCategories";
-import useCategories from "@/hooks/useCategories";
 import ButtonClose from "../buttons/ButtonClose";
 import { DeleteIcon, UpLoadIcon } from "../Icons";
 import { ReactSortable } from "react-sortablejs";
@@ -12,6 +11,7 @@ import { Loader } from "../snnipers/Loader";
 import useLoading from "@/hooks/useLoading";
 import { capitalize } from "@/utils/utils";
 import axios from "axios";
+import useCategories from "@/hooks/useCategories";
 
 const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
   const { isLoading, startLoading, finishtLoading } = useLoading();
@@ -544,27 +544,29 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
           </fieldset>
 
           {/* Categorias */}
-          <fieldset className="bg-grayLight  border-container ">
-            <legend className="text-center text-secondary">
-              SELECCIONAR CATEGORIA
-            </legend>
+          {categories && (
+            <fieldset className="bg-grayLight  border-container ">
+              <legend className="text-center text-secondary">
+                SELECCIONAR CATEGORIA
+              </legend>
 
-            <Autocomplete
-              aria-label="Seleccion de categoria"
-              label="Selecionar"
-              defaultItems={categories?.sort((a, b) =>
-                a.name.localeCompare(b.name)
-              )}
-              selectedKey={category}
-              onSelectionChange={setCategory}
-            >
-              {(item) => (
-                <AutocompleteItem key={item._id} value={item._id}>
-                  {capitalize(item.name)}
-                </AutocompleteItem>
-              )}
-            </Autocomplete>
-          </fieldset>
+              <Autocomplete
+                aria-label="Seleccion de categoria"
+                label="Selecionar"
+                defaultItems={categories.sort((a, b) =>
+                  a.name.localeCompare(b.name)
+                )}
+                selectedKey={category}
+                onSelectionChange={setCategory}
+              >
+                {(item) => (
+                  <AutocompleteItem key={item._id} value={item._id}>
+                    {capitalize(item.name)}
+                  </AutocompleteItem>
+                )}
+              </Autocomplete>
+            </fieldset>
+          )}
         </div>
 
         {/* Columna de datos personales y descripcion*/}

@@ -144,33 +144,35 @@ const OrderListForm = ({ order, titulo, textSmall, toggleModal }) => {
             />
           </div>
         </fieldset>
-        <fieldset className="bg-grayLight flex flex-col border-container ">
-          <legend className="text-center text-secondary">
-            Seleccionar cliente
-          </legend>
-          <div className="flex w-full flex-col">
-            <Autocomplete
-              isRequired={true}
-              aria-label="Seleccion de clientes"
-              label="Clientes"
-              defaultItems={customers?.sort((a, b) =>
-                a.name.localeCompare(b.name)
-              )}
-              selectedKey={customer}
-              onSelectionChange={setCustomer}
-            >
-              {(item) => (
-                <AutocompleteItem key={item._id}>
-                  {`${justFirstWord(capitalize(item.name))} ` +
-                    ` ${justFirstWord(capitalize(item.lastname))} ` +
-                    (item?.identifications
-                      ? `- ${item?.identifications}`
-                      : "- Sin cedula")}
-                </AutocompleteItem>
-              )}
-            </Autocomplete>
-          </div>
-        </fieldset>
+        {customers && (
+          <fieldset className="bg-grayLight flex flex-col border-container ">
+            <legend className="text-center text-secondary">
+              Seleccionar cliente
+            </legend>
+            <div className="flex w-full flex-col">
+              <Autocomplete
+                isRequired={true}
+                aria-label="Seleccion de clientes"
+                label="Clientes"
+                defaultItems={customers?.sort((a, b) =>
+                  a.name.localeCompare(b.name)
+                )}
+                selectedKey={customer}
+                onSelectionChange={setCustomer}
+              >
+                {(item) => (
+                  <AutocompleteItem key={item._id}>
+                    {`${justFirstWord(capitalize(item.name))} ` +
+                      ` ${justFirstWord(capitalize(item.lastname))} ` +
+                      (item?.identifications
+                        ? `- ${item?.identifications}`
+                        : "- Sin cedula")}
+                  </AutocompleteItem>
+                )}
+              </Autocomplete>
+            </div>
+          </fieldset>
+        )}
         <fieldset className="bg-grayLight flex flex-col border-container ">
           <legend className="text-center text-secondary">
             Seleccionar fecha de registro

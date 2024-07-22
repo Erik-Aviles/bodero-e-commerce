@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import NotificationContext from "@/context/NotificationContext";
 import TableOrderList from "@/components/tables/TableOrderList";
 import Spinner from "@/components/snnipers/Spinner";
@@ -15,7 +15,7 @@ const OrderListPage = withSwal(({ swal }) => {
     useOrderList();
   const { showNotification } = useContext(NotificationContext);
   const deleteItem = useDeleteItem();
-  const { customers } = useCustomers();
+  const { customers, isLoadingCustomers } = useCustomers();
 
   const verifyOrderDelivery = async (orderId) => {
     if (orderId) {
@@ -63,13 +63,13 @@ const OrderListPage = withSwal(({ swal }) => {
       <Layout>
         <h3>Panel de lista de pedidos</h3>
 
-        {isLoadingOrderList || !orderlist ? (
+        {isLoadingOrderList || !orderlist || isLoadingCustomers ? (
           <Spinner />
         ) : (
           <section className="max-w-4xl mx-auto mt-4">
             <TableOrderList
               orders={orderlist}
-              newCustomers={customers}
+              customers={customers}
               deleteOrder={handleDeleteOrder}
               verifyOrderDelivery={verifyOrderDelivery}
             />

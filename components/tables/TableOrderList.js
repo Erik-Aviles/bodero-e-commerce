@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ModalOrderListProduct from "../modals/ModalOrderListProduct";
 import { DeleteRIcon, SearchIcon, VerifyIcon } from "../Icons";
 import { columnsOrdersList } from "@/resources/columnTables";
@@ -19,6 +19,7 @@ import {
   Input,
   Chip,
 } from "@nextui-org/react";
+import { Loader } from "../snnipers/Loader";
 
 const statusColorMap = {
   true: "success",
@@ -36,8 +37,8 @@ const INITIAL_VISIBLE_COLUMNS = [
 export default function TableOrderList({
   verifyOrderDelivery,
   orders,
+  customers,
   deleteOrder,
-  newCustomers,
 }) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
@@ -83,7 +84,7 @@ export default function TableOrderList({
   const renderCell = useCallback((order, columnKey) => {
     const cellValue = order[columnKey];
 
-    const filteredResult = newCustomers?.filter((objeto) =>
+    const filteredResult = customers?.filter((objeto) =>
       objeto?._id.includes(order?.customer)
     );
 
@@ -91,7 +92,7 @@ export default function TableOrderList({
       case "customer":
         return (
           <div className="flex flex-col ">
-            {filteredResult.length > 0 ? (
+            {filteredResult?.length > 0 ? (
               <>
                 <p className="text-bold text-tiny text-primary-400 whitespace-nowrap">
                   {`${justFirstWord(capitalize(filteredResult[0]?.name))} ` +
@@ -105,7 +106,7 @@ export default function TableOrderList({
               </>
             ) : (
               <p className=" break-words text-error text-bold text-tiny capitalize">
-                {"Cliente registrado"}
+                {"Cliente"}
               </p>
             )}
           </div>
