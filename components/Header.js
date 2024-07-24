@@ -1,13 +1,15 @@
 import React from "react";
-import { justFirstWord } from "@/utils/justFirstWord";
 import avatarLocal from "../public/images/avatar/avatarUser.png";
-import { HamburguerIcon } from "./Icons";
-import Link from "next/link";
-import Image from "next/image";
-import logo from "@/public/logo.jpg";
+import { justFirstWord } from "@/utils/justFirstWord";
 import { useSession } from "next-auth/react";
+import useActions from "@/hooks/useActions";
+import { HamburguerIcon } from "./Icons";
+import logo from "@/public/logo.jpg";
+import Image from "next/image";
+import Link from "next/link";
 
-const Header = ({ setShowNav }) => {
+const Header = () => {
+  const { changeToggle, setNavbar, usuario } = useActions();
   const { data: session } = useSession();
   const user = session?.user;
 
@@ -15,17 +17,31 @@ const Header = ({ setShowNav }) => {
     <>
       <header className="sticky top-0 z-30 md:relative bg-white w-full p-2 ">
         <div className="w-full bg-white md:hidden flex py-2">
-          <button onClick={() => setShowNav(true)}>
-            <HamburguerIcon className="fill-red w-8 h-8" />
+          <button
+            onClick={() => {
+              changeToggle();
+              setNavbar(true);
+            }}
+          >
+            <HamburguerIcon className="fill-warning w-8 h-8" />
           </button>
           <div className="m-auto">
             <Link href="/" className="w-32">
-              <Image alt="Logo" className="w-32" src={logo} />
+              <Image alt="Logo" className="w-20" src={logo} />
             </Link>
           </div>
         </div>
         <hr className="h-px border-0 bg-gray-300 md:hidden" />
-        <div className="flex items-center pt-2 sm:justify-between sm:gap-4">
+        <div className="flex items-center sm:justify-between sm:gap-4">
+          <button
+            className="hidden md:flex lg:hidden"
+            onClick={() => {
+              changeToggle();
+              setNavbar(true);
+            }}
+          >
+            <HamburguerIcon className="fill-warning w-8 h-8" />
+          </button>
           <h1 className="text-xl font-bold text-primary sm:text-2xl">
             Bienvenid@
             {user?.fullname

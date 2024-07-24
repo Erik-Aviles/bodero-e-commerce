@@ -35,7 +35,7 @@ const ModalProducts = ({ product }) => {
           <>
             <div className="fixed inset-0 z-40 bg-gray-500 bg-opacity-50"></div>
             <div className="fixed inset-0 z-50 flex items-center justify-center p-5 ">
-              <div className="max-w-5xl max-h-[calc(100vh-100px)] lg:h-fit bg-white p-4 rounded-lg shadow-lg overflow-auto">
+              <div className="max-w-5xl max-h-[calc(100vh-100px)] lg:h-fit bg-white p-4 rounded-lg shadow-lg overflow-auto scroll">
                 <ProductForm
                   titulo={!product ? "Registrar producto" : "Editar producto"}
                   textSmall={

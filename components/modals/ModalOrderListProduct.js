@@ -35,7 +35,7 @@ const ModalOrderListProduct = ({ order }) => {
           <>
             <div className="fixed inset-0 z-40 bg-gray-500 bg-opacity-50"></div>
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-              <div className="bg-white p-4 max-w-md rounded-lg shadow-lg overflow-auto">
+              <div className="bg-white p-4 max-w-md rounded-lg shadow-lg overflow-auto scroll">
                 <OrderListForm
                   titulo={!order ? "Registrar pedido" : "Editar Pedido"}
                   textSmall={

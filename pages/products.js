@@ -36,7 +36,7 @@ const ProductsPage = withSwal(({ swal }) => {
         {isLoadingProducts || !products ? (
           <Spinner />
         ) : (
-          <section className="w-full md:px-4 ">
+          <section className="w-full md:px-4">
             <TableProduct
               products={products}
               deleteProduct={handleDeleteProduct}

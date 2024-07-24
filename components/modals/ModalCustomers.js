@@ -36,7 +36,7 @@ const ModalCustomers = ({ customer }) => {
           <>
             <div className="fixed inset-0 z-40 bg-gray-500 bg-opacity-50"></div>
             <div className="fixed inset-0 z-50 flex items-center justify-center p-5 ">
-              <div className="max-h-[calc(100vh-100px)] bg-white min-w-[300px] max-w-[500px] p-4 rounded-lg shadow-lg overflow-auto">
+              <div className="max-h-[calc(100vh-100px)] bg-white min-w-[300px] max-w-[500px] p-4 rounded-lg shadow-lg overflow-auto scroll">
                 <CustomerForm
                   titulo={!customer ? "Registrar cliente" : "Editar cliente"}
                   textSmall={

@@ -516,7 +516,7 @@ export default function TableProduct({ products, deleteProduct }) {
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 sm:h-[calc(100vh-300px)] sm:overflow-auto ",
+        wrapper: "-z-1 sm:h-[calc(100vh-300px)] sm:overflow-auto scroll",
         th: "text-warning uppercase",
       }}
       sortDescriptor={sortDescriptor}
