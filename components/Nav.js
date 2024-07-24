@@ -40,6 +40,8 @@ const Nav = ({ show, setShowNav }) => {
           {routeList.map(({ id, route, path, icon }) => (
             <NavLink key={id} path={path} icon={icon} route={route} />
           ))}
+          </ul>
+          <ul className={navbar && "p-3"}>
           <button
             className={inactiveLink}
             onClick={() => signOut({ callbackUrl: "/" })}
