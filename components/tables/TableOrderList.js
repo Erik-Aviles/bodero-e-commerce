@@ -257,7 +257,7 @@ export default function TableOrderList({
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 sm:h-[calc(100vh-315px)] sm:overflow-auto ",
+        wrapper: "-z-1 sm:h-[calc(100vh-315px)] sm:overflow-auto scroll",
         th: "text-warning uppercase",
       }}
       topContent={topContent}

@@ -44,7 +44,7 @@ export default function TableOrder({
   const [visibleColumns, setVisibleColumns] = useState(
     new Set(INITIAL_VISIBLE_COLUMNS)
   );
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(9);
 
   const [page, setPage] = useState(1);
 
@@ -259,7 +259,7 @@ export default function TableOrder({
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 sm:h-[calc(100vh-225px)]",
+        wrapper: "-z-1 sm:h-[calc(100vh-225px)] scroll",
         th: "text-warning uppercase",
       }}
       topContent={topContent}

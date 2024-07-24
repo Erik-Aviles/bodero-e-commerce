@@ -195,7 +195,7 @@ export default function TableCategory({ categories, deleteCaterory }) {
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 sm:h-[calc(100vh-250px)] sm:overflow-auto ",
+        wrapper: "-z-1 sm:h-[calc(100vh-250px)] sm:overflow-auto scroll",
         th: "text-warning uppercase",
       }}
       topContent={topContent}

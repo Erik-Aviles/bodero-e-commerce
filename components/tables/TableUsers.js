@@ -199,7 +199,7 @@ export default function TableUser({ users, deleteUser }) {
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 sm:h-[calc(100vh-300px)]",
+        wrapper: "-z-1 sm:h-[calc(100vh-300px)] scroll",
         th: "text-warning uppercase",
       }}
       topContent={topContent}

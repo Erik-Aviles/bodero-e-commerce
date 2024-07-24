@@ -39,7 +39,7 @@ const ShowOrderDetail = ({ order }) => {
             <div className="fixed inset-0 z-40 bg-gray-500 bg-opacity-50"></div>
 
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-              <div className="max-h-[calc(100vh-100px)] bg-white max-w-[500px] p-4 rounded-lg shadow-lg overflow-auto">
+              <div className="max-h-[calc(100vh-100px)] bg-white max-w-[500px] p-4 rounded-lg shadow-lg overflow-auto scroll">
                 <header className=" flex justify-end pb-2">
                   <ButtonClose onClick={toggleModal} />
                 </header>

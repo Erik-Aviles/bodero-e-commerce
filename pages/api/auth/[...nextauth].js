@@ -58,7 +58,7 @@ export const authOptions = {
     secret: process.env.NEXTAUTH_SECRET,
     maxAge: 60 * 60 * 24,
   },
-  debug: process.env.NODE_ENV === "development",
+  debug: process.env.NODE_ENV !== "production",
   pages: {
     signIn: "/auth/login",
   },
