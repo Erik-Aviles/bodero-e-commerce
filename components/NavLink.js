@@ -5,20 +5,12 @@ import useActions from "@/hooks/useActions";
 
 const NavLink = ({ path, icon, route }) => {
   const { pathname } = useRouter();
-  const {
-    changeNavbar,
-    navbar,
-    changeOpcFactura,
-    opcFactura,
-    toggle,
-    cerrarSesion,
-    changeToggle,
-  } = useActions();
+  const { navbar } = useActions();
 
   const inactiveLink =
     "flex px-2 py-3 md:py-2 py-3 px-2 transition-colors hover:bg-[#97a8bc]/10 fill-[#9f9f9f] ";
-  const activeLink = `${inactiveLink} bg-primaryLight text-white rounded-sm`;
-  const inactiveIcon = "w-7 h-7";
+  const activeLink = `${inactiveLink} bg-primaryLight text-white hover:text-primary`;
+  const inactiveIcon = "w-6 h-6";
   const activeIcon = `${inactiveIcon} text-primary fill-primary`;
 
   return (

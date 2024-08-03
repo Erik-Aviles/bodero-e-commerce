@@ -28,14 +28,14 @@ export const RightArrowIcon = (props) => (
   </svg>
 );
 
-export const OrderListIcon = ({ size, height, width, ...props }) => {
+export const OrderListIcon = ({ size, height, width, className, ...props }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       stroke="currentColor"
       strokeWidth={1.5}
-      className="w-6 h-6"
+      className={`${className}`}
       viewBox="0 0 24 24"
       width="1em"
       height="1em"
@@ -49,7 +49,7 @@ export const OrderListIcon = ({ size, height, width, ...props }) => {
     </svg>
   );
 };
-export const UsersIcon = ({ size, height, width, ...props }) => {
+export const UsersIcon = ({ size, height, width, className, ...props }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -60,13 +60,14 @@ export const UsersIcon = ({ size, height, width, ...props }) => {
       viewBox="0 0 100.4 100.4"
       width="1em"
       height="1em"
+      className={`${className}`}
       {...props}
     >
       <path d="M76.9 34v-2.7c3.4-2 5.6-5.7 5.6-9.7v-4.8c0-6.2-5-11.2-11.2-11.2S60 10.6 60 16.8v4.8c0 3.9 2 7.5 5.4 9.5V34c-1.5.4-2.9 1-4.3 1.8-2.2-5.1-7.3-8.7-13.2-8.7-5.8 0-10.7 3.4-13 8.4-1.3-.6-2.6-1.2-3.9-1.5v-2.7c3.4-2 5.6-5.7 5.6-9.7v-4.8c0-6.2-5-11.2-11.2-11.2s-11.2 5-11.2 11.2v4.8c0 3.9 2 7.5 5.4 9.5V34c-9 2.6-15.1 10.7-15.1 20.1 0 .8.7 1.5 1.5 1.5H35.9c1.2 1.9 2.9 3.5 4.9 4.7v4.5c-11.9 3.2-20 13.9-20 26.3 0 .8.7 1.5 1.5 1.5h51.5c.8 0 1.5-.7 1.5-1.5 0-12.3-8.5-23.2-20.3-26.3v-4.3c2.1-1.2 3.8-2.8 5.1-4.8h30.7c.8 0 1.5-.7 1.5-1.5-.1-9.4-6.5-17.7-15.4-20.2zM7.5 52.7c.6-7.8 6.2-14.2 13.9-16 .7-.2 1.2-.8 1.2-1.5v-5c0-.6-.3-1.1-.8-1.3-2.8-1.4-4.6-4.2-4.6-7.3v-4.8c0-4.5 3.7-8.2 8.2-8.2s8.2 3.7 8.2 8.2v4.8c0 3.1-1.9 6-4.7 7.4-.5.2-.9.8-.9 1.4v4.8c0 .7.5 1.3 1.2 1.5 1.7.4 3.3 1 4.8 1.8-.2 1-.3 2-.3 3.1V48c0 1.6.3 3.2.8 4.7h-27zm45.3 5.5c-.5.2-.9.8-.9 1.4V66c0 .7.5 1.3 1.2 1.5C63.7 69.8 71.5 79 72.2 89.7H23.8C24.4 79 32 70 42.6 67.6c.7-.2 1.2-.8 1.2-1.5v-6.6c0-.6-.3-1.1-.8-1.3-3.9-1.9-6.3-5.8-6.3-10.1v-6.4c0-6.3 5.1-11.3 11.3-11.3s11.3 5.1 11.3 11.3V48c0 4.3-2.5 8.3-6.5 10.2zm8.7-5.5c.5-1.5.8-3.1.8-4.7v-6.4c0-.9-.1-1.9-.3-2.7 1.6-1 3.4-1.7 5.2-2.1.7-.2 1.2-.8 1.2-1.5v-5c0-.6-.3-1.1-.8-1.3-2.8-1.4-4.6-4.2-4.6-7.3v-4.8c0-4.5 3.7-8.2 8.2-8.2 4.5 0 8.2 3.7 8.2 8.2v4.8c0 3.1-1.9 6-4.7 7.4-.5.2-.9.8-.9 1.4v4.8c0 .7.5 1.3 1.2 1.5 7.7 1.7 13.4 8.3 14.1 16l-27.6-.1z" />
     </svg>
   );
 };
-export const ClientsIcon = ({ size, height, width, ...props }) => {
+export const ClientsIcon = ({ height, width, className, ...rest }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -74,7 +75,8 @@ export const ClientsIcon = ({ size, height, width, ...props }) => {
       viewBox="0 0 96 96"
       width="1em"
       height="1em"
-      {...props}
+      className={`${className}`}
+      {...rest}
     >
       <circle cx={78} cy={25} r={5} />
       <circle cx={18} cy={25} r={5} />
@@ -141,13 +143,14 @@ export const DownloadIcon = (props) => (
     />
   </svg>
 );
-export const OrderIcon = (props) => (
+export const OrderIcon = ({ className, ...rest }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 64 64"
     width="1em"
     height="1em"
-    {...props}
+    className={`${className}`}
+    {...rest}
   >
     <defs>
       <style>
@@ -543,7 +546,7 @@ export const HomeIcon = ({ className, ...rest }) => (
     viewBox="0 0 24 24"
     width="1em"
     height="1em"
-    className={`w-6 h-6 ${className}`}
+    className={`${className}`}
     {...rest}
   >
     <path d="M11.47 3.84a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.06l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 0 0 1.061 1.06l8.69-8.69z" />
@@ -554,18 +557,17 @@ export const HomeIcon = ({ className, ...rest }) => (
 export const ProductIcon = ({ className, ...rest }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    fill="currentColor"
+    fill="none"
     viewBox="0 0 24 24"
-    width="1em"
-    height="1em"
-    className={`w-6 h-6 ${className}`}
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className={`${className}`}
     {...rest}
   >
-    <path d="M3.375 3C2.339 3 1.5 3.84 1.5 4.875v.75c0 1.036.84 1.875 1.875 1.875h17.25c1.035 0 1.875-.84 1.875-1.875v-.75C22.5 3.839 21.66 3 20.625 3H3.375z" />
     <path
-      fillRule="evenodd"
-      d="m3.087 9 .54 9.176A3 3 0 0 0 6.62 21h10.757a3 3 0 0 0 2.995-2.824L20.913 9H3.087zm6.163 3.75A.75.75 0 0 1 10 12h4a.75.75 0 0 1 0 1.5h-4a.75.75 0 0 1-.75-.75z"
-      clipRule="evenodd"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0112 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m17.25-3.75h-7.5c-.621 0-1.125.504-1.125 1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125M12 10.875v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125M13.125 12h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125M20.625 12c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5M12 14.625v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 14.625c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125m0 1.5v-1.5m0 0c0-.621.504-1.125 1.125-1.125m0 0h7.5"
     />
   </svg>
 );
@@ -627,20 +629,82 @@ export const UpLoadIcon = ({ size = 32 }) => (
   </svg>
 );
 
-export const ListCategoryIcon = ({ className, ...rest }) => (
+export const UpArrowIcon = ({ className, ...rest }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    xmlSpace="preserve"
+    width={20}
+    height={20}
+    viewBox="0 0 511.735 511.735"
+    className={`w-3 h-3 ${className}`}
+    {...rest}
+  >
+    <path d="M508.788 371.087 263.455 125.753a10.623 10.623 0 0 0-15.04 0L2.975 371.087c-4.053 4.267-3.947 10.987.213 15.04a10.763 10.763 0 0 0 14.827 0l237.867-237.76 237.76 237.76c4.267 4.053 10.987 3.947 15.04-.213a10.663 10.663 0 0 0 .106-14.827z" />
+  </svg>
+);
+export const DownArrowIcon = ({ className, ...rest }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={20}
+    height={20}
+    viewBox="0 0 1024 1024"
+    className={`${className}`}
+    {...rest}
+  >
+    <path d="M903.232 256 960 306.432 512 768 64 306.432 120.768 256 512 659.072z" />
+  </svg>
+);
+
+export const InventoryIcon = ({ className, ...rest }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="currentColor"
     viewBox="0 0 24 24"
     width="1em"
     height="1em"
-    className={`w-6 h-6 ${className}`}
+    className={`${className}`}
     {...rest}
   >
     <path
       fillRule="evenodd"
       d="M2.625 6.75a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0zm4.875 0A.75.75 0 0 1 8.25 6h12a.75.75 0 0 1 0 1.5h-12a.75.75 0 0 1-.75-.75zM2.625 12a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0zM7.5 12a.75.75 0 0 1 .75-.75h12a.75.75 0 0 1 0 1.5h-12A.75.75 0 0 1 7.5 12zm-4.875 5.25a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0zm4.875 0a.75.75 0 0 1 .75-.75h12a.75.75 0 0 1 0 1.5h-12a.75.75 0 0 1-.75-.75z"
       clipRule="evenodd"
+    />
+  </svg>
+);
+export const BarCodeIcon = ({ className, ...rest }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    xmlSpace="preserve"
+    width={20}
+    height={20}
+    viewBox="0 0 91.334 91.334"
+    className={`2 ${className}`}
+    {...rest}
+  >
+    <path d="M6.834 11.549H1a1 1 0 0 0-1 1v66.236a1 1 0 0 0 1 1h5.834a1 1 0 0 0 1-1V12.549a1 1 0 0 0-1-1zM62.043 11.549h-4.168a1 1 0 0 0-1 1v66.236a1 1 0 0 0 1 1h4.168a1 1 0 0 0 1-1V12.549a1 1 0 0 0-1-1zM17 11.549h-4a1 1 0 0 0-1 1v66.236a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V12.549a1 1 0 0 0-1-1zM90.334 11.549h-4a1 1 0 0 0-1 1v66.236a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V12.549a1 1 0 0 0-1-1zM81.167 11.549h-2.724a1 1 0 0 0-1 1v66.236a1 1 0 0 0 1 1h2.724a1 1 0 0 0 1-1V12.549a1 1 0 0 0-1-1zM51.875 11.549h-4a1 1 0 0 0-1 1v66.236a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V12.549a1 1 0 0 0-1-1zM42.167 11.549h-2.5a1 1 0 0 0-1 1v66.236a1 1 0 0 0 1 1h2.5a1 1 0 0 0 1-1V12.549a1 1 0 0 0-1-1zM73.523 11.549H71.98a1 1 0 0 0-1 1v66.236a1 1 0 0 0 1 1h1.543a1 1 0 0 0 1-1V12.549a1 1 0 0 0-1-1zM33.667 11.549h-4a1 1 0 0 0-1 1v66.236a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V12.549a1 1 0 0 0-1-1zM23.667 11.549h-1a1 1 0 0 0-1 1v66.236a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V12.549a1 1 0 0 0-1-1zM67.227 11.549h-.363c-.551 0-1 .448-1 1v66.236c0 .552.449 1 1 1h.363c.551 0 1-.448 1-1V12.549c0-.552-.45-1-1-1z" />
+  </svg>
+);
+
+export const ListCategoryIcon = ({ className, ...rest }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className={` ${className}`}
+    {...rest}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+    />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M6 6h.008v.008H6V6z"
     />
   </svg>
 );
