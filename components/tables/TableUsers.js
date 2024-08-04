@@ -16,7 +16,7 @@ import {
 
 import { DeleteRIcon, SearchIcon } from "../Icons";
 import { columnUser } from "@/resources/columnTables";
-import removeAccents from "@/utils/removeAccents";
+import { removeAccents } from "@/utils/normalized";
 import ModalUsers from "../modals/ModalUsers";
 
 export default function TableUser({ users, deleteUser }) {

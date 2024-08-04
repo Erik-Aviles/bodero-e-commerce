@@ -3,7 +3,7 @@ import { SearchIcon, ChevronDownIcon, DeleteRIcon } from "@/components/Icons";
 import ModalRegisterStockProduct from "../modals/ModalRegisterStockProduct";
 import { columnsProduct } from "@/resources/columnTables";
 import ModalProducts from "../modals/ModalProducts";
-import removeAccents from "@/utils/removeAccents";
+import { removeAccents, removePluralEnding } from "@/utils/normalized";
 import { capitalize } from "@/utils/utils";
 import { useRouter } from "next/router";
 import {
@@ -24,6 +24,7 @@ import {
   Tooltip,
 } from "@nextui-org/react";
 import { formatPrice } from "@/utils/formatPrice";
+import { stopwords } from "@/resources/stopwordsData";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "actions",
@@ -67,22 +68,38 @@ export default function TableProduct({ products, deleteProduct }) {
     if (!products) return [];
     let filteredProducts = [...products];
 
+    const searchParts = removeAccents(filterValue.toLowerCase())
+      .split(" ")
+      .filter((part) => !stopwords.includes(part))
+      .map((part) => removePluralEnding(part));
+
     if (hasSearchFilter) {
-      filteredProducts = filteredProducts.filter(
-        (product) =>
-          removeAccents(product.title.toLowerCase()).includes(
-            removeAccents(filterValue.toLowerCase())
-          ) ||
-          removeAccents(product.code.toLowerCase()).includes(
-            removeAccents(filterValue.toLowerCase())
-          ) ||
-          removeAccents(product.codeWeb.toLowerCase()).includes(
-            removeAccents(filterValue.toLowerCase())
-          ) ||
-          removeAccents(product.codeEnterprise.toLowerCase()).includes(
-            removeAccents(filterValue.toLowerCase())
-          )
-      );
+      filteredProducts = filteredProducts.filter((item) => {
+        const title = removeAccents(item.title.toLowerCase());
+        const code = removeAccents(item.code.toLowerCase());
+        const codeEnterprise = removeAccents(item.codeEnterprise.toLowerCase());
+        const codeWeb = removeAccents(item.codeWeb.toLowerCase());
+        const brand = removeAccents(item.brand.toLowerCase());
+        const compatibilityModels = (item.compatibility || []).map((compat) =>
+          removeAccents(compat.model.toLowerCase())
+        );
+        const compatibilityTitle = (item.compatibility || []).map((compat) =>
+          removeAccents(compat.title.toLowerCase())
+        );
+
+        const matchesAllParts = searchParts.every((part) => {
+          return (
+            title.includes(part) ||
+            code.includes(part) ||
+            codeEnterprise.includes(part) ||
+            codeWeb.includes(part) ||
+            brand.includes(part) ||
+            compatibilityModels.some((model) => model.includes(part)) ||
+            compatibilityTitle.some((title) => title.includes(part))
+          );
+        });
+        return matchesAllParts;
+      });
     }
 
     return filteredProducts;
@@ -449,7 +466,7 @@ export default function TableProduct({ products, deleteProduct }) {
             </div>
 
             <span className="text-default-400 text-small">
-              Total, {products.length} Productos.
+              Total, {filteredItems.length} Productos.
             </span>
             <label className="flex items-center text-default-400 text-small">
               Filas:

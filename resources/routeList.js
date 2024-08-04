@@ -12,7 +12,15 @@ import {
 
 export const routeList = [
   { id: "1", route: "Dashboard", path: "/", icon: <HomeIcon /> },
-
+  { id: "6", route: "Inventario", path: "", icon: <InventoryIcon /> },
+  { id: "7", route: "Productos", path: "/products", icon: <ProductIcon /> },
+  {
+    id: "9",
+    route: "Categorias",
+    path: "/categories",
+    icon: <ListCategoryIcon />,
+  },
+  { id: "8", route: "Bar Code", path: "/bar-code", icon: <BarCodeIcon /> },
   {
     id: "2",
     route: "Pedidos",
@@ -32,13 +40,4 @@ export const routeList = [
     path: "/users",
     icon: <UsersIcon />,
   },
-  { id: "6", route: "Inventario", path: "", icon: <InventoryIcon /> },
-  { id: "7", route: "Productos", path: "/products", icon: <ProductIcon /> },
-  {
-    id: "9",
-    route: "Categorias",
-    path: "/categories",
-    icon: <ListCategoryIcon />,
-  },
-  { id: "8", route: "Bar Code", path: "/bar-code", icon: <BarCodeIcon /> },
 ];

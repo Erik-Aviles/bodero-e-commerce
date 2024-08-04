@@ -20,7 +20,7 @@ import { SearchIcon, ChevronDownIcon, DeleteRIcon } from "@/components/Icons";
 
 import { columnsCustomer } from "@/resources/columnTables";
 import { capitalize } from "@/utils/utils";
-import removeAccents from "@/utils/removeAccents";
+import { removeAccents } from "@/utils/normalized";
 import ModalCustomers from "../modals/ModalCustomers";
 
 const INITIAL_VISIBLE_COLUMNS = [

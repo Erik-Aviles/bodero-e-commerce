@@ -18,7 +18,7 @@ import { DeleteRIcon, SearchIcon } from "../Icons";
 import { columnsCategory } from "@/resources/columnTables";
 import { capitalize } from "@/utils/utils";
 import ModalCategories from "../modals/ModalCategories";
-import removeAccents from "@/utils/removeAccents";
+import { removeAccents } from "@/utils/normalized";
 
 export default function TableCategory({ categories, deleteCaterory }) {
   const [filterValue, setFilterValue] = useState("");
