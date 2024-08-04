@@ -3,7 +3,7 @@ import ModalOrderListProduct from "../modals/ModalOrderListProduct";
 import { DeleteRIcon, SearchIcon, VerifyIcon } from "../Icons";
 import { columnsOrdersList } from "@/resources/columnTables";
 import { justFirstWord } from "@/utils/justFirstWord";
-import removeAccents from "@/utils/removeAccents";
+import { removeAccents, removePluralEnding } from "@/utils/normalized";
 import { capitalize } from "@/utils/utils";
 import {
   Table,
@@ -20,6 +20,7 @@ import {
   Chip,
 } from "@nextui-org/react";
 import { Loader } from "../snnipers/Loader";
+import { stopwords } from "@/resources/stopwordsData";
 
 const statusColorMap = {
   true: "success",
@@ -62,12 +63,22 @@ export default function TableOrderList({
   const filteredItems = useMemo(() => {
     if (!orders) return [];
     let resultadoFiltrado = [...orders];
+
+    const searchParts = removeAccents(filterValue.toLowerCase())
+      .split(" ")
+      .filter((part) => !stopwords.includes(part))
+      .map((part) => removePluralEnding(part));
+
     if (hasSearchFilter) {
-      resultadoFiltrado = resultadoFiltrado.filter((order) =>
-        removeAccents(order.customer.toLowerCase()).includes(
-          removeAccents(filterValue.toLowerCase())
-        )
-      );
+      resultadoFiltrado = resultadoFiltrado.filter((item) => {
+        const articulo = removeAccents(item.articulo.toLowerCase());
+        const customer = removeAccents(item.customer.toLowerCase());
+
+        const matchesAllParts = searchParts.every((part) => {
+          return articulo.includes(part) || customer.includes(part);
+        });
+        return matchesAllParts;
+      });
     }
     return resultadoFiltrado;
   }, [orders, filterValue]);

@@ -1,6 +1,7 @@
 import { useState, useEffect, createContext } from "react";
 // import { generarId } from "@/helpers";
 import axios from "axios";
+import { signOut } from "next-auth/react";
 // import Swal from "sweetalert2";
 
 export const ActionsContext = createContext();
@@ -142,8 +143,7 @@ export const ActionsProvider = ({ children }) => {
   }; */
 
   const cerrarSesion = () => {
-    localStorage.removeItem("user");
-    setUsuario({});
+    signOut({ callbackUrl: "/" });
   };
 
   useEffect(() => {
