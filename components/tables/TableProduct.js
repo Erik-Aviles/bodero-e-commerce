@@ -351,8 +351,8 @@ export default function TableProduct({ products, deleteProduct }) {
       case "actions":
         return (
           <div className="flex items-center gap-3">
-            <Tooltip color="danger" content="Eliminar">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+            <Tooltip className="text-error" content="Eliminar">
+              <span className="text-lg text-error cursor-pointer active:opacity-50">
                 <DeleteRIcon
                   className=" w-[22px] h-[22px]"
                   onClick={() => deleteProduct(product)}
@@ -406,11 +406,7 @@ export default function TableProduct({ products, deleteProduct }) {
           <Input
             isClearable
             autoFocus={path === "/products" && true}
-            className={[
-              {
-                input: "w-full sm:max-w-[45%] order-1 focus:bg-default-200/50",
-              },
-            ]}
+            className={"order-1 focus:bg-default-200/50"}
             placeholder="Buscar por nombre, codigo o codigo web"
             startContent={<SearchIcon className="mr-1" />}
             value={filterValue}

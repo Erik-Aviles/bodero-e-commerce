@@ -120,7 +120,7 @@ const OrdersPage = withSwal(({ swal }) => {
         {isLoadingOrders || !orders ? (
           <Spinner />
         ) : (
-          <section className="max-w-4xl mx-auto mt-4">
+          <section className="w-full md:px-4 lg:px-8">
             <TableOrder
               downloadPdf={downloadPdf}
               reduceQuantityProducts={reduceQuantityProducts}

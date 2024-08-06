@@ -1,3 +1,10 @@
+const columnsBarCode = [
+  { name: "Nombre del producto", uid: "title" },
+  { name: "Código", uid: "code" },
+  { name: "Código de barra", uid: "barCode" },
+  { name: "CANTIDAD", uid: "quantity" },
+  { name: "ACCION", uid: "actions" },
+];
 const columnsOrder = [
   { name: "ESTADO", uid: "paid" },
   { name: "CLIENTE", uid: "name" },
@@ -70,4 +77,5 @@ export {
   columnsOrdersList,
   columnsCustomer,
   columnUser,
+  columnsBarCode,
 };

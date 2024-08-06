@@ -40,7 +40,7 @@ const CategoriesPage = withSwal(({ swal }) => {
         {isLoadingCategories || !categories ? (
           <Spinner />
         ) : (
-          <section className="max-w-4xl mx-auto">
+          <section className="w-full md:px-4 lg:px-8">
             <TableCategory
               categories={categories}
               deleteCaterory={handleDeleteCategory}

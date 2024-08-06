@@ -20,8 +20,8 @@ import ShowOrderDetail from "../show/ShowOrderDetail";
 import { formatToCurrency } from "@/utils/formatToCurrency";
 
 const statusColorMap = {
-  true: "success",
-  false: "danger",
+  true: "text-success",
+  false: "text-error",
 };
 
 const INITIAL_VISIBLE_COLUMNS = [
@@ -139,7 +139,7 @@ export default function TableOrder({
       case "paid":
         return (
           <Chip
-            className="text-tiny py-[0.5px] px-1 cursor-pointer"
+            className={`text-tiny py-[0.5px] px-1 cursor-pointer ${statusColorMap[cellValue]}`}
             startContent={cellValue === true ? <VerifyIcon size={18} /> : ""}
             variant="faded"
             isDisabled={cellValue === true ? true : false}
@@ -153,8 +153,8 @@ export default function TableOrder({
         return (
           <div className="flex items-center gap-3 ">
             <ShowOrderDetail order={order} />
-            <Tooltip color="danger" content="Eliminar">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+            <Tooltip className="text-error" content="Eliminar">
+              <span className="text-lg text-error cursor-pointer active:opacity-50">
                 <DeleteRIcon
                   className=" w-[22px] h-[22px]"
                   onClick={(e) => deleteOrder(order)}

@@ -64,7 +64,7 @@ const OrderListPage = withSwal(({ swal }) => {
         {isLoadingOrderList || !orderlist || isLoadingCustomers ? (
           <Spinner />
         ) : (
-          <section className="max-w-4xl mx-auto mt-4">
+          <section className="w-full md:px-4 lg:px-8">
             <TableOrderList
               orders={orderlist}
               customers={customers}

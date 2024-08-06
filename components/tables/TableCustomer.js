@@ -143,8 +143,8 @@ export default function TableCustomer({ customers, deleteCustomer }) {
       case "actions":
         return (
           <div className="flex items-center gap-3">
-            <Tooltip color="danger" content="Eliminar">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+            <Tooltip className="text-error" content="Eliminar">
+              <span className="text-lg text-error cursor-pointer active:opacity-50">
                 <DeleteRIcon
                   className=" w-[22px] h-[22px]"
                   onClick={() => deleteCustomer(customer)}

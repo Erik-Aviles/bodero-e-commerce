@@ -1,12 +1,18 @@
 import Layout from "@/components/Layout";
+import BarCodeForm from "@/components/forms/BarCodeForm";
+import Spinner from "@/components/snnipers/Spinner";
+import TableBarCode from "@/components/tables/TableBarCode";
+import useProducts from "@/hooks/useProducts";
 import Head from "next/head";
 import React from "react";
 
 const BarCodePage = () => {
+  const { products, isErrorProducts, isLoadingProducts, mutateProducts } =
+    useProducts();
   return (
     <>
       <Head>
-        <title>Panel | Categoria</title>
+        <title>Panel | Codigo de barra</title>
         <meta
           name="description"
           content="Variedad de productos, estan seccionados por categorias"
@@ -14,9 +20,14 @@ const BarCodePage = () => {
       </Head>
       <Layout>
         <h3>Panel de código de barra</h3>
-        <section className="max-w-4xl mx-auto">
-          <h4>BarCodePage</h4>
-        </section>
+        {isLoadingProducts || !products ? (
+          <Spinner />
+        ) : (
+          <section className="w-full md:px-4 lg:px-8">
+            {/* <BarCodeForm products={products} /> */}
+            <TableBarCode products={products} />
+          </section>
+        )}
       </Layout>
     </>
   );

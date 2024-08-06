@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
+import { removeAccents, removePluralEnding } from "@/utils/normalized";
 import ModalOrderListProduct from "../modals/ModalOrderListProduct";
 import { DeleteRIcon, SearchIcon, VerifyIcon } from "../Icons";
 import { columnsOrdersList } from "@/resources/columnTables";
 import { justFirstWord } from "@/utils/justFirstWord";
-import { removeAccents, removePluralEnding } from "@/utils/normalized";
+import { stopwords } from "@/resources/stopwordsData";
 import { capitalize } from "@/utils/utils";
 import {
   Table,
@@ -13,18 +14,15 @@ import {
   TableRow,
   TableCell,
   Tooltip,
-  getKeyValue,
   Pagination,
   Button,
   Input,
   Chip,
 } from "@nextui-org/react";
-import { Loader } from "../snnipers/Loader";
-import { stopwords } from "@/resources/stopwordsData";
 
 const statusColorMap = {
-  true: "success",
-  false: "danger",
+  true: "text-success",
+  false: "text-error",
 };
 
 const INITIAL_VISIBLE_COLUMNS = [
@@ -148,11 +146,10 @@ export default function TableOrderList({
               </span>
             )}
             <Chip
-              className=" text-tiny py-[0.5px] px-1 cursor-pointer"
+              className={`text-tiny py-[0.5px] px-1 cursor-pointer ${statusColorMap[cellValue]}`}
               startContent={cellValue === true && <VerifyIcon size={18} />}
               variant="faded"
               isDisabled={cellValue === true ? true : false}
-              color={statusColorMap[cellValue]}
               onClick={() => verifyOrderDelivery(order?._id)}
             >
               {cellValue === false ? "Pendiente" : "Entregado"}
@@ -163,8 +160,8 @@ export default function TableOrderList({
         return (
           <div className="flex items-center gap-3 ">
             <ModalOrderListProduct order={order} />
-            <Tooltip color="danger" content="Eliminar">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+            <Tooltip className="text-error" content="Eliminar">
+              <span className="text-lg text-error cursor-pointer active:opacity-50">
                 <DeleteRIcon
                   className=" w-[22px] h-[22px]"
                   onClick={(e) => deleteOrder(order)}

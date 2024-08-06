@@ -10,7 +10,7 @@ export const authOptions = {
   adapter: MongoDBAdapter(clientPromise),
   providers: [
     CredentialsProvider({
-      name: "credencials",
+      name: "Credentials",
       credentials: {
         email: {
           label: "Email",
@@ -19,9 +19,9 @@ export const authOptions = {
         },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         await moogoseConnect();
-        if (!credentials.email && !credentials.password) {
+        if (!credentials.email || !credentials.password) {
           throw new Error("Por favor ingrese un correo y una contraseña");
         }
         const userFind = await User.findOne({ email: credentials.email });
@@ -35,7 +35,7 @@ export const authOptions = {
         );
 
         if (!passwordMatch) {
-          throw new Error("Contraseña incorrectta");
+          throw new Error("Contraseña incorrecta");
         }
 
         return userFind;
