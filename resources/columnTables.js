@@ -1,4 +1,5 @@
 const columnsBarCode = [
+  { name: "ESTADO", uid: "status" },
   { name: "Nombre del producto", uid: "title" },
   { name: "Código", uid: "code" },
   { name: "Código de barra", uid: "barCode" },

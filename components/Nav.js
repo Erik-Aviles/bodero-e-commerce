@@ -86,7 +86,7 @@ const Nav = () => {
         </div>
 
         <nav className="h-full flex flex-col ">
-          <ul className={navbar && "p-3 flex flex-col gap-1"}>
+          <ul className={navbar ? "p-3 flex flex-col gap-1" : ""}>
             {routeList.map(({ id, route, path, icon }) => {
               if (path === "") {
                 return (
@@ -154,7 +154,7 @@ const Nav = () => {
               return null;
             })}
           </ul>
-          <ul className={navbar && "p-3 "}>
+          <ul className={navbar ? "p-3 " : ""}>
             <button
               className={`${inactiveLink} w-full ${
                 navbar ? "text-[12px] flex-col items-center " : "gap-4"

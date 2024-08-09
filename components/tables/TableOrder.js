@@ -7,7 +7,6 @@ import {
   TableRow,
   TableCell,
   Tooltip,
-  getKeyValue,
   Pagination,
   Button,
   Input,
@@ -18,6 +17,7 @@ import { DeleteRIcon, VerifyIcon } from "../Icons";
 import { columnsOrder } from "@/resources/columnTables";
 import ShowOrderDetail from "../show/ShowOrderDetail";
 import { formatToCurrency } from "@/utils/formatToCurrency";
+import { Loader } from "../snnipers/Loader";
 
 const statusColorMap = {
   true: "text-success",
@@ -36,8 +36,9 @@ const INITIAL_VISIBLE_COLUMNS = [
 export default function TableOrder({
   reduceQuantityProducts,
   downloadPdf,
-  orders,
   deleteOrder,
+  orders,
+  isLoading,
 }) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
@@ -137,7 +138,11 @@ export default function TableOrder({
           </div>
         );
       case "paid":
-        return (
+        return isLoading ? (
+          <div className="flex items-center pl-[15px]">
+            <Loader />
+          </div>
+        ) : (
           <Chip
             className={`text-tiny py-[0.5px] px-1 cursor-pointer ${statusColorMap[cellValue]}`}
             startContent={cellValue === true ? <VerifyIcon size={18} /> : ""}

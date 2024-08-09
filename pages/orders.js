@@ -5,6 +5,7 @@ import Spinner from "@/components/snnipers/Spinner";
 import useDeleteItem from "@/hooks/useDeleteItem";
 import useProducts from "@/hooks/useProducts";
 import { withSwal } from "react-sweetalert2";
+import useLoading from "@/hooks/useLoading";
 import { fetcher } from "@/utils/fetcher";
 import Layout from "@/components/Layout";
 import useOrder from "@/hooks/useOrder";
@@ -13,6 +14,7 @@ import axios from "axios";
 import useSWR from "swr";
 
 const OrdersPage = withSwal(({ swal }) => {
+  const { isLoading, startLoading, finishtLoading } = useLoading();
   const { orders, isErrorOrders, isLoadingOrders, mutateOrders } = useOrder();
   const { showNotification } = useContext(NotificationContext);
   const { mutateProducts } = useProducts();
@@ -21,11 +23,11 @@ const OrdersPage = withSwal(({ swal }) => {
     data: minimalProducts,
     error: errorGetMinimal,
     mutate: getMinimal,
-  } = useSWR("/api/products/minimal", fetcher, { refreshInterval: 300000 });
+  } = useSWR("/api/products/minimal", fetcher);
 
   const reduceQuantityProducts = async (order) => {
+    startLoading();
     const orderId = order._id;
-
     const productUpdates = order.line_items
       .map((item) => {
         const product = minimalProducts.find(
@@ -45,47 +47,48 @@ const OrdersPage = withSwal(({ swal }) => {
       })
       .filter(Boolean);
 
-    if (productUpdates.length > 0) {
-      try {
-        await Promise.all(
-          productUpdates.map((update) =>
-            axios.put("/api/products/full", update)
-          )
-        );
-        showNotification({
-          open: true,
-          msj: "Pedido ha sido aprobado!",
-          status: "success",
-        });
-        mutateProducts();
-        getMinimal();
-        if (orderId) {
-          const items = {
-            paid: true,
-            _id: orderId,
-          };
-          try {
-            await axios.put("/api/orders/full", items);
-            mutateOrders();
-          } catch (error) {
-            showNotification({
-              open: true,
-              msj: "Error al actualizar el pedido.",
-              status: "error",
-            });
-          }
-        }
-      } catch (error) {
-        showNotification({
-          open: true,
-          msj: "Error al actualizar los productos.",
-          status: "error",
-        });
-      }
-    } else {
+    const verify = productUpdates.some((element) => element.quantity < 0);
+
+    if (verify) {
+      return showNotification({
+        open: true,
+        msj: "Revisar pedido! Hay productos sin stock!",
+        status: "error",
+      });
+    }
+    try {
+      await Promise.all(
+        productUpdates.map((update) => axios.put("/api/products/full", update))
+      );
       showNotification({
         open: true,
-        msj: "No se encontraron productos para actualizar.",
+        msj: "Pedido ha sido aprobado!",
+        status: "success",
+      });
+      mutateProducts();
+      getMinimal();
+      if (orderId) {
+        const items = {
+          paid: true,
+          _id: orderId,
+        };
+        try {
+          await axios.put("/api/orders/full", items);
+          mutateOrders();
+        } catch (error) {
+          showNotification({
+            open: true,
+            msj: "Error al actualizar el pedido.",
+            status: "error",
+          });
+        }
+      }
+      finishtLoading();
+      console.log("Respuesta completada", isLoading);
+    } catch (error) {
+      showNotification({
+        open: true,
+        msj: "Error al actualizar los productos.",
         status: "error",
       });
     }
@@ -122,9 +125,10 @@ const OrdersPage = withSwal(({ swal }) => {
         ) : (
           <section className="w-full md:px-4 lg:px-8">
             <TableOrder
-              downloadPdf={downloadPdf}
               reduceQuantityProducts={reduceQuantityProducts}
               deleteOrder={handleDeleteOrder}
+              downloadPdf={downloadPdf}
+              isLoading={isLoading}
               orders={orders}
             />
           </section>

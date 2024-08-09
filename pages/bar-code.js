@@ -1,8 +1,7 @@
-import Layout from "@/components/Layout";
-import BarCodeForm from "@/components/forms/BarCodeForm";
-import Spinner from "@/components/snnipers/Spinner";
 import TableBarCode from "@/components/tables/TableBarCode";
+import Spinner from "@/components/snnipers/Spinner";
 import useProducts from "@/hooks/useProducts";
+import Layout from "@/components/Layout";
 import Head from "next/head";
 import React from "react";
 
@@ -24,7 +23,6 @@ const BarCodePage = () => {
           <Spinner />
         ) : (
           <section className="w-full md:px-4 lg:px-8">
-            {/* <BarCodeForm products={products} /> */}
             <TableBarCode products={products} />
           </section>
         )}

@@ -7,7 +7,6 @@ import {
   TableRow,
   TableCell,
   Tooltip,
-  getKeyValue,
   Pagination,
   Button,
   Input,
@@ -22,7 +21,6 @@ import { removeAccents } from "@/utils/normalized";
 
 export default function TableCategory({ categories, deleteCaterory }) {
   const [filterValue, setFilterValue] = useState("");
-  const [selectedKeys, setSelectedKeys] = useState(new Set([]));
   const [rowsPerPage, setRowsPerPage] = useState(6);
 
   const [page, setPage] = useState(1);
@@ -186,7 +184,7 @@ export default function TableCategory({ categories, deleteCaterory }) {
         </div>
       </div>
     );
-  }, [selectedKeys, items.length, page, pages]);
+  }, [items.length, page, pages]);
 
   return (
     <Table
@@ -200,7 +198,6 @@ export default function TableCategory({ categories, deleteCaterory }) {
       }}
       topContent={topContent}
       topContentPlacement="outside"
-      onSelectionChange={setSelectedKeys}
     >
       <TableHeader columns={columnsCategory}>
         {(column) => (

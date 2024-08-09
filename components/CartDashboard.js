@@ -9,7 +9,6 @@ const CartDashboard = ({ href, title, src, alt, itemCount, isLoading }) => {
       <article className="card ml:animated-button">
         <Image
           width={80}
-          height={80}
           className="object-contain h-auto"
           src={src}
           alt={alt}

@@ -35,6 +35,7 @@
     "nodemailer": "^6.9.14",
     "postcss": "8.4.28",
     "react": "18.2.0",
+    "react-barcode": "^1.5.3",
     "react-dom": "18.2.0",
     "react-resizable": "^3.0.5",
     "react-sortablejs": "^6.1.4",

@@ -9,11 +9,13 @@ import { removeAccents, removePluralEnding } from "@/utils/normalized";
 import NotificationContext from "@/context/NotificationContext";
 import { columnsBarCode } from "@/resources/columnTables";
 import { stopwords } from "@/resources/stopwordsData";
+import Barcode from "react-barcode";
 import {
   SearchIcon,
   DeleteRIcon,
   PlusIcon,
   PrintIcon,
+  VerifyIcon,
 } from "@/components/Icons";
 import {
   Table,
@@ -27,6 +29,7 @@ import {
   Button,
   Pagination,
   Tooltip,
+  Chip,
 } from "@nextui-org/react";
 
 export default function TableBarCode({ products }) {
@@ -36,12 +39,17 @@ export default function TableBarCode({ products }) {
   const [suggestions, setSuggestions] = useState([]);
   const [selectedCode, setSelectedCode] = useState("");
   const [selectedQuantity, setSelectedQuantity] = useState("");
+  const [status, setStatus] = useState(false);
   const [selectProduct, setSelectProduct] = useState([]);
 
   const [page, setPage] = useState(1);
 
+  const statusColorMap = {
+    true: "text-success border-success",
+    false: "text-error border-error",
+  };
+
   useEffect(() => {
-    // Load selectProduct from localStorage on component mount
     const savedProducts = localStorage.getItem("selectProduct");
     if (savedProducts) {
       setSelectProduct(JSON.parse(savedProducts));
@@ -49,7 +57,6 @@ export default function TableBarCode({ products }) {
   }, []);
 
   useEffect(() => {
-    // Save selectProduct to localStorage whenever it changes
     localStorage.setItem("selectProduct", JSON.stringify(selectProduct));
   }, [selectProduct]);
 
@@ -117,7 +124,12 @@ export default function TableBarCode({ products }) {
 
       const updatedProducts = [
         ...prev,
-        { title: query, code: selectedCode, quantity: selectedQuantity },
+        {
+          title: query,
+          code: selectedCode,
+          quantity: selectedQuantity,
+          status: status,
+        },
       ];
 
       showNotification({
@@ -133,7 +145,7 @@ export default function TableBarCode({ products }) {
 
   const handleDeleteProduct = (productCode) => {
     setSelectProduct((prev) => {
-      const pos = prev.indexOf(productCode);
+      const pos = prev.indexOf(productCode); // imprime el indice
       if (pos !== -1) {
         return prev.filter((value, index) => index !== pos);
       }
@@ -145,6 +157,31 @@ export default function TableBarCode({ products }) {
       msj: "Producto eliminado",
       status: "success",
     });
+  };
+
+  const modifyStatusItem = (item) => {
+    setSelectProduct((prev) => {
+      const updatedArray = prev.map((product) => {
+        if (product.code === item.code && product.status === false) {
+          return { ...product, status: true };
+        }
+        return product;
+      });
+      return updatedArray;
+    });
+    showNotification({
+      open: true,
+      msj: "Etiquetas Impresas!",
+      status: "success",
+    });
+  };
+
+  const handlePrint = (item) => {
+    console.log("Solo imprimiendo", item.title);
+    if (item.status === false) {
+      console.log("Usando funcion de status");
+      modifyStatusItem(item);
+    }
   };
 
   const handleDeleteAllProducts = () => {
@@ -178,6 +215,18 @@ export default function TableBarCode({ products }) {
     const cellValue = product[columnKey];
 
     switch (columnKey) {
+      case "status":
+        return (
+          <Chip
+            className={`cursor-pointer capitalize border ${statusColorMap[cellValue]}`}
+            size="sm"
+            startContent={cellValue === true ? <VerifyIcon /> : ""}
+            variant="flat"
+            isDisabled={cellValue === true ? true : false}
+          >
+            {cellValue === false ? "Pending" : "Printed"}
+          </Chip>
+        );
       case "title":
         return (
           <div className="uppercase min-w-[230px] max-w-[315px]">
@@ -186,6 +235,22 @@ export default function TableBarCode({ products }) {
         );
       case "code":
         return <div className="whitespace-nowrap">{cellValue}</div>;
+      case "barCode":
+        return (
+          <div className="whitespace-nowrap">
+            {
+              <Barcode
+                value={product.code}
+                width={1}
+                height={50}
+                fontSize={12}
+                font={"mono"}
+                background="#fff"
+              />
+            }
+          </div>
+        );
+
       case "actions":
         return (
           <div className="flex items-center gap-3">
@@ -203,7 +268,10 @@ export default function TableBarCode({ products }) {
               content="Imprimir"
             >
               <span className="text-lg text-sky-700 cursor-pointer active:opacity-50">
-                <PrintIcon className=" w-[22px] h-[22px] fill-sky-700" />
+                <PrintIcon
+                  className=" w-[22px] h-[22px] fill-sky-700"
+                  onClick={() => handlePrint(product)}
+                />
               </span>
             </Tooltip>
           </div>
@@ -224,11 +292,6 @@ export default function TableBarCode({ products }) {
       setPage(page - 1);
     }
   }, [page]);
-
-  const onRowsPerPageChange = useCallback((e) => {
-    setRowsPerPage(Number(e.target.value));
-    setPage(1);
-  }, []);
 
   const handleClick = (item) => {
     setQuery(item.title);
@@ -253,14 +316,14 @@ export default function TableBarCode({ products }) {
     return (
       <div className="flex flex-col gap-2">
         <div className="relative ">
-          <form className=" flex flex-col-reverse md:flex-row gap-3 bg-slate-200 items-end border-container mt-3">
+          <form className=" flex flex-col-reverse md:flex-row gap-3 bg-white items-end border-container mt-3">
             <Input
               isClearable={query}
               value={query}
               readOnly={selectedCode}
               label="Nombre del producto"
               labelPlacement={"outside"}
-              className={"basis-1/2 focus:bg-default-200/50 "}
+              className={"basis-1/2 focus:bg-default-200/50"}
               placeholder="Buscar por nombre, marca o codigos"
               startContent={<SearchIcon className="mr-1" />}
               onClear={handleClear}
@@ -303,7 +366,8 @@ export default function TableBarCode({ products }) {
                     onClick={() => handleClick(item)}
                     className="py-2 pl-2 mr-2 cursor-pointer border rounded-md border-[#97a8bc] text-white hover:text-black hover:bg-gray-100 hover:rounded-md capitalize"
                   >
-                    {`${item.code}:  ${item.title}`}
+                    <span className="text-warning font-bold font-mono">{`${item.code}: `}</span>
+                    <span> {item.title}</span>
                   </li>
                 ))}
               </ul>
@@ -370,16 +434,16 @@ export default function TableBarCode({ products }) {
         </div>
       </div>
     );
-  }, [selectProduct.length, page, pages]);
+  }, [items.length, page, pages]);
 
   return (
     <Table
-      aria-label="Esto es una tabla de productos"
+      aria-label="Esto es una tabla de codigo de barra"
       isHeaderSticky
-      bottomContent={bottomContent}
+      bottomContent={selectProduct === [] ? null : bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 sm:h-[calc(100vh-400px)] sm:overflow-auto scroll",
+        wrapper: "-z-1 sm:h-[calc(100vh-350px)] sm:overflow-auto scroll",
         th: "text-warning uppercase",
         td: "border-b border-warning",
       }}
@@ -396,7 +460,7 @@ export default function TableBarCode({ products }) {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={"Sin registro..."} items={selectProduct}>
+      <TableBody emptyContent={"Sin registro..."} items={items}>
         {(item) => (
           <TableRow key={item.code}>
             {(columnKey) => (
