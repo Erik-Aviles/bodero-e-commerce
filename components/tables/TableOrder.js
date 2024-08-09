@@ -1,4 +1,10 @@
 import React, { useCallback, useMemo, useState } from "react";
+import { statusColorMap, statusSVGMap } from "@/resources/statusMap";
+import { formatToCurrency } from "@/utils/formatToCurrency";
+import { columnsOrder } from "@/resources/columnTables";
+import ShowOrderDetail from "../show/ShowOrderDetail";
+import { DeleteRIcon, VerifyIcon } from "../Icons";
+import { Loader } from "../snnipers/Loader";
 import {
   Table,
   TableHeader,
@@ -12,17 +18,6 @@ import {
   Input,
   Chip,
 } from "@nextui-org/react";
-
-import { DeleteRIcon, VerifyIcon } from "../Icons";
-import { columnsOrder } from "@/resources/columnTables";
-import ShowOrderDetail from "../show/ShowOrderDetail";
-import { formatToCurrency } from "@/utils/formatToCurrency";
-import { Loader } from "../snnipers/Loader";
-
-const statusColorMap = {
-  true: "text-success",
-  false: "text-error",
-};
 
 const INITIAL_VISIBLE_COLUMNS = [
   "paid",
@@ -42,22 +37,10 @@ export default function TableOrder({
 }) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
-  const [visibleColumns, setVisibleColumns] = useState(
-    new Set(INITIAL_VISIBLE_COLUMNS)
-  );
   const [rowsPerPage, setRowsPerPage] = useState(9);
-
   const [page, setPage] = useState(1);
 
   const hasSearchFilter = Boolean(filterValue);
-
-  const headerColumns = useMemo(() => {
-    if (visibleColumns === "all") return columns;
-
-    return columnsOrder.filter((column) =>
-      Array.from(visibleColumns).includes(column.uid)
-    );
-  }, [visibleColumns]);
 
   const filteredItems = useMemo(() => {
     if (!orders) return [];
@@ -144,14 +127,13 @@ export default function TableOrder({
           </div>
         ) : (
           <Chip
-            className={`text-tiny py-[0.5px] px-1 cursor-pointer ${statusColorMap[cellValue]}`}
-            startContent={cellValue === true ? <VerifyIcon size={18} /> : ""}
+            className={`text-tiny capitalize cursor-pointer ${statusColorMap[cellValue]}`}
+            startContent={statusSVGMap[cellValue]}
             variant="faded"
-            isDisabled={cellValue === true ? true : false}
-            color={statusColorMap[order?.paid]}
+            isDisabled={cellValue}
             onClick={() => reduceQuantityProducts(order)}
           >
-            {cellValue === false ? "No" : "Sí"}
+            {cellValue === false ? "Pendiente" : "Confirmado"}
           </Chip>
         );
       case "actions":
@@ -270,7 +252,7 @@ export default function TableOrder({
       topContent={topContent}
       topContentPlacement="outside"
     >
-      <TableHeader columns={headerColumns}>
+      <TableHeader columns={columnsOrder}>
         {(column) => (
           <TableColumn
             key={column.uid}

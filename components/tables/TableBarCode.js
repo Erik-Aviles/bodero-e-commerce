@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { statusColorMap, statusSVGMap } from "@/resources/statusMap";
 import { removeAccents, removePluralEnding } from "@/utils/normalized";
 import NotificationContext from "@/context/NotificationContext";
 import { columnsBarCode } from "@/resources/columnTables";
@@ -15,7 +16,6 @@ import {
   DeleteRIcon,
   PlusIcon,
   PrintIcon,
-  VerifyIcon,
 } from "@/components/Icons";
 import {
   Table,
@@ -24,7 +24,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  getKeyValue,
   Input,
   Button,
   Pagination,
@@ -43,11 +42,6 @@ export default function TableBarCode({ products }) {
   const [selectProduct, setSelectProduct] = useState([]);
 
   const [page, setPage] = useState(1);
-
-  const statusColorMap = {
-    true: "text-success border-success",
-    false: "text-error border-error",
-  };
 
   useEffect(() => {
     const savedProducts = localStorage.getItem("selectProduct");
@@ -143,22 +137,6 @@ export default function TableBarCode({ products }) {
     });
   };
 
-  const handleDeleteProduct = (productCode) => {
-    setSelectProduct((prev) => {
-      const pos = prev.indexOf(productCode); // imprime el indice
-      if (pos !== -1) {
-        return prev.filter((value, index) => index !== pos);
-      }
-      localStorage.setItem("selectProduct", JSON.stringify(prev));
-      return prev;
-    });
-    showNotification({
-      open: true,
-      msj: "Producto eliminado",
-      status: "success",
-    });
-  };
-
   const modifyStatusItem = (item) => {
     setSelectProduct((prev) => {
       const updatedArray = prev.map((product) => {
@@ -184,6 +162,22 @@ export default function TableBarCode({ products }) {
     }
   };
 
+  const handleDeleteProduct = (productCode) => {
+    setSelectProduct((prev) => {
+      const pos = prev.indexOf(productCode); // imprime el indice
+      if (pos !== -1) {
+        return prev.filter((value, index) => index !== pos);
+      }
+      localStorage.setItem("selectProduct", JSON.stringify(prev));
+      return prev;
+    });
+    showNotification({
+      open: true,
+      msj: "Producto eliminado",
+      status: "success",
+    });
+  };
+
   const handleDeleteAllProducts = () => {
     if (selectProduct.length <= 0) {
       return showNotification({
@@ -202,6 +196,7 @@ export default function TableBarCode({ products }) {
       });
     }
   };
+
   const pages = Math.ceil(selectProduct.length / rowsPerPage);
 
   const items = useMemo(() => {
@@ -218,13 +213,12 @@ export default function TableBarCode({ products }) {
       case "status":
         return (
           <Chip
-            className={`cursor-pointer capitalize border ${statusColorMap[cellValue]}`}
-            size="sm"
-            startContent={cellValue === true ? <VerifyIcon /> : ""}
-            variant="flat"
-            isDisabled={cellValue === true ? true : false}
+            className={`text-tiny cursor-pointer capitalize ${statusColorMap[cellValue]}`}
+            startContent={statusSVGMap[cellValue]}
+            variant="faded"
+            isDisabled={cellValue}
           >
-            {cellValue === false ? "Pending" : "Printed"}
+            {cellValue === false ? "Pendiente" : "Imprimido"}
           </Chip>
         );
       case "title":

@@ -1,10 +1,11 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { removeAccents, removePluralEnding } from "@/utils/normalized";
+import { statusColorMap, statusSVGMap } from "@/resources/statusMap";
 import ModalOrderListProduct from "../modals/ModalOrderListProduct";
-import { DeleteRIcon, SearchIcon, VerifyIcon } from "../Icons";
 import { columnsOrdersList } from "@/resources/columnTables";
 import { justFirstWord } from "@/utils/justFirstWord";
 import { stopwords } from "@/resources/stopwordsData";
+import { DeleteRIcon, SearchIcon } from "../Icons";
 import { capitalize } from "@/utils/utils";
 import {
   Table,
@@ -20,19 +21,6 @@ import {
   Chip,
 } from "@nextui-org/react";
 
-const statusColorMap = {
-  true: "text-success",
-  false: "text-error",
-};
-
-const INITIAL_VISIBLE_COLUMNS = [
-  "customer",
-  "articulo",
-  "orderEntryDate",
-  "delivered",
-  "actions",
-];
-
 export default function TableOrderList({
   verifyOrderDelivery,
   orders,
@@ -40,23 +28,11 @@ export default function TableOrderList({
   deleteOrder,
 }) {
   const [filterValue, setFilterValue] = useState("");
-  const [selectedKeys, setSelectedKeys] = useState(new Set([]));
-  const [visibleColumns, setVisibleColumns] = useState(
-    new Set(INITIAL_VISIBLE_COLUMNS)
-  );
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [page, setPage] = useState(1);
 
   const hasSearchFilter = Boolean(filterValue);
-
-  const headerColumns = useMemo(() => {
-    if (visibleColumns === "all") return columns;
-
-    return columnsOrdersList.filter((column) =>
-      Array.from(visibleColumns).includes(column.uid)
-    );
-  }, [visibleColumns]);
 
   const filteredItems = useMemo(() => {
     if (!orders) return [];
@@ -146,10 +122,10 @@ export default function TableOrderList({
               </span>
             )}
             <Chip
-              className={`text-tiny py-[0.5px] px-1 cursor-pointer ${statusColorMap[cellValue]}`}
-              startContent={cellValue === true && <VerifyIcon size={18} />}
+              className={`text-tiny cursor-pointer ${statusColorMap[cellValue]}`}
+              startContent={statusSVGMap[cellValue]}
               variant="faded"
-              isDisabled={cellValue === true ? true : false}
+              isDisabled={cellValue}
               onClick={() => verifyOrderDelivery(order?._id)}
             >
               {cellValue === false ? "Pendiente" : "Entregado"}
@@ -257,7 +233,7 @@ export default function TableOrderList({
         </div>
       </div>
     );
-  }, [selectedKeys, items.length, page, pages]);
+  }, [items.length, page, pages]);
   return (
     <Table
       aria-label="Es una tabla de categrias"
@@ -271,7 +247,7 @@ export default function TableOrderList({
       topContent={topContent}
       topContentPlacement="outside"
     >
-      <TableHeader columns={headerColumns}>
+      <TableHeader columns={columnsOrdersList}>
         {(column) => (
           <TableColumn
             key={column.uid}
