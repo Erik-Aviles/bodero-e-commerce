@@ -63,6 +63,7 @@ export default function Home() {
                     alt={alt}
                     isLoading={
                       (title === "productos" && isLoadProducts) ||
+                      (title === "bar codes" && isLoadProducts) ||
                       (title === "categorias" && isLoadCategories) ||
                       (href === "/users" && isLoadUsers) ||
                       (href === "/customers" && isLoadCustomers) ||
@@ -71,6 +72,7 @@ export default function Home() {
                     }
                     itemCount={
                       (title === "productos" && sizeProducts) ||
+                      (title === "bar codes" && 0) ||
                       (title === "categorias" && sizeCategories) ||
                       (href === "/users" && sizeUsers) ||
                       (href === "/customers" && sizeCustomers) ||

@@ -1,4 +1,4 @@
-import { PendingIcon, VerifyIcon } from "@/components/Icons";
+import { ErrorIcon, VerifyIcon } from "@/components/Icons";
 
 export const statusColorMap = {
   true: "text-success border-success",
@@ -6,5 +6,5 @@ export const statusColorMap = {
 };
 export const statusSVGMap = {
   true: <VerifyIcon size={15} />,
-  false: <PendingIcon size={15} />,
+  false: <ErrorIcon size={15} />,
 };

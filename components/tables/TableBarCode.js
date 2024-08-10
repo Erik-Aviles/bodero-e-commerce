@@ -30,6 +30,7 @@ import {
   Tooltip,
   Chip,
 } from "@nextui-org/react";
+import { capitalize } from "@/utils/utils";
 
 export default function TableBarCode({ products }) {
   const { showNotification } = useContext(NotificationContext);
@@ -87,16 +88,16 @@ export default function TableBarCode({ products }) {
     if (!query || !selectedCode || !selectedQuantity) {
       showNotification({
         open: true,
-        msj: "Hay Campos vacíos",
-        status: "error",
+        msj: "Llene todos los campos!",
+        status: "warning",
       });
       return;
     }
     if (selectedQuantity <= 0) {
       showNotification({
         open: true,
-        msj: "La cantidad debe de ser mayor a 0",
-        status: "error",
+        msj: "Establecer la cantidad mayor a 0",
+        status: "warning",
       });
       return;
     }
@@ -109,7 +110,7 @@ export default function TableBarCode({ products }) {
       if (productExists) {
         showNotification({
           open: true,
-          msj: "El producto ya existe",
+          msj: "El producto ya existe!",
           status: "error",
         });
         handleClear();
@@ -128,7 +129,7 @@ export default function TableBarCode({ products }) {
 
       showNotification({
         open: true,
-        msj: "Agregado",
+        msj: "Código generado con exito!",
         status: "success",
       });
 
@@ -147,24 +148,61 @@ export default function TableBarCode({ products }) {
       });
       return updatedArray;
     });
-    showNotification({
-      open: true,
-      msj: "Etiquetas Impresas!",
-      status: "success",
-    });
   };
 
-  const handlePrint = (item) => {
+  const modifyStatusAllItems = () => {
+    if (selectProduct.length <= 0) {
+      return showNotification({
+        open: true,
+        msj: "No hay códigos generados",
+        status: "warning",
+      });
+    } else {
+      const newSelectProducts = selectProduct.map((product) => ({
+        ...product,
+        status: true,
+      }));
+      setSelectProduct(newSelectProducts);
+    }
+  };
+
+  const handlePrintBarCodes = (item) => {
     console.log("Solo imprimiendo", item.title);
     if (item.status === false) {
       console.log("Usando funcion de status");
       modifyStatusItem(item);
     }
+    showNotification({
+      open: true,
+      msj: `Imprimiendo etiquetas de: ${capitalize(item?.title)}`,
+      status: "success",
+    });
   };
 
-  const handleDeleteProduct = (productCode) => {
+  const handlePrintAllBarCodes = () => {
+    if (selectProduct.length <= 0) {
+      return showNotification({
+        open: true,
+        msj: "No hay códigos generados",
+        status: "warning",
+      });
+    } else {
+      const allTrue = selectProduct.every((c) => c.status === true);
+      if (!allTrue) {
+        console.log("Usando funcion de status all");
+        modifyStatusAllItems();
+      }
+      showNotification({
+        open: true,
+        msj: `Imprimiendo (${selectProduct.length}) productos con código de barra`,
+        status: "success",
+      });
+    }
+  };
+
+  const handleDeleteProduct = (product) => {
     setSelectProduct((prev) => {
-      const pos = prev.indexOf(productCode); // imprime el indice
+      const pos = prev.indexOf(product); // imprime el indice
       if (pos !== -1) {
         return prev.filter((value, index) => index !== pos);
       }
@@ -173,7 +211,7 @@ export default function TableBarCode({ products }) {
     });
     showNotification({
       open: true,
-      msj: "Producto eliminado",
+      msj: `Producto: ${capitalize(product.title)}. Eliminado!`,
       status: "success",
     });
   };
@@ -183,15 +221,14 @@ export default function TableBarCode({ products }) {
       return showNotification({
         open: true,
         msj: "No hay productos registrados",
-        status: "error",
+        status: "warning",
       });
     } else {
       localStorage.setItem("selectProduct", JSON.stringify([]));
       setSelectProduct([]);
-
       showNotification({
         open: true,
-        msj: "Todos los productos han sido eliminados",
+        msj: `Todos los (${selectProduct.length}) códigos generados han sido eliminados`,
         status: "success",
       });
     }
@@ -264,7 +301,7 @@ export default function TableBarCode({ products }) {
               <span className="text-lg text-sky-700 cursor-pointer active:opacity-50">
                 <PrintIcon
                   className=" w-[22px] h-[22px] fill-sky-700"
-                  onClick={() => handlePrint(product)}
+                  onClick={() => handlePrintBarCodes(product)}
                 />
               </span>
             </Tooltip>
@@ -386,6 +423,7 @@ export default function TableBarCode({ products }) {
               <Button
                 isIconOnly
                 className={"bg-transparent border border-sky-500"}
+                onClick={handlePrintAllBarCodes}
               >
                 <PrintIcon className=" w-[22px] h-[22px] fill-sky-500" />
               </Button>

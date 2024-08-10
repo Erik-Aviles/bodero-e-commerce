@@ -28,6 +28,7 @@ module.exports = {
         white: "#fefefe",
         success: "#39bd02", //Verde V2
         successLight: "#a8e58f", //Verde pastel
+        verify: "#00F700", //Verde pastel
         error: "#ff0000", //Rojo
         warning: "#ff6e01", //Naranja
         yellow: "#f2ae0d", //amarillo

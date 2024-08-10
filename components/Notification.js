@@ -1,24 +1,35 @@
-import { CheckIcon, WarningIcon } from "./Icons";
+import { ErrorIcon, VerifyIcon, WarningIcon } from "./Icons";
+import { useCallback } from "react";
 
-export function Notification({ status, msj }) {
+export function Notification({ status, msj, open }) {
+  const renderStatusIcon = useCallback((status) => {
+    switch (status) {
+      case "success":
+        return <VerifyIcon size="3rem" />;
+      case "warning":
+        return <WarningIcon size="3rem" />;
+      case "error":
+        return <ErrorIcon size="3rem" />;
+      default:
+        return status;
+    }
+  }, []);
+
   return (
     <div
       role="alert"
-      className="fixed min-w-[260px] border rounded-xl border-gray-300 bg-white p-4  
-       top-1/2 left-1/2 lg:top-[10%] lg:left-[60%] transform -translate-x-1/2 -translate-y-1/2 z-50 duration-[2000ms]"
+      id="message"
+      className={`fixed z-50 inset-0 flex items-center justify-center
+        ${open ? "opacity-100 scale-100" : "opacity-0 scale-95"}
+        transition-all duration-500 ease-out`}
     >
-      <div className="flex flex-col justify-center items-center gap-2">
-        <span>
-          {status === "success" ? (
-            <CheckIcon fill="#a3f958" width="3rem" height="3rem" />
-          ) : (
-            <WarningIcon fill="#f50b0c" width="3rem" height="3rem" />
-          )}
-        </span>
-
-        <strong className="block text-center font-medium text-gray-900 ml:text-2xl ">
-          {msj}
-        </strong>
+      <div className="bg-white border rounded-xl border-gray-300 p-4 w-[300px] max-w-[80%]">
+        <div className="flex flex-col justify-center items-center gap-2">
+          <span>{renderStatusIcon(status)}</span>
+          <strong className="block text-center font-medium text-gray-900 ml:text-2xl ">
+            {msj}
+          </strong>
+        </div>
       </div>
     </div>
   );
