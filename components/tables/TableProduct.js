@@ -20,11 +20,11 @@ import {
   DropdownMenu,
   DropdownItem,
   User,
-  Pagination,
   Tooltip,
 } from "@nextui-org/react";
 import { formatPrice } from "@/utils/formatPrice";
 import { stopwords } from "@/resources/stopwordsData";
+import BottomPaginationContent from "../BottomPaginationContent";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "actions",
@@ -43,7 +43,6 @@ export default function TableProduct({ products, deleteProduct }) {
   const path = router.pathname;
 
   const [filterValue, setFilterValue] = useState("");
-  const [selectedKeys, setSelectedKeys] = useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = useState(
     new Set(INITIAL_VISIBLE_COLUMNS)
   );
@@ -488,45 +487,17 @@ export default function TableProduct({ products, deleteProduct }) {
     hasSearchFilter,
   ]);
 
-  const bottomContent = useMemo(() => {
-    return (
-      <div className="py-2 px-2 flex justify-between items-center">
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          color="primary"
-          page={page}
-          total={pages}
-          onChange={setPage}
-        />
-        <div className="hidden sm:flex w-[30%] justify-end gap-2">
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onPreviousPage}
-          >
-            Anterior
-          </Button>
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onNextPage}
-          >
-            Siguiente
-          </Button>
-        </div>
-      </div>
-    );
-  }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
-
   return (
     <Table
       aria-label="Esto es una tabla de productos"
       isHeaderSticky
-      bottomContent={bottomContent}
+      bottomContent={
+        items.length > 0 ? (
+          <BottomPaginationContent
+            {...{ page, pages, setPage, onNextPage, onPreviousPage }}
+          />
+        ) : null
+      }
       bottomContentPlacement="outside"
       classNames={{
         wrapper: "-z-1 sm:h-[calc(100vh-300px)] sm:overflow-auto scroll",
@@ -535,7 +506,6 @@ export default function TableProduct({ products, deleteProduct }) {
       sortDescriptor={sortDescriptor}
       topContent={topContent}
       topContentPlacement="outside"
-      onSelectionChange={setSelectedKeys}
       onSortChange={setSortDescriptor}
     >
       <TableHeader columns={headerColumns}>

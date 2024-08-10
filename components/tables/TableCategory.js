@@ -7,17 +7,16 @@ import {
   TableRow,
   TableCell,
   Tooltip,
-  Pagination,
-  Button,
   Input,
   User,
 } from "@nextui-org/react";
 
-import { DeleteRIcon, SearchIcon } from "../Icons";
+import BottomPaginationContent from "../BottomPaginationContent";
 import { columnsCategory } from "@/resources/columnTables";
-import { capitalize } from "@/utils/utils";
 import ModalCategories from "../modals/ModalCategories";
 import { removeAccents } from "@/utils/normalized";
+import { DeleteRIcon, SearchIcon } from "../Icons";
+import { capitalize } from "@/utils/utils";
 
 export default function TableCategory({ categories, deleteCaterory }) {
   const [filterValue, setFilterValue] = useState("");
@@ -152,45 +151,17 @@ export default function TableCategory({ categories, deleteCaterory }) {
     );
   }, [filterValue, categories.length, onSearchChange, hasSearchFilter]);
 
-  const bottomContent = useMemo(() => {
-    return (
-      <div className="py-2 px-2 flex justify-between items-center">
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          color="primary"
-          page={page}
-          total={pages}
-          onChange={setPage}
-        />
-        <div className="hidden sm:flex w-[30%] justify-end gap-2">
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onPreviousPage}
-          >
-            Anterior
-          </Button>
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onNextPage}
-          >
-            Siguiente
-          </Button>
-        </div>
-      </div>
-    );
-  }, [items.length, page, pages]);
-
   return (
     <Table
       aria-label="Es una tabla de categrias"
       isHeaderSticky
-      bottomContent={bottomContent}
+      bottomContent={
+        items.length > 0 ? (
+          <BottomPaginationContent
+            {...{ page, pages, setPage, onNextPage, onPreviousPage }}
+          />
+        ) : null
+      }
       bottomContentPlacement="outside"
       classNames={{
         wrapper: "-z-1 sm:h-[calc(100vh-250px)] sm:overflow-auto scroll",

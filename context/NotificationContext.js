@@ -8,15 +8,14 @@ export function NotificationProvider({ children }) {
     open: false,
     msj: "Ha ocurrido un error!",
     status: "warning" || "error" || "success" || null,
-    time: 3000,
   });
 
   const showNotification = (props) => {
     if (props) {
       setNotification(props);
       setTimeout(() => {
-        setNotification({ open: false, msj: null, status: null, time: 3000 });
-      }, notification.time);
+        setNotification({ open: false, msj: null, status: null });
+      }, 3000);
     }
   };
 

@@ -20,6 +20,7 @@ import {
   Input,
   Chip,
 } from "@nextui-org/react";
+import BottomPaginationContent from "../BottomPaginationContent";
 
 export default function TableOrderList({
   verifyOrderDelivery,
@@ -200,45 +201,17 @@ export default function TableOrderList({
     );
   }, [filterValue, orders.length, onSearchChange, hasSearchFilter]);
 
-  const bottomContent = useMemo(() => {
-    return (
-      <div className="py-2 px-2 flex justify-between items-center">
-        <Pagination
-          className=""
-          isCompact
-          showControls
-          showShadow
-          color="primary"
-          page={page}
-          total={pages}
-          onChange={setPage}
-        />
-        <div className="hidden sm:flex w-[30%] justify-end gap-2">
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onPreviousPage}
-          >
-            Anterior
-          </Button>
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onNextPage}
-          >
-            Siguiente
-          </Button>
-        </div>
-      </div>
-    );
-  }, [items.length, page, pages]);
   return (
     <Table
-      aria-label="Es una tabla de categrias"
+      aria-label="Es una tabla de pedidos"
       isHeaderSticky
-      bottomContent={bottomContent}
+      bottomContent={
+        items.length > 0 ? (
+          <BottomPaginationContent
+            {...{ page, pages, setPage, onNextPage, onPreviousPage }}
+          />
+        ) : null
+      }
       bottomContentPlacement="outside"
       classNames={{
         wrapper: "-z-1 sm:h-[calc(100vh-315px)] sm:overflow-auto scroll",

@@ -1,11 +1,15 @@
-import Head from "next/head";
+import useProductSelection from "@/hooks/useProductSelection";
 import CartDashboard from "@/components/CartDashboard";
-import Layout from "@/components/Layout";
-import { fetcher } from "@/utils/fetcher";
-import useSWR from "swr";
 import { dashList } from "@/resources/dashList";
+import { fetcher } from "@/utils/fetcher";
+import Layout from "@/components/Layout";
+import Head from "next/head";
+import useSWR from "swr";
 
 export default function Home() {
+  const { items } = useProductSelection();
+  const sizeBarcodes = items.length;
+
   const { data: sizeProducts, isLoading: isLoadProducts } = useSWR(
     "/api/products/size",
     fetcher
@@ -72,7 +76,7 @@ export default function Home() {
                     }
                     itemCount={
                       (title === "productos" && sizeProducts) ||
-                      (title === "bar codes" && 0) ||
+                      (title === "bar codes" && sizeBarcodes) ||
                       (title === "categorias" && sizeCategories) ||
                       (href === "/users" && sizeUsers) ||
                       (href === "/customers" && sizeCustomers) ||
