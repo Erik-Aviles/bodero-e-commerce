@@ -17,4 +17,6 @@ const PrintBarcode = React.forwardRef(({ product }, ref) => (
   </div>
 ));
 
+PrintBarcode.displayName = "PrintBarcode";
+
 export default PrintBarcode;
