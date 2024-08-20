@@ -1,4 +1,5 @@
 import productImage from "@/public/images/dashboard/manitos-caja.png";
+import barcodeImage from "@/public/images/dashboard/bar-code.png";
 import categoryImage from "@/public/images/dashboard/categorias.png";
 import userImage from "@/public/images/dashboard/usuarios.png";
 import clientImage from "@/public/images/dashboard/customers.png";
@@ -7,11 +8,18 @@ import ordersListImage from "@/public/images/dashboard/pedidos.png";
 
 export const dashList = [
   {
-    id: "1",
+    id: "0",
     title: "productos",
     href: "/products",
     alt: "Cajita de productos",
     src: productImage,
+  },
+  {
+    id: "1",
+    title: "bar codes",
+    href: "/bar-code",
+    alt: "Cajita de codigos de barra",
+    src: barcodeImage,
   },
   {
     id: "2",

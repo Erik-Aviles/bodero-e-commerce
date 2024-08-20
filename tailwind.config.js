@@ -28,9 +28,11 @@ module.exports = {
         white: "#fefefe",
         success: "#39bd02", //Verde V2
         successLight: "#a8e58f", //Verde pastel
-        error: "#f70301", //Rojo
+        verify: "#00F700", //Verde pastel
+        error: "#ff0000", //Rojo
         warning: "#ff6e01", //Naranja
         yellow: "#f2ae0d", //amarillo
+        skyBlue: "#78D3F1", //celeste
       },
     },
     screens: {
@@ -65,7 +67,11 @@ module.exports = {
     },
   },
   darkMode: "class",
-  plugins: [nextui()],
+  plugins: [
+    nextui({
+      addCommonColors: true,
+    }),
+  ],
 };
 /* redLight: #fc4537; */
 /* grayLight: #e9ebea; */

@@ -28,7 +28,6 @@ export default function LoginPage() {
   }, [status, router]);
 
   const sendMessage = async () => {
-    startLoading();
     const data = {
       email: email.toLowerCase(),
     };
@@ -36,8 +35,6 @@ export default function LoginPage() {
       await axios.post(`/api/send`, data);
     } catch (error) {
       console.error("Error al enviar el mensaje:", error);
-    } finally {
-      finishtLoading();
     }
   };
 
@@ -47,6 +44,7 @@ export default function LoginPage() {
       email: email.toLowerCase(),
       password,
     };
+    startLoading();
     signIn("credentials", { ...data, redirect: false }).then((callback) => {
       if (callback?.error) {
         showNotification({
@@ -65,6 +63,7 @@ export default function LoginPage() {
         router.push("/");
       }
     });
+    finishtLoading();
   };
 
   return (

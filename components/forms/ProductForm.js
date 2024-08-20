@@ -421,7 +421,10 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
       <div className="sm:flex sm:items-center sm:justify-between sm:gap-4">
         <div className="flex flex-col pb-2">
           <h3 className="text-lg font-semibold">{titulo}</h3>
-          <p className="text-xs text-primary">{textSmall}</p>
+          <div className="flex gap-1 flex-wrap text-primary text-xs">
+            <p>{`Nota: ${textSmall}`}</p>
+            <p>Usar la (,) para los decimales</p>
+          </div>
         </div>
         <ModalCategories />
       </div>
@@ -713,6 +716,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
             <legend className="text-center text-secondary">
               CÁLCULO DE VALORES
             </legend>
+
             <div className="flex sm:gap-2 ">
               <div className="basis-2/6 mr-1 sm:mr-0">
                 <label className="my-1 block">P. Costo (*)</label>
@@ -855,13 +859,13 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
             <div className="flex sm:gap-2 ">
               <div className="basis-2/6 mr-1 sm:mr-0">
                 <span
-                  className={
+                  className={`text-xs ${
                     !minPrice || minPrice === 0
-                      ? "text-primary text-small"
+                      ? "text-primary"
                       : minPrice >= maxMInPrice
-                      ? "text-success text-small"
-                      : "text-error text-small"
-                  }
+                      ? "text-success"
+                      : "text-error"
+                  }`}
                 >
                   {!minPrice || minPrice === 0
                     ? "Aplicar precio minimo!"
@@ -872,13 +876,13 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
               </div>
               <div className="basis-2/6 mr-1 sm:mr-0">
                 <span
-                  className={
+                  className={`text-xs ${
                     !offerPrice || offerPrice === 0
-                      ? "text-primary text-small"
+                      ? "text-primary"
                       : offerPrice >= maxOffert
-                      ? "text-success text-small"
-                      : "text-error text-small"
-                  }
+                      ? "text-success"
+                      : "text-error"
+                  }`}
                 >
                   {!offerPrice || offerPrice === 0
                     ? "Aplica una oferta!"

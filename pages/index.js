@@ -1,11 +1,15 @@
-import Head from "next/head";
+import useProductSelectionBarCode from "@/hooks/useProductSelectionBarCode";
 import CartDashboard from "@/components/CartDashboard";
-import Layout from "@/components/Layout";
-import { fetcher } from "@/utils/fetcher";
-import useSWR from "swr";
 import { dashList } from "@/resources/dashList";
+import { fetcher } from "@/utils/fetcher";
+import Layout from "@/components/Layout";
+import Head from "next/head";
+import useSWR from "swr";
 
 export default function Home() {
+  const { items } = useProductSelectionBarCode();
+  const sizeBarcodes = items.length;
+
   const { data: sizeProducts, isLoading: isLoadProducts } = useSWR(
     "/api/products/size",
     fetcher
@@ -37,7 +41,7 @@ export default function Home() {
         <title>Panel de control | Inicio</title>
       </Head>
       <Layout>
-        <div className="flex flex-col lg:gap-10">
+        <div className="flex flex-col lg:gap-10 pb-4">
           <div className="h-fit max-w-screen-xl px-4 pb-4 sm:pb-0 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row  md:items-center lg:justify-between ">
               <div className="flex flex-col my-2 gap-1 sm:my-4 items-center">
@@ -63,6 +67,7 @@ export default function Home() {
                     alt={alt}
                     isLoading={
                       (title === "productos" && isLoadProducts) ||
+                      (title === "bar codes" && isLoadProducts) ||
                       (title === "categorias" && isLoadCategories) ||
                       (href === "/users" && isLoadUsers) ||
                       (href === "/customers" && isLoadCustomers) ||
@@ -71,6 +76,7 @@ export default function Home() {
                     }
                     itemCount={
                       (title === "productos" && sizeProducts) ||
+                      (title === "bar codes" && sizeBarcodes) ||
                       (title === "categorias" && sizeCategories) ||
                       (href === "/users" && sizeUsers) ||
                       (href === "/customers" && sizeCustomers) ||

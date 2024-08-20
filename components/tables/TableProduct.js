@@ -20,11 +20,11 @@ import {
   DropdownMenu,
   DropdownItem,
   User,
-  Pagination,
   Tooltip,
 } from "@nextui-org/react";
 import { formatPrice } from "@/utils/formatPrice";
 import { stopwords } from "@/resources/stopwordsData";
+import BottomPaginationContent from "../BottomPaginationContent";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "actions",
@@ -43,7 +43,6 @@ export default function TableProduct({ products, deleteProduct }) {
   const path = router.pathname;
 
   const [filterValue, setFilterValue] = useState("");
-  const [selectedKeys, setSelectedKeys] = useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = useState(
     new Set(INITIAL_VISIBLE_COLUMNS)
   );
@@ -351,8 +350,8 @@ export default function TableProduct({ products, deleteProduct }) {
       case "actions":
         return (
           <div className="flex items-center gap-3">
-            <Tooltip color="danger" content="Eliminar">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+            <Tooltip className="text-error" content="Eliminar">
+              <span className="text-lg text-error cursor-pointer active:opacity-50">
                 <DeleteRIcon
                   className=" w-[22px] h-[22px]"
                   onClick={() => deleteProduct(product)}
@@ -406,11 +405,7 @@ export default function TableProduct({ products, deleteProduct }) {
           <Input
             isClearable
             autoFocus={path === "/products" && true}
-            className={[
-              {
-                input: "w-full sm:max-w-[45%] order-1 focus:bg-default-200/50",
-              },
-            ]}
+            className={"order-1 focus:bg-default-200/50"}
             placeholder="Buscar por nombre, codigo o codigo web"
             startContent={<SearchIcon className="mr-1" />}
             value={filterValue}
@@ -492,45 +487,17 @@ export default function TableProduct({ products, deleteProduct }) {
     hasSearchFilter,
   ]);
 
-  const bottomContent = useMemo(() => {
-    return (
-      <div className="py-2 px-2 flex justify-between items-center">
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          color="primary"
-          page={page}
-          total={pages}
-          onChange={setPage}
-        />
-        <div className="hidden sm:flex w-[30%] justify-end gap-2">
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onPreviousPage}
-          >
-            Anterior
-          </Button>
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onNextPage}
-          >
-            Siguiente
-          </Button>
-        </div>
-      </div>
-    );
-  }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
-
   return (
     <Table
       aria-label="Esto es una tabla de productos"
       isHeaderSticky
-      bottomContent={bottomContent}
+      bottomContent={
+        items.length > 0 ? (
+          <BottomPaginationContent
+            {...{ page, pages, setPage, onNextPage, onPreviousPage }}
+          />
+        ) : null
+      }
       bottomContentPlacement="outside"
       classNames={{
         wrapper: "-z-1 sm:h-[calc(100vh-300px)] sm:overflow-auto scroll",
@@ -539,7 +506,6 @@ export default function TableProduct({ products, deleteProduct }) {
       sortDescriptor={sortDescriptor}
       topContent={topContent}
       topContentPlacement="outside"
-      onSelectionChange={setSelectedKeys}
       onSortChange={setSortDescriptor}
     >
       <TableHeader columns={headerColumns}>

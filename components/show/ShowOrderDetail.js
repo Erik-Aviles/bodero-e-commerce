@@ -29,7 +29,7 @@ const ShowOrderDetail = ({ order }) => {
   return (
     <div>
       <div>
-        <Tooltip color="yellow" content="Ver Detalles">
+        <Tooltip className="text-yellow" content="Ver Detalles">
           <span className="text-lg text-yellow cursor-pointer active:opacity-50">
             <EyeIcon className=" w-6 h-6" onClick={toggleModal} />
           </span>

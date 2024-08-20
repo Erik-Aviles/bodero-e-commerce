@@ -32,7 +32,7 @@ const CustomersPage = withSwal(({ swal }) => {
         {isLoadingCustomers || !customers ? (
           <Spinner />
         ) : (
-          <section className="max-w-5xl mx-auto ">
+          <section className="w-full md:px-4 lg:px-8">
             <TableCustomer
               customers={customers}
               deleteCustomer={handleDeleteCustomer}

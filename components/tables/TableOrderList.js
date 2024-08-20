@@ -1,9 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
+import { removeAccents, removePluralEnding } from "@/utils/normalized";
+import { statusColorMap, statusSVGMap } from "@/resources/statusMap";
 import ModalOrderListProduct from "../modals/ModalOrderListProduct";
-import { DeleteRIcon, SearchIcon, VerifyIcon } from "../Icons";
 import { columnsOrdersList } from "@/resources/columnTables";
 import { justFirstWord } from "@/utils/justFirstWord";
-import { removeAccents, removePluralEnding } from "@/utils/normalized";
+import { stopwords } from "@/resources/stopwordsData";
+import { DeleteRIcon, SearchIcon } from "../Icons";
 import { capitalize } from "@/utils/utils";
 import {
   Table,
@@ -13,27 +15,12 @@ import {
   TableRow,
   TableCell,
   Tooltip,
-  getKeyValue,
   Pagination,
   Button,
   Input,
   Chip,
 } from "@nextui-org/react";
-import { Loader } from "../snnipers/Loader";
-import { stopwords } from "@/resources/stopwordsData";
-
-const statusColorMap = {
-  true: "success",
-  false: "danger",
-};
-
-const INITIAL_VISIBLE_COLUMNS = [
-  "customer",
-  "articulo",
-  "orderEntryDate",
-  "delivered",
-  "actions",
-];
+import BottomPaginationContent from "../BottomPaginationContent";
 
 export default function TableOrderList({
   verifyOrderDelivery,
@@ -42,23 +29,11 @@ export default function TableOrderList({
   deleteOrder,
 }) {
   const [filterValue, setFilterValue] = useState("");
-  const [selectedKeys, setSelectedKeys] = useState(new Set([]));
-  const [visibleColumns, setVisibleColumns] = useState(
-    new Set(INITIAL_VISIBLE_COLUMNS)
-  );
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [page, setPage] = useState(1);
 
   const hasSearchFilter = Boolean(filterValue);
-
-  const headerColumns = useMemo(() => {
-    if (visibleColumns === "all") return columns;
-
-    return columnsOrdersList.filter((column) =>
-      Array.from(visibleColumns).includes(column.uid)
-    );
-  }, [visibleColumns]);
 
   const filteredItems = useMemo(() => {
     if (!orders) return [];
@@ -148,11 +123,10 @@ export default function TableOrderList({
               </span>
             )}
             <Chip
-              className=" text-tiny py-[0.5px] px-1 cursor-pointer"
-              startContent={cellValue === true && <VerifyIcon size={18} />}
+              className={`text-tiny cursor-pointer ${statusColorMap[cellValue]}`}
+              startContent={statusSVGMap[cellValue]}
               variant="faded"
-              isDisabled={cellValue === true ? true : false}
-              color={statusColorMap[cellValue]}
+              isDisabled={cellValue}
               onClick={() => verifyOrderDelivery(order?._id)}
             >
               {cellValue === false ? "Pendiente" : "Entregado"}
@@ -163,8 +137,8 @@ export default function TableOrderList({
         return (
           <div className="flex items-center gap-3 ">
             <ModalOrderListProduct order={order} />
-            <Tooltip color="danger" content="Eliminar">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+            <Tooltip className="text-error" content="Eliminar">
+              <span className="text-lg text-error cursor-pointer active:opacity-50">
                 <DeleteRIcon
                   className=" w-[22px] h-[22px]"
                   onClick={(e) => deleteOrder(order)}
@@ -227,45 +201,17 @@ export default function TableOrderList({
     );
   }, [filterValue, orders.length, onSearchChange, hasSearchFilter]);
 
-  const bottomContent = useMemo(() => {
-    return (
-      <div className="py-2 px-2 flex justify-between items-center">
-        <Pagination
-          className=""
-          isCompact
-          showControls
-          showShadow
-          color="primary"
-          page={page}
-          total={pages}
-          onChange={setPage}
-        />
-        <div className="hidden sm:flex w-[30%] justify-end gap-2">
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onPreviousPage}
-          >
-            Anterior
-          </Button>
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onNextPage}
-          >
-            Siguiente
-          </Button>
-        </div>
-      </div>
-    );
-  }, [selectedKeys, items.length, page, pages]);
   return (
     <Table
-      aria-label="Es una tabla de categrias"
+      aria-label="Es una tabla de pedidos"
       isHeaderSticky
-      bottomContent={bottomContent}
+      bottomContent={
+        items.length > 0 ? (
+          <BottomPaginationContent
+            {...{ page, pages, setPage, onNextPage, onPreviousPage }}
+          />
+        ) : null
+      }
       bottomContentPlacement="outside"
       classNames={{
         wrapper: "-z-1 sm:h-[calc(100vh-315px)] sm:overflow-auto scroll",
@@ -274,7 +220,7 @@ export default function TableOrderList({
       topContent={topContent}
       topContentPlacement="outside"
     >
-      <TableHeader columns={headerColumns}>
+      <TableHeader columns={columnsOrdersList}>
         {(column) => (
           <TableColumn
             key={column.uid}

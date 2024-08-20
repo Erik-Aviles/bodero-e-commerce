@@ -1,4 +1,10 @@
 import React, { useCallback, useMemo, useState } from "react";
+import { statusColorMap, statusSVGMap } from "@/resources/statusMap";
+import { formatToCurrency } from "@/utils/formatToCurrency";
+import { columnsOrder } from "@/resources/columnTables";
+import ShowOrderDetail from "../show/ShowOrderDetail";
+import { DeleteRIcon, VerifyIcon } from "../Icons";
+import { Loader } from "../snnipers/Loader";
 import {
   Table,
   TableHeader,
@@ -7,22 +13,12 @@ import {
   TableRow,
   TableCell,
   Tooltip,
-  getKeyValue,
   Pagination,
   Button,
   Input,
   Chip,
 } from "@nextui-org/react";
-
-import { DeleteRIcon, VerifyIcon } from "../Icons";
-import { columnsOrder } from "@/resources/columnTables";
-import ShowOrderDetail from "../show/ShowOrderDetail";
-import { formatToCurrency } from "@/utils/formatToCurrency";
-
-const statusColorMap = {
-  true: "success",
-  false: "danger",
-};
+import BottomPaginationContent from "../BottomPaginationContent";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "paid",
@@ -36,27 +32,16 @@ const INITIAL_VISIBLE_COLUMNS = [
 export default function TableOrder({
   reduceQuantityProducts,
   downloadPdf,
-  orders,
   deleteOrder,
+  orders,
+  isLoading,
 }) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
-  const [visibleColumns, setVisibleColumns] = useState(
-    new Set(INITIAL_VISIBLE_COLUMNS)
-  );
   const [rowsPerPage, setRowsPerPage] = useState(9);
-
   const [page, setPage] = useState(1);
 
   const hasSearchFilter = Boolean(filterValue);
-
-  const headerColumns = useMemo(() => {
-    if (visibleColumns === "all") return columns;
-
-    return columnsOrder.filter((column) =>
-      Array.from(visibleColumns).includes(column.uid)
-    );
-  }, [visibleColumns]);
 
   const filteredItems = useMemo(() => {
     if (!orders) return [];
@@ -137,24 +122,27 @@ export default function TableOrder({
           </div>
         );
       case "paid":
-        return (
+        return isLoading ? (
+          <div className="flex items-center pl-[15px]">
+            <Loader />
+          </div>
+        ) : (
           <Chip
-            className="text-tiny py-[0.5px] px-1 cursor-pointer"
-            startContent={cellValue === true ? <VerifyIcon size={18} /> : ""}
+            className={`text-tiny capitalize cursor-pointer ${statusColorMap[cellValue]}`}
+            startContent={statusSVGMap[cellValue]}
             variant="faded"
-            isDisabled={cellValue === true ? true : false}
-            color={statusColorMap[order?.paid]}
+            isDisabled={cellValue}
             onClick={() => reduceQuantityProducts(order)}
           >
-            {cellValue === false ? "No" : "Sí"}
+            {cellValue === false ? "Pendiente" : "Confirmado"}
           </Chip>
         );
       case "actions":
         return (
           <div className="flex items-center gap-3 ">
             <ShowOrderDetail order={order} />
-            <Tooltip color="danger" content="Eliminar">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+            <Tooltip className="text-error" content="Eliminar">
+              <span className="text-lg text-error cursor-pointer active:opacity-50">
                 <DeleteRIcon
                   className=" w-[22px] h-[22px]"
                   onClick={(e) => deleteOrder(order)}
@@ -218,45 +206,17 @@ export default function TableOrder({
     );
   }, [filterValue, orders.length, onSearchChange, hasSearchFilter]);
 
-  const bottomContent = useMemo(() => {
-    return (
-      <div className="py-2 px-2 flex justify-between items-center">
-        <Pagination
-          className=""
-          isCompact
-          showControls
-          showShadow
-          color="primary"
-          page={page}
-          total={pages}
-          onChange={setPage}
-        />
-        <div className="hidden sm:flex w-[30%] justify-end gap-2">
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onPreviousPage}
-          >
-            Anterior
-          </Button>
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onNextPage}
-          >
-            Siguiente
-          </Button>
-        </div>
-      </div>
-    );
-  }, [selectedKeys, items.length, page, pages]);
   return (
     <Table
-      aria-label="Es una tabla de categrias"
+      aria-label="Es una tabla de ventas"
       isHeaderSticky
-      bottomContent={bottomContent}
+      bottomContent={
+        items.length > 0 ? (
+          <BottomPaginationContent
+            {...{ page, pages, setPage, onNextPage, onPreviousPage }}
+          />
+        ) : null
+      }
       bottomContentPlacement="outside"
       classNames={{
         wrapper: "-z-1 sm:h-[calc(100vh-225px)] scroll",
@@ -265,7 +225,7 @@ export default function TableOrder({
       topContent={topContent}
       topContentPlacement="outside"
     >
-      <TableHeader columns={headerColumns}>
+      <TableHeader columns={columnsOrder}>
         {(column) => (
           <TableColumn
             key={column.uid}

@@ -7,7 +7,7 @@ export function NotificationProvider({ children }) {
   const [notification, setNotification] = useState({
     open: false,
     msj: "Ha ocurrido un error!",
-    status: "error" || "success" || null,
+    status: "warning" || "error" || "success" || null,
   });
 
   const showNotification = (props) => {
@@ -15,7 +15,7 @@ export function NotificationProvider({ children }) {
       setNotification(props);
       setTimeout(() => {
         setNotification({ open: false, msj: null, status: null });
-      }, 2000);
+      }, 3000);
     }
   };
 
@@ -24,7 +24,11 @@ export function NotificationProvider({ children }) {
       {children}
       {notification.open && (
         <>
-          <Notification status={notification.status} msj={notification.msj} />
+          <Notification
+            status={notification.status}
+            msj={notification.msj}
+            open={notification.open}
+          />
         </>
       )}
     </NotificationContext.Provider>

@@ -86,6 +86,22 @@ export const ClientsIcon = ({ height, width, className, ...rest }) => {
     </svg>
   );
 };
+export const PrintIcon = ({ size, height, width, className, ...props }) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={20}
+      height={20}
+      fill="none"
+      viewBox="0 0 24 24"
+      className={className}
+      {...props}
+    >
+      <path d="M21.5 10H18V5.635L13.281 1H6v9H2.5A1.5 1.5 0 0 0 1 11.5v8A1.5 1.5 0 0 0 2.5 21H6v2h12v-2h3.5a1.5 1.5 0 0 0 1.5-1.5v-8a1.5 1.5 0 0 0-1.5-1.5zM17 6h-4V2zM7 2h5v5h5v3H7zm10 20H7v-5h10zm5-2.5a.5.5 0 0 1-.5.5H18v-2h1v-2H5v2h1v2H2.5a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h19a.5.5 0 0 1 .5.5zm-7 .5v1H9v-1zm-6-1v-1h6v1zm10-7h1v1h-1z" />
+      <path fill="none" d="M0 0h24v24H0z" />
+    </svg>
+  );
+};
 export const StockIcon = ({ size, height, width, ...props }) => {
   return (
     <svg
@@ -113,13 +129,13 @@ export const VerifyIcon = ({ size, height, width, ...props }) => {
       width={size || width || 24}
       height={size || height || 24}
       viewBox="0 0 24 24"
-      fill="none"
+      fill="#00F700"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
       <path
         d="M12 2C6.49 2 2 6.49 2 12C2 17.51 6.49 22 12 22C17.51 22 22 17.51 22 12C22 6.49 17.51 2 12 2ZM16.78 9.7L11.11 15.37C10.97 15.51 10.78 15.59 10.58 15.59C10.38 15.59 10.19 15.51 10.05 15.37L7.22 12.54C6.93 12.25 6.93 11.77 7.22 11.48C7.51 11.19 7.99 11.19 8.28 11.48L10.58 13.78L15.72 8.64C16.01 8.35 16.49 8.35 16.78 8.64C17.07 8.93 17.07 9.4 16.78 9.7Z"
-        fill="currentColor"
+        fill="#00F700"
       />
     </svg>
   );
@@ -282,14 +298,13 @@ export const GooglegIcon = (props) => (
   </svg>
 );
 
-export const WarningIcon = (props) => (
+export const WarningIcon = ({ size = 24, width, height, ...props }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    fill="currentColor"
-    className="h-5 w-5"
+    width={size || width || 24}
+    height={size || height || 24}
+    fill="#F79F30"
     viewBox="0 0 24 24"
-    width="1em"
-    height="1em"
     {...props}
   >
     <path
@@ -299,15 +314,27 @@ export const WarningIcon = (props) => (
     />
   </svg>
 );
-
-export const CheckIcon = (props) => (
+export const ErrorIcon = ({ size = 24, width, height, ...props }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    fill="none"
+    width={size || width || 24}
+    height={size || height || 24}
+    fill="#ff0000"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <path d="M11.953 2C6.465 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.493 2 11.953 2zM13 17h-2v-2h2v2zm0-4h-2V7h2v6z" />
+  </svg>
+);
+
+export const CheckIcon = ({ size = 24, width, height, ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size || width || 24}
+    height={size || height || 24}
+    fill="#39bd02"
     stroke="currentColor"
     viewBox="0 0 24 24"
-    width="1em"
-    height="1em"
     {...props}
   >
     <path d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" />

@@ -2,18 +2,21 @@ import React from "react";
 import { NotificationProvider } from "@/context/NotificationContext";
 import { ActionsProvider } from "@/context/actionsProvider";
 import { NextUIProvider } from "@nextui-org/react";
-import Provider from "@/context/Provider";
+import { SessionProvider } from "next-auth/react";
 import "@/styles/globals.css";
 
-export default function App({ Component, pageProps: { ...pageProps } }) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
   return (
     <NextUIProvider>
       <NotificationProvider>
-        <Provider>
+        <SessionProvider session={session}>
           <ActionsProvider>
             <Component {...pageProps} />
           </ActionsProvider>
-        </Provider>
+        </SessionProvider>
       </NotificationProvider>
     </NextUIProvider>
   );

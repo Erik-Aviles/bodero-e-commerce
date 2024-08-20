@@ -9,7 +9,6 @@ const CartDashboard = ({ href, title, src, alt, itemCount, isLoading }) => {
       <article className="card ml:animated-button">
         <Image
           width={80}
-          height={80}
           className="object-contain h-auto"
           src={src}
           alt={alt}
@@ -17,7 +16,7 @@ const CartDashboard = ({ href, title, src, alt, itemCount, isLoading }) => {
         <section className="flex-center flex-col gap-2 items-center">
           <h3 className="m-0">{title}</h3>
           <span>
-            {isLoading || !itemCount ? (
+            {isLoading ? (
               <ClipLoader color="#97a8bc" size={20} />
             ) : (
               <h4 className="m-0 h-7">{itemCount}</h4>

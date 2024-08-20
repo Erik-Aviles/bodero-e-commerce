@@ -7,7 +7,6 @@ import {
   TableRow,
   TableCell,
   Tooltip,
-  getKeyValue,
   Pagination,
   Button,
   Input,
@@ -18,6 +17,7 @@ import { DeleteRIcon, SearchIcon } from "../Icons";
 import { columnUser } from "@/resources/columnTables";
 import { removeAccents } from "@/utils/normalized";
 import ModalUsers from "../modals/ModalUsers";
+import BottomPaginationContent from "../BottomPaginationContent";
 
 export default function TableUser({ users, deleteUser }) {
   const [filterValue, setFilterValue] = useState("");
@@ -91,8 +91,8 @@ export default function TableUser({ users, deleteUser }) {
       case "actions":
         return (
           <div className="flex items-center gap-3">
-            <Tooltip color="danger" content="Eliminar">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+            <Tooltip className="text-error" content="Eliminar">
+              <span className="text-lg text-error cursor-pointer active:opacity-50">
                 <DeleteRIcon
                   className=" w-[22px] h-[22px]"
                   onClick={(e) => deleteUser(user)}
@@ -158,45 +158,17 @@ export default function TableUser({ users, deleteUser }) {
     );
   }, [filterValue, users.length, onSearchChange, hasSearchFilter]);
 
-  const bottomContent = useMemo(() => {
-    return (
-      <div className="py-2 px-2 flex justify-between items-center">
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          color="primary"
-          page={page}
-          total={pages}
-          onChange={setPage}
-        />
-        <div className="hidden sm:flex w-[30%] justify-end gap-2">
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onPreviousPage}
-          >
-            Anterior
-          </Button>
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onNextPage}
-          >
-            Siguiente
-          </Button>
-        </div>
-      </div>
-    );
-  }, [selectedKeys, items.length, page, pages]);
-
   return (
     <Table
       aria-label="Es una tabla de usuarios"
       isHeaderSticky
-      bottomContent={bottomContent}
+      bottomContent={
+        items.length > 0 ? (
+          <BottomPaginationContent
+            {...{ page, pages, setPage, onNextPage, onPreviousPage }}
+          />
+        ) : null
+      }
       bottomContentPlacement="outside"
       classNames={{
         wrapper: "-z-1 sm:h-[calc(100vh-300px)] scroll",
