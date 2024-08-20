@@ -1,19 +1,29 @@
-import { useState, useEffect, useMemo, useCallback, useContext } from "react";
+import {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useContext,
+  useRef,
+} from "react";
 import { removeAccents, removePluralEnding } from "@/utils/normalized";
 import NotificationContext from "@/context/NotificationContext";
 import { stopwords } from "@/resources/stopwordsData";
+import { useReactToPrint } from "react-to-print";
 import { capitalize } from "@/utils/utils";
 
-const useProductSelection = (products) => {
+const useProductSelectionBarCode = (products) => {
   const { showNotification } = useContext(NotificationContext);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [selectedCode, setSelectedCode] = useState("");
-  const [selectedQuantity, setSelectedQuantity] = useState("");
+  const [selectedCode, setSelectedCode] = useState(""); //VALOR PARA GENERAR el codigo de barra
+  const [quantity, setQuantity] = useState("");
   const [status, setStatus] = useState(false);
   const [selectProduct, setSelectProduct] = useState([]);
   const [page, setPage] = useState(1);
+
+  const printRef = useRef({});
 
   useEffect(() => {
     const savedProducts = localStorage.getItem("selectProduct");
@@ -56,7 +66,7 @@ const useProductSelection = (products) => {
   };
 
   const addProduct = () => {
-    if (!query || !selectedCode || !selectedQuantity) {
+    if (!query || !selectedCode || !quantity) {
       showNotification({
         open: true,
         msj: "Llene todos los campos!",
@@ -64,7 +74,7 @@ const useProductSelection = (products) => {
       });
       return;
     }
-    if (selectedQuantity <= 0) {
+    if (quantity <= 0) {
       showNotification({
         open: true,
         msj: "Establecer la cantidad mayor a 0",
@@ -93,7 +103,7 @@ const useProductSelection = (products) => {
         {
           title: query,
           code: selectedCode,
-          quantity: selectedQuantity,
+          quantity: quantity,
           status: status,
         },
       ];
@@ -138,17 +148,34 @@ const useProductSelection = (products) => {
   };
 
   const handlePrintBarCodes = (item) => {
-    console.log("Solo imprimiendo", item.title);
     if (item.status === false) {
-      console.log("Usando función de status");
       modifyStatusItem(item);
     }
-    showNotification({
-      open: true,
-      msj: `Imprimiendo etiquetas de: ${capitalize(item?.title)}`,
-      status: "success",
-    });
+    if (printRef.current[item.code]) {
+      showNotification({
+        open: true,
+        msj: `Imprimiendo etiquetas de: ${capitalize(item?.title)}`,
+        status: "success",
+      });
+    } else {
+      console.error("La referencia para la impresión no está disponible.");
+    }
   };
+
+  const handlePrint = useReactToPrint({
+    content: () => {
+      const printContainer = document.createElement("div");
+
+      Object.keys(printRef.current).forEach((key) => {
+        const refElement = printRef.current[key];
+        if (refElement) {
+          printContainer.appendChild(refElement.cloneNode(true));
+        }
+      });
+
+      return printContainer;
+    },
+  });
 
   const handlePrintAllBarCodes = () => {
     if (selectProduct.length <= 0) {
@@ -160,14 +187,19 @@ const useProductSelection = (products) => {
     } else {
       const allTrue = selectProduct.every((c) => c.status === true);
       if (!allTrue) {
-        console.log("Usando función de status all");
         modifyStatusAllItems();
       }
-      showNotification({
-        open: true,
-        msj: `Imprimiendo (${selectProduct.length}) productos con código de barra`,
-        status: "success",
-      });
+
+      if (printRef.current) {
+        handlePrint();
+        showNotification({
+          open: true,
+          msj: `Imprimiendo (${selectProduct.length}) productos con código de barra`,
+          status: "success",
+        });
+      } else {
+        console.error("La referencia para la impresión no está disponible.");
+      }
     }
   };
 
@@ -234,7 +266,7 @@ const useProductSelection = (products) => {
   const handleClear = () => {
     setQuery("");
     setSelectedCode("");
-    setSelectedQuantity("");
+    setQuantity("");
     setSuggestions([]);
   };
 
@@ -242,11 +274,12 @@ const useProductSelection = (products) => {
     return {
       query,
       items,
+      printRef,
       setQuery,
       selectedCode,
       setSelectedCode,
-      selectedQuantity,
-      setSelectedQuantity,
+      quantity,
+      setQuantity,
       suggestions,
       setSuggestions,
       handleSearchChange,
@@ -256,11 +289,12 @@ const useProductSelection = (products) => {
       handlePrintAllBarCodes,
       handleDeleteAllProducts,
     };
-  }, [query, items, selectedCode, selectedQuantity, suggestions]);
+  }, [query, items, selectedCode, quantity, suggestions]);
 
   return {
     topContent,
     items,
+    printRef,
     page,
     setPage,
     pages,
@@ -271,4 +305,4 @@ const useProductSelection = (products) => {
   };
 };
 
-export default useProductSelection;
+export default useProductSelectionBarCode;

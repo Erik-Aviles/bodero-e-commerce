@@ -41,6 +41,7 @@
     "react-sortablejs": "^6.1.4",
     "react-spinners": "^0.13.8",
     "react-sweetalert2": "^0.6.0",
+    "react-to-print": "^2.15.1",
     "resend": "^2.0.0",
     "sortablejs": "^1.15.0",
     "swr": "^2.2.5",

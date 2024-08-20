@@ -1,5 +1,6 @@
 import React from "react";
 import { Input, Button, Tooltip } from "@nextui-org/react";
+import PrintBarcode from "../PrintBarcode";
 import {
   SearchIcon,
   PlusIcon,
@@ -10,11 +11,11 @@ import {
 const BarCodeForm = ({
   query,
   items,
-  setQuery,
+  printRef,
   selectedCode,
   setSelectedCode,
-  selectedQuantity,
-  setSelectedQuantity,
+  quantity,
+  setQuantity,
   suggestions,
   handleSearchChange,
   handleClick,
@@ -54,9 +55,9 @@ const BarCodeForm = ({
             </label>
             <Input
               type="number"
-              value={selectedQuantity}
+              value={quantity}
               placeholder="Cantidad"
-              onValueChange={(value) => setSelectedQuantity(value || "")}
+              onValueChange={(value) => setQuantity(value || "")}
             />
           </div>
           <Button
@@ -105,7 +106,16 @@ const BarCodeForm = ({
               className={"bg-transparent border border-sky-500"}
               onClick={handlePrintAllBarCodes}
             >
-              <PrintIcon className=" w-[22px] h-[22px] fill-sky-500" />
+              <PrintIcon className=" w-[22px] h-[22px] fill-sky-700" />
+
+              {items.map((product) => {
+                <div className="hidden">
+                  <PrintBarcode
+                    ref={(el) => (printRef.current[product.code] = el)}
+                    product={product}
+                  />
+                </div>;
+              })}
             </Button>
           </Tooltip>
         </div>
