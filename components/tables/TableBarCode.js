@@ -40,7 +40,7 @@ export default function TableBarCode({ products }) {
       case "status":
         return (
           <Chip
-            className={`text-tiny cursor-pointer capitalize ${statusColorMap[cellValue]}`}
+            className={`text-tiny cursor-default capitalize ${statusColorMap[cellValue]}`}
             startContent={statusSVGMap[cellValue]}
             variant="faded"
             isDisabled={cellValue}
