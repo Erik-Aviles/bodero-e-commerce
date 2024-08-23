@@ -86,6 +86,7 @@ export const ClientsIcon = ({ height, width, className, ...rest }) => {
     </svg>
   );
 };
+
 export const PrintIcon = ({ size, height, width, className, ...props }) => {
   return (
     <svg
@@ -102,6 +103,29 @@ export const PrintIcon = ({ size, height, width, className, ...props }) => {
     </svg>
   );
 };
+
+export const RefreshIcon = ({ size, height, width, className, ...props }) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={20}
+      height={20}
+      fill="none"
+      viewBox="0 0 24 24"
+      className={className}
+      {...props}
+    >
+      <path
+        stroke="#338EF7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.5}
+        d="M7 14c.51 1.004 1.375 1.835 2.467 2.367a6.413 6.413 0 0 0 3.584.584c2.018-.251 3.424-1.563 4.949-2.77M18 17v-3h-3m2-4c-.51-1.004-1.375-1.835-2.467-2.367a6.414 6.414 0 0 0-3.584-.584C8.931 7.3 7.525 8.612 6 9.82M6 7v3h3"
+      />
+    </svg>
+  );
+};
+
 export const StockIcon = ({ size, height, width, ...props }) => {
   return (
     <svg

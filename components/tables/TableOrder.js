@@ -3,7 +3,7 @@ import { statusColorMap, statusSVGMap } from "@/resources/statusMap";
 import { formatToCurrency } from "@/utils/formatToCurrency";
 import { columnsOrder } from "@/resources/columnTables";
 import ShowOrderDetail from "../show/ShowOrderDetail";
-import { DeleteRIcon, VerifyIcon } from "../Icons";
+import { DeleteRIcon, RefreshIcon, VerifyIcon } from "../Icons";
 import { Loader } from "../snnipers/Loader";
 import {
   Table,
@@ -13,28 +13,18 @@ import {
   TableRow,
   TableCell,
   Tooltip,
-  Pagination,
   Button,
   Input,
   Chip,
 } from "@nextui-org/react";
 import BottomPaginationContent from "../BottomPaginationContent";
 
-const INITIAL_VISIBLE_COLUMNS = [
-  "paid",
-  "name",
-  "createdAt",
-  "amount",
-  "quantity",
-  "actions",
-];
-
 export default function TableOrder({
+  refreshOrders,
   reduceQuantityProducts,
   downloadPdf,
   deleteOrder,
   orders,
-  isLoading,
 }) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
@@ -64,97 +54,93 @@ export default function TableOrder({
     return filteredItems.slice(start, end);
   }, [page, filteredItems, rowsPerPage]);
 
-  const renderCell = useCallback((order, columnKey) => {
-    const cellValue = order[columnKey];
+  const calcularTotal = (lineItems) => {
+    return lineItems.reduce(
+      (total, pro) => total + pro.info_order.unit_amount,
+      0
+    );
+  };
 
-    function calcularTotal(lineItems) {
-      let total = 0;
-      lineItems.forEach((pro) => {
-        total += pro.info_order.unit_amount;
-      });
-      return total;
-    }
-    function calcularQuantity(lineItems) {
-      let total = 0;
-      lineItems.forEach((pro) => {
-        total += pro.quantity;
-      });
-      return total;
-    }
-    const quantity = calcularQuantity(order.line_items);
+  const calcularQuantity = (lineItems) => {
+    return lineItems.reduce((total, pro) => total + pro.quantity, 0);
+  };
 
-    // Obtener el cantidad de producto
-    const total = calcularTotal(order.line_items);
+  const renderCell = useCallback(
+    (order, columnKey) => {
+      const cellValue = order[columnKey];
 
-    switch (columnKey) {
-      case "name":
-        return (
-          <div className="flex flex-col ">
-            <p className="text-bold text-tiny text-primary-400 capitalize">
-              {order?.name}
-            </p>
-          </div>
-        );
+      const quantity = calcularQuantity(order.line_items);
 
-      case "amount":
-        return (
-          <div className="flex flex-col">
-            <p className=" break-words text-bold text-tiny capitalize">
-              {formatToCurrency(total)}
-            </p>
-          </div>
-        );
-      case "quantity":
-        return (
-          <div className="flex flex-col">
-            <p className=" break-words text-bold text-tiny capitalize">
-              {quantity}
-              {" ud."}
-            </p>
-          </div>
-        );
-      case "createdAt":
-        return (
-          <div className="flex flex-col">
-            <p className=" break-words text-bold text-tiny capitalize">
-              {new Date(order.createdAt).toLocaleString()}
-            </p>
-          </div>
-        );
-      case "paid":
-        return isLoading ? (
-          <div className="flex items-center pl-[15px]">
-            <Loader />
-          </div>
-        ) : (
-          <Chip
-            className={`text-tiny capitalize cursor-pointer ${statusColorMap[cellValue]}`}
-            startContent={statusSVGMap[cellValue]}
-            variant="faded"
-            isDisabled={cellValue}
-            onClick={() => reduceQuantityProducts(order)}
-          >
-            {cellValue === false ? "Pendiente" : "Confirmado"}
-          </Chip>
-        );
-      case "actions":
-        return (
-          <div className="flex items-center gap-3 ">
-            <ShowOrderDetail order={order} />
-            <Tooltip className="text-error" content="Eliminar">
-              <span className="text-lg text-error cursor-pointer active:opacity-50">
-                <DeleteRIcon
-                  className=" w-[22px] h-[22px]"
-                  onClick={(e) => deleteOrder(order)}
-                />
-              </span>
-            </Tooltip>
-          </div>
-        );
-      default:
-        return cellValue;
-    }
-  }, []);
+      // Obtener el cantidad de producto
+      const total = calcularTotal(order.line_items);
+
+      switch (columnKey) {
+        case "name":
+          return (
+            <div className="flex flex-col ">
+              <p className="text-bold text-tiny text-primary-400 capitalize">
+                {order?.name}
+              </p>
+            </div>
+          );
+
+        case "amount":
+          return (
+            <div className="flex flex-col">
+              <p className=" break-words text-bold text-tiny capitalize">
+                {formatToCurrency(total)}
+              </p>
+            </div>
+          );
+        case "quantity":
+          return (
+            <div className="flex flex-col">
+              <p className=" break-words text-bold text-tiny capitalize">
+                {quantity}
+                {" ud."}
+              </p>
+            </div>
+          );
+        case "createdAt":
+          return (
+            <div className="flex flex-col">
+              <p className=" break-words text-bold text-tiny capitalize">
+                {new Date(order.createdAt).toLocaleString()}
+              </p>
+            </div>
+          );
+        case "paid":
+          return (
+            <Chip
+              className={`text-tiny capitalize cursor-pointer ${statusColorMap[cellValue]}`}
+              startContent={statusSVGMap[cellValue]}
+              variant="faded"
+              isDisabled={cellValue}
+              onClick={() => reduceQuantityProducts(order)}
+            >
+              {cellValue === false ? "Pendiente" : "Confirmado"}
+            </Chip>
+          );
+        case "actions":
+          return (
+            <div className="flex items-center gap-3 ">
+              <ShowOrderDetail order={order} />
+              <Tooltip className="text-error" content="Eliminar">
+                <span className="text-lg text-error cursor-pointer active:opacity-50">
+                  <DeleteRIcon
+                    className=" w-[22px] h-[22px]"
+                    onClick={(e) => deleteOrder(order)}
+                  />
+                </span>
+              </Tooltip>
+            </div>
+          );
+        default:
+          return cellValue;
+      }
+    },
+    [deleteOrder, formatToCurrency, reduceQuantityProducts]
+  );
 
   //sigiente
   const onNextPage = useCallback(() => {
@@ -189,6 +175,17 @@ export default function TableOrder({
           <span className="text-default-400 text-small">
             Total, {orders.length} Ordenes.
           </span>
+          {/*  <Tooltip className="text-primary-400" content="Resfrescar">
+            <Button
+              className={
+                "bg-transparent border border-primary-400 text-primary-400"
+              }
+              isIconOnly
+              onClick={refreshOrders}
+            >
+              <RefreshIcon className=" w-[25px] h-[25px] " />
+            </Button>
+          </Tooltip> */}
         </div>
         {/*   <div className="flex flex-col sm:flex-row justify-between gap-3 items-end">
           <div className="flex gap-3 ">
