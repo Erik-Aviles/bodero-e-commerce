@@ -125,9 +125,10 @@ const Nav = () => {
                         {routeList
                           .filter(
                             ({ path }) =>
+                              path === "/products" ||
                               path === "/categories" ||
-                              path === "/bar-code" ||
-                              path === "/products"
+                              path === "/critical-stock" ||
+                              path === "/bar-code"
                           )
                           .map(({ id, route, path, icon }) => (
                             <NavLink
@@ -143,9 +144,10 @@ const Nav = () => {
                 );
               }
               if (
+                path !== "/products" &&
                 path !== "/categories" &&
-                path !== "/bar-code" &&
-                path !== "/products"
+                path !== "/critical-stock" &&
+                path !== "/bar-code"
               ) {
                 return (
                   <NavLink key={id} path={path} icon={icon} route={route} />

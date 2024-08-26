@@ -1,4 +1,5 @@
 import NotificationContext from "@/context/NotificationContext";
+import useStockCritical from "@/hooks/useStockCritical";
 import React, { useContext, useState } from "react";
 import { Input, Tooltip } from "@nextui-org/react";
 import ButtonClose from "../buttons/ButtonClose";
@@ -8,8 +9,9 @@ import axios from "axios";
 
 const ModalRegisterStockProduct = ({ product }) => {
   const { showNotification } = useContext(NotificationContext);
-  const { mutateProducts } = useProducts();
   const [showModal, setShowOrderModal] = useState(false);
+  const { mutateStockCritical } = useStockCritical();
+  const { mutateProducts } = useProducts();
   const [stock, setStock] = useState("");
 
   const toggleModal = () => {
@@ -45,6 +47,7 @@ const ModalRegisterStockProduct = ({ product }) => {
             status: "success",
           });
           mutateProducts();
+          mutateStockCritical();
           toggleModal();
         } catch (error) {
           showNotification({
@@ -60,7 +63,7 @@ const ModalRegisterStockProduct = ({ product }) => {
   return (
     <div>
       <div>
-        <Tooltip color="success" content="Registar">
+        <Tooltip color="success" content="Abastecer">
           <span className="text-lg text-success cursor-pointer active:opacity-50">
             <StockIcon className=" w-[22px] h-[22px]" onClick={toggleModal} />
           </span>

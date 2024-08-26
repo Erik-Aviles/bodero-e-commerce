@@ -3,8 +3,7 @@ import { statusColorMap, statusSVGMap } from "@/resources/statusMap";
 import { formatToCurrency } from "@/utils/formatToCurrency";
 import { columnsOrder } from "@/resources/columnTables";
 import ShowOrderDetail from "../show/ShowOrderDetail";
-import { DeleteRIcon, RefreshIcon, VerifyIcon } from "../Icons";
-import { Loader } from "../snnipers/Loader";
+import { DeleteRIcon, RefreshIcon } from "../Icons";
 import {
   Table,
   TableHeader,
@@ -114,7 +113,7 @@ export default function TableOrder({
             <Chip
               className={`text-tiny capitalize cursor-pointer ${statusColorMap[cellValue]}`}
               startContent={statusSVGMap[cellValue]}
-              variant="faded"
+              variant="bordered"
               isDisabled={cellValue}
               onClick={() => reduceQuantityProducts(order)}
             >

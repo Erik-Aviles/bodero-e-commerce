@@ -109,7 +109,7 @@ table.basic a, table.basic button{
 
 /* para el scroll */
 .scroll::-webkit-scrollbar {
-  width: 4px;
+  width: 8px;
   height: 8px;
 }
 
@@ -127,6 +127,7 @@ table.basic a, table.basic button{
 .scroll:-webkit-scrollbar-corner {
   background: transparent; /* Color de fondo de la esquina */
 }
+/* ------ */
 
 .navbar {
   -webkit-transition: all 0.5s ease;

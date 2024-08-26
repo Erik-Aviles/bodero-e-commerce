@@ -5,6 +5,7 @@ import {
   OrderListIcon,
   ProductIcon,
   UsersIcon,
+  StockDownIcon,
   OrderIcon,
   BarCodeIcon,
   InventoryIcon,
@@ -19,6 +20,12 @@ export const routeList = [
     route: "Categorias",
     path: "/categories",
     icon: <ListCategoryIcon />,
+  },
+  {
+    id: "10",
+    route: "Stock Crítico",
+    path: "/critical-stock",
+    icon: <StockDownIcon />,
   },
   { id: "8", route: "Bar Code", path: "/bar-code", icon: <BarCodeIcon /> },
   {

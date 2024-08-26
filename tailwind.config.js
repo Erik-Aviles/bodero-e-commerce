@@ -31,7 +31,7 @@ module.exports = {
         verify: "#00F700", //Verde pastel
         error: "#ff0000", //Rojo
         warning: "#ff6e01", //Naranja
-        yellow: "#f2ae0d", //amarillo
+        yellow: "#F7BD01", //amarillo
         skyBlue: "#78D3F1", //celeste
       },
     },
