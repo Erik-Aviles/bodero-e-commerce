@@ -20,7 +20,6 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownItem,
-  Divider,
 } from "@nextui-org/react";
 import {
   statusColorDotMap,
@@ -110,8 +109,10 @@ export default function TableCriticalStock({ products }) {
       case "status":
         return (
           <div
-            className={`max-w-fit py-1 px-2 flex items-center gap-1 capitalize rounded-2xl text-tiny border ${
-              statusColorQuantityMap[getStockStatus(product.quantity)]
+            className={`max-w-fit py-1 px-2 flex items-center gap-1 capitalize rounded-2xl text-tiny cursor-default border ${
+              product.quantity > 2
+                ? "border-yellow text-yellow"
+                : statusColorQuantityMap[getStockStatus(product.quantity)]
             }`}
           >
             <div
@@ -275,15 +276,15 @@ export default function TableCriticalStock({ products }) {
           <div className="flex justify-between gap-5 items-center">
             <div className="flex items-center space-x-2 text-default-400 text-tiny ">
               <span className="flex items-center gap-1">
-                Bajo= 3
+                Bajo= 2
                 <article className="w-3 h-3 bg-yellow rounded-full"></article>
               </span>
-              <Divider orientation="vertical" className="text-error" />
+              <div className="text-default"> | </div>
               <span className="flex items-center gap-1">
-                Critico= 2 | 1
+                Critico= 1
                 <article className="w-3 h-3 bg-warning rounded-full"></article>
               </span>
-              <Divider orientation="vertical" />
+              <div className="text-default"> | </div>
               <span className="flex items-center gap-1">
                 Agotado= 0
                 <article className="w-3 h-3 bg-error rounded-full"></article>
