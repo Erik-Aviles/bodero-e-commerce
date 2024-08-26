@@ -10,20 +10,20 @@ export const statusSVGMap = {
 };
 
 export const statusColorQuantityMap = {
-  bajo: "text-yellow border-yellow ",
-  critico: "text-warning border-warning ",
+  bajo: "text-yellow border-yellow",
+  critico: "text-warning border-warning",
   agotado: "text-error border-error ",
 };
 
 export const statusColorTextMap = {
   bajo: "text-yellow",
-  critico: "text-warning ",
+  critico: "text-warning",
   agotado: "text-error ",
 };
 export const statusColorDotMap = {
-  bajo: "bg-yellow border-yellow ",
-  critico: "bg-warning border-warning ",
-  agotado: "bg-error border-error ",
+  bajo: "bg-yellow",
+  critico: "bg-warning",
+  agotado: "bg-error",
 };
 
 export const statusOptions = [

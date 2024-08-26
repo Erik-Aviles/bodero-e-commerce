@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     try {
       await moogoseConnect();
       const stockCritical = await Product.find(
-        { quantity: { $lte: 3 } },
+        { quantity: { $lte: 2 } },
         null,
         { sort: { _id: -1 } }
       ).select(
