@@ -125,7 +125,7 @@ export default function TableOrderList({
             <Chip
               className={`text-tiny cursor-pointer ${statusColorMap[cellValue]}`}
               startContent={statusSVGMap[cellValue]}
-              variant="faded"
+              variant="bordered"
               isDisabled={cellValue}
               onClick={() => verifyOrderDelivery(order?._id)}
             >

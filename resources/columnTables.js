@@ -1,3 +1,11 @@
+const columnsCriticalStock = [
+  { name: "ESTADO", uid: "status" },
+  { name: "Nombre del producto", uid: "title" },
+  { name: "Código", uid: "code" },
+  { name: "Stock Actual", uid: "quantity", sortable: true },
+  { name: "Nuevo Stock", uid: "lastquantity", sortable: true },
+  { name: "ACCION", uid: "actions" },
+];
 const columnsBarCode = [
   { name: "ESTADO", uid: "status" },
   { name: "Nombre del producto", uid: "title" },
@@ -79,4 +87,5 @@ export {
   columnsCustomer,
   columnUser,
   columnsBarCode,
+  columnsCriticalStock,
 };

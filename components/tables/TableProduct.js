@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { SearchIcon, ChevronDownIcon, DeleteRIcon } from "@/components/Icons";
 import ModalRegisterStockProduct from "../modals/ModalRegisterStockProduct";
+import { removeAccents, removePluralEnding } from "@/utils/normalized";
 import { columnsProduct } from "@/resources/columnTables";
 import ModalProducts from "../modals/ModalProducts";
-import { removeAccents, removePluralEnding } from "@/utils/normalized";
 import { capitalize } from "@/utils/utils";
 import { useRouter } from "next/router";
 import {
@@ -131,16 +131,14 @@ export default function TableProduct({ products, deleteProduct }) {
       case "title":
         return (
           <User
-            className="flex flex-row-reverse justify-between min-w-[230px] max-w-[315px]"
+            className="flex flex-row-reverse justify-between min-w-[230px] max-w-[315px] capitalize"
             avatarProps={{
               radius: "lg",
               src: product?.images.at(0),
             }}
-            description={capitalize(product?.brand)}
-            name={capitalize(cellValue)}
-          >
-            {cellValue}
-          </User>
+            description={product?.brand}
+            name={cellValue}
+          />
         );
       case "id":
         return (
