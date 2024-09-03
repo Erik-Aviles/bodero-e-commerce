@@ -134,7 +134,7 @@ export default function TableProduct({ products, deleteProduct }) {
             className="flex flex-row-reverse justify-between min-w-[230px] max-w-[315px] capitalize"
             avatarProps={{
               radius: "lg",
-              src: product?.images.at(0),
+              src: product?.images?.at(0),
             }}
             description={product?.brand}
             name={cellValue}
@@ -335,7 +335,7 @@ export default function TableProduct({ products, deleteProduct }) {
             <p className="max-w-[250px] min-w-[200px] break-words text-bold text-small ">
               {cellValue?.length === 0
                 ? cellValue
-                : cellValue.map((item, index) => (
+                : cellValue?.map((item, index) => (
                     <span key={index}>
                       {item}
                       <br />
