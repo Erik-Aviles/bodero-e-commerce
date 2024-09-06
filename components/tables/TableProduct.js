@@ -401,7 +401,6 @@ export default function TableProduct({ products, deleteProduct }) {
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-2 sm:flex-row justify-between items-end">
           <Input
-            isClearable
             autoFocus={path === "/products" && true}
             className={"order-1 focus:bg-default-200/50"}
             placeholder="Buscar por nombre, codigo o codigo web"
