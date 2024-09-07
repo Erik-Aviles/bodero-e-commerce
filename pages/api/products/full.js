@@ -7,19 +7,44 @@ export default async function handle(req, res) {
   const { method } = req;
   await moogoseConnect();
 
-  //Obtener productos
-  if (method === "GET") {
-    if (req.query?.id) {
-      return res.json(await Product.findOne({ _id: req.query.id }));
-    } else {
-      try {
-        const products = await Product.find({}, null, { sort: { _id: -1 } });
+  //Obtener productos de sin imagen
+  /* if (method === "GET") {
+    try {
+      if (req.query?.id) {
+        const product = await Product.findOne({ _id: req.query.id }).select(
+          "-images"
+        );
+        return res.json(product);
+      } else {
+        const products = await Product.find({}, "-images", {
+          sort: { _id: -1 },
+        });
+
         return res.status(200).json(products);
-      } catch (error) {
-        return res
-          .status(500)
-          .json({ message: messages.error.default, error: error.message });
       }
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: messages.error.default, error: error.message });
+    }
+  } */
+
+  //Obtener productos para produccion
+  if (method === "GET") {
+    try {
+      if (req.query?.id) {
+        const product = await Product.findOne({ _id: req.query.id });
+        return res.json(product);
+      } else {
+        const products = await Product.find({}, null, {
+          sort: { _id: -1 },
+        });
+        return res.status(200).json(products);
+      }
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: messages.error.default, error: error.message });
     }
   }
 

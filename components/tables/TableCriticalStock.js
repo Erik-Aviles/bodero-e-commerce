@@ -275,23 +275,23 @@ export default function TableCriticalStock({ products }) {
         <div>
           <div className="flex justify-between gap-5 items-center">
             <div className="flex items-center space-x-2 text-default-400 text-tiny ">
-              <span className="flex items-center gap-1">
+              <span className="flex flex-col sm:flex-row items-center gap-1">
                 Bajo= 2
                 <article className="w-3 h-3 bg-yellow rounded-full"></article>
               </span>
               <div className="text-default"> | </div>
-              <span className="flex items-center gap-1">
+              <span className="flex flex-col sm:flex-row items-center gap-1">
                 Critico= 1
                 <article className="w-3 h-3 bg-warning rounded-full"></article>
               </span>
               <div className="text-default"> | </div>
-              <span className="flex items-center gap-1">
+              <span className="flex flex-col sm:flex-row items-center gap-1">
                 Agotado= 0
                 <article className="w-3 h-3 bg-error rounded-full"></article>
               </span>
             </div>
 
-            <span className="text-default-400 text-small">
+            <span className="text-center text-default-400 text-small">
               Total, {filteredItems.length} Productos.
             </span>
           </div>

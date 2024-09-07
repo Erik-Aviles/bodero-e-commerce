@@ -39,12 +39,12 @@ export default function LoginPage() {
   };
 
   const login = async (e) => {
+    startLoading();
     e.preventDefault();
     const data = {
       email: email.toLowerCase(),
       password,
     };
-    startLoading();
     signIn("credentials", { ...data, redirect: false }).then((callback) => {
       if (callback?.error) {
         showNotification({
@@ -52,6 +52,7 @@ export default function LoginPage() {
           msj: callback?.error,
           status: "error",
         });
+        finishtLoading();
       }
       if (callback?.ok && !callback?.error) {
         showNotification({
@@ -60,10 +61,10 @@ export default function LoginPage() {
           status: "success",
         });
         sendMessage();
+        finishtLoading();
         router.push("/");
       }
     });
-    finishtLoading();
   };
 
   return (
