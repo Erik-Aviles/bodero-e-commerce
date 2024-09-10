@@ -1,3 +1,10 @@
+const columnsRolesPermissions = [
+  { name: "Nombre del Rol", uid: "name" },
+  { name: "Permisos", uid: "permissions" },
+  { name: "OBSERVACION", uid: "observation" },
+  { name: "ACCION", uid: "actions" },
+];
+
 const columnsCriticalStock = [
   { name: "ESTADO", uid: "status" },
   { name: "Nombre del producto", uid: "title" },
@@ -6,6 +13,7 @@ const columnsCriticalStock = [
   { name: "Nuevo Stock", uid: "lastquantity", sortable: true },
   { name: "ACCION", uid: "actions" },
 ];
+
 const columnsBarCode = [
   { name: "ESTADO", uid: "status" },
   { name: "Nombre del producto", uid: "title" },
@@ -14,6 +22,7 @@ const columnsBarCode = [
   { name: "CANTIDAD", uid: "quantity" },
   { name: "ACCION", uid: "actions" },
 ];
+
 const columnsOrder = [
   { name: "ESTADO", uid: "paid" },
   { name: "CLIENTE", uid: "name" },
@@ -22,6 +31,7 @@ const columnsOrder = [
   { name: "CANTIDAD", uid: "quantity" },
   { name: "ACCION", uid: "actions" },
 ];
+
 const columnsOrdersList = [
   { name: "ESTADO", uid: "delivered" },
   { name: "CLIENTE", uid: "customer" },
@@ -60,6 +70,7 @@ const columnsProduct = [
   { name: "Descripción", uid: "description" },
   { name: "Desc. Adicional", uid: "descriptionAdditional" },
 ];
+
 const columnsCustomer = [
   { name: "Acción", uid: "actions" },
   { name: "Nombres", uid: "name", sortable: true },
@@ -72,6 +83,7 @@ const columnsCustomer = [
   { name: "Compras", uid: "myShopping_list" },
   { name: "Observaciones", uid: "observations" },
 ];
+
 const columnUser = [
   { name: "Acción", uid: "actions" },
   { name: "Nombres", uid: "fullname", sortable: true },
@@ -88,4 +100,5 @@ export {
   columnUser,
   columnsBarCode,
   columnsCriticalStock,
+  columnsRolesPermissions,
 };

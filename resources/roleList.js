@@ -1,4 +1,14 @@
 export const roleList = [
-  { rol: "admin", value: "Administrador" },
-  { rol: "user", value: "Encargado" },
+  {
+    rol: "admin",
+    name: "Administrador",
+    permissions: [],
+    observation: "Tiene todos los privilegios",
+  },
+  {
+    rol: "user",
+    name: "Encargado",
+    permissions: [],
+    observation: "No cuenta con todos los privilegios",
+  },
 ];

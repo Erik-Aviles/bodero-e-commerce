@@ -210,7 +210,7 @@ const UserForm = ({ user, titulo, textSmall, toggleModal }) => {
                     >
                       {(item) => (
                         <AutocompleteItem key={item.rol}>
-                          {item.value}
+                          {item.name}
                         </AutocompleteItem>
                       )}
                     </Autocomplete>
