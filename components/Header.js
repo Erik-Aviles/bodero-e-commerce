@@ -1,9 +1,9 @@
 import React from "react";
 import avatarLocal from "../public/images/avatar/avatarUser.png";
 import { justFirstWord } from "@/utils/justFirstWord";
+import { HamburguerIcon, LogoutIcon } from "./Icons";
 import { useSession } from "next-auth/react";
 import useActions from "@/hooks/useActions";
-import { HamburguerIcon, LogoutIcon } from "./Icons";
 import logo from "@/public/logo.jpg";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,21 +14,16 @@ import {
   DropdownMenu,
   DropdownSection,
   DropdownTrigger,
-  User,
 } from "@nextui-org/react";
-import { capitalize } from "@/utils/utils";
 
 const Header = () => {
   const { changeToggle, setNavbar, cerrarSesion } = useActions();
   const { data: session } = useSession();
   const user = session?.user;
 
-  const inactiveLink =
-    "flex px-2 py-3 lg:py-2 py-3 px-2 transition-colors hover:bg-[#97a8bc]/10 fill-[#9f9f9f] ";
-
   return (
     <>
-      <header className="sticky top-0 z-30 md:relative bg-white w-full p-2 ">
+      <header className="sticky top-0 z-30 md:relative bg-white w-full px-2 pt-2 md:pb-2">
         <div className="w-full bg-white md:hidden flex py-2">
           <button
             onClick={() => {
@@ -44,8 +39,8 @@ const Header = () => {
             </Link>
           </div>
         </div>
-        <hr className="h-px border-0 bg-gray-300 md:hidden" />
-        <div className="h-fit flex items-center sm:justify-between sm:gap-4">
+        <hr className="h-[1px] border-0 bg-gray-300 md:hidden" />
+        <div className="py-2 flex items-center justify-between sm:gap-4">
           <button
             className="hidden md:flex lg:hidden"
             onClick={() => {
@@ -92,7 +87,7 @@ const Header = () => {
                       className="w-20 h-20 text-large"
                       src={user?.avatar[0] ? user?.avatar[0] : avatarLocal}
                     />
-                  </span>{" "}
+                  </span>
                   <p className="font-bold text-success text-center capitalize">
                     {user?.fullname}
                   </p>
@@ -101,7 +96,7 @@ const Header = () => {
               </DropdownSection>
               <DropdownItem key="settings">
                 <Link href={"/admin/system?section=account"}>
-                  Informacion de mi cuenta{" "}
+                  Informacion de mi cuenta
                 </Link>
               </DropdownItem>
 
@@ -111,7 +106,7 @@ const Header = () => {
                 color="danger"
                 onClick={cerrarSesion}
               >
-                Finalizar sesión
+                Cerrar sesión
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
