@@ -6,7 +6,7 @@ import { ClipLoader } from "react-spinners";
 const CartDashboard = ({ href, title, src, alt, itemCount, isLoading }) => {
   return (
     <Link href={href}>
-      <article className="card ml:animated-button">
+      <article className="card ml:animated-button border border-primary shadow-lg">
         <Image
           width={80}
           className="object-contain h-auto"

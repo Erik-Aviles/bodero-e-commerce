@@ -7,11 +7,10 @@ import NavLink from "./NavLink";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  DownArrowIcon,
   HamburguerIcon,
   LeftArrowIcon,
-  LogoutIcon,
   RightArrowIcon,
+  UpArrowIcon,
 } from "./Icons";
 
 const Nav = () => {
@@ -21,10 +20,13 @@ const Nav = () => {
     navbar,
     toggle,
     setNavbar,
-    cerrarSesion,
     changeToggle,
-    opcFactura,
-    changeOpcFactura,
+    opcInventory,
+    opcBusiness,
+    opcAdmin,
+    changeOpcInventory,
+    changeOpcBusiness,
+    changeOpcAdmin,
   } = useActions();
 
   const inactiveLink =
@@ -88,12 +90,12 @@ const Nav = () => {
         <nav className="h-full flex flex-col ">
           <ul className={navbar ? "p-3 flex flex-col gap-1" : ""}>
             {routeList.map(({ id, route, path, icon }) => {
-              if (path === "") {
+              if (path === "inventory") {
                 return (
                   <div key={id}>
                     <button
                       className={`${
-                        opcFactura
+                        opcInventory
                           ? "bg-slate-200 flex lg:py-2 py-3 px-2 transition-colors hover:bg-[#97a8bc]/10 fill-[#9f9f9f]"
                           : inactiveLink
                       } cursor-pointer w-full ${
@@ -101,7 +103,7 @@ const Nav = () => {
                           ? "text-[12px] flex-col items-center rounded-md "
                           : "gap-4 "
                       }`}
-                      onClick={changeOpcFactura}
+                      onClick={changeOpcInventory}
                     >
                       {icon
                         ? React.cloneElement(icon, {
@@ -113,22 +115,22 @@ const Nav = () => {
                         className={`flex-1 flex items-center justify-between gap-3`}
                       >
                         {route}
-                        <DownArrowIcon
-                          className={`w-3 h-3 transition-transform duration-500 ${
-                            opcFactura ? "-rotate-180" : ""
+                        <UpArrowIcon
+                          className={`w-3 h-3 transition-transform duration-700 ${
+                            opcInventory ? "rotate-180" : ""
                           }`}
                         />
                       </span>
                     </button>
-                    {opcFactura && (
+                    {opcInventory && (
                       <ul className="pt-2 pl-5">
                         {routeList
                           .filter(
                             ({ path }) =>
-                              path === "/products" ||
-                              path === "/categories" ||
-                              path === "/critical-stock" ||
-                              path === "/bar-code"
+                              path === "/inventory/products" ||
+                              path === "/inventory/categories" ||
+                              path === "/inventory/critical-stock" ||
+                              path === "/inventory/bar-code"
                           )
                           .map(({ id, route, path, icon }) => (
                             <NavLink
@@ -143,29 +145,133 @@ const Nav = () => {
                   </div>
                 );
               }
+              if (path === "business") {
+                return (
+                  <div key={id}>
+                    <button
+                      className={`${
+                        opcBusiness
+                          ? "bg-slate-200 flex lg:py-2 py-3 px-2 transition-colors hover:bg-[#97a8bc]/10 fill-[#9f9f9f]"
+                          : inactiveLink
+                      } cursor-pointer w-full ${
+                        navbar
+                          ? "text-[12px] flex-col items-center rounded-md "
+                          : "gap-4 "
+                      }`}
+                      onClick={changeOpcBusiness}
+                    >
+                      {icon
+                        ? React.cloneElement(icon, {
+                            className:
+                              pathname === path ? activeIcon : inactiveIcon,
+                          })
+                        : null}
+                      <span
+                        className={`flex-1 flex items-center justify-between gap-3`}
+                      >
+                        {route}
+                        <UpArrowIcon
+                          className={`w-3 h-3 transition-transform duration-500 ${
+                            opcBusiness ? "rotate-180" : ""
+                          }`}
+                        />
+                      </span>
+                    </button>
+                    {opcBusiness && (
+                      <ul className="pt-2 pl-5">
+                        {routeList
+                          .filter(
+                            ({ path }) =>
+                              path === "/business/orderslist" ||
+                              path === "/business/orders"
+                          )
+                          .map(({ id, route, path, icon }) => (
+                            <NavLink
+                              key={id}
+                              path={path}
+                              icon={icon}
+                              route={route}
+                            />
+                          ))}
+                      </ul>
+                    )}
+                  </div>
+                );
+              }
+
+              if (path === "admin") {
+                return (
+                  <div key={id}>
+                    <button
+                      className={`${
+                        opcAdmin
+                          ? "bg-slate-200 flex lg:py-2 py-3 px-2 transition-colors hover:bg-[#97a8bc]/10 fill-[#9f9f9f]"
+                          : inactiveLink
+                      } cursor-pointer w-full ${
+                        navbar
+                          ? "text-[12px] flex-col items-center rounded-md "
+                          : "gap-4 "
+                      }`}
+                      onClick={changeOpcAdmin}
+                    >
+                      {icon
+                        ? React.cloneElement(icon, {
+                            className:
+                              pathname === path ? activeIcon : inactiveIcon,
+                          })
+                        : null}
+                      <span
+                        className={`flex-1 flex items-center justify-between gap-3`}
+                      >
+                        {route}
+                        <UpArrowIcon
+                          className={`w-3 h-3 transition-transform duration-500 ${
+                            opcAdmin ? "rotate-180" : ""
+                          }`}
+                        />
+                      </span>
+                    </button>
+                    {opcAdmin && (
+                      <ul className="pt-2 pl-5">
+                        {routeList
+                          .filter(
+                            ({ path }) =>
+                              path === "/admin/users" ||
+                              path === "/admin/customers" ||
+                              path === "/admin/system"
+                          )
+                          .map(({ id, route, path, icon }) => (
+                            <NavLink
+                              key={id}
+                              path={path}
+                              icon={icon}
+                              route={route}
+                            />
+                          ))}
+                      </ul>
+                    )}
+                  </div>
+                );
+              }
+
               if (
-                path !== "/products" &&
-                path !== "/categories" &&
-                path !== "/critical-stock" &&
-                path !== "/bar-code"
+                path !== "/inventory/products" &&
+                path !== "/inventory/categories" &&
+                path !== "/inventory/critical-stock" &&
+                path !== "/inventory/bar-code" &&
+                path !== "/business/orderslist" &&
+                path !== "/business/orders" &&
+                path !== "/admin/users" &&
+                path !== "/admin/customers" &&
+                path !== "/admin/system"
               ) {
                 return (
                   <NavLink key={id} path={path} icon={icon} route={route} />
                 );
               }
+
               return null;
             })}
-          </ul>
-          <ul className={navbar ? "p-3 " : ""}>
-            <button
-              className={`${inactiveLink} w-full ${
-                navbar ? "text-[12px] flex-col items-center " : "gap-4"
-              }`}
-              onClick={cerrarSesion}
-            >
-              <LogoutIcon />
-              Salir
-            </button>
           </ul>
         </nav>
       </aside>

@@ -69,19 +69,19 @@ export default function Home() {
                       (title === "productos" && isLoadProducts) ||
                       (title === "bar codes" && isLoadProducts) ||
                       (title === "categorias" && isLoadCategories) ||
-                      (href === "/users" && isLoadUsers) ||
-                      (href === "/customers" && isLoadCustomers) ||
-                      (href === "/orderslist" && isLoadOrdersList) ||
-                      (href === "/orders" && isLoadOrders)
+                      (title === "usuarios" && isLoadUsers) ||
+                      (title === "clientes" && isLoadCustomers) ||
+                      (title === "pedidos" && isLoadOrdersList) ||
+                      (title === "ventas" && isLoadOrders)
                     }
                     itemCount={
                       (title === "productos" && sizeProducts) ||
                       (title === "bar codes" && sizeBarcodes) ||
                       (title === "categorias" && sizeCategories) ||
-                      (href === "/users" && sizeUsers) ||
-                      (href === "/customers" && sizeCustomers) ||
-                      (href === "/orderslist" && sizeOrdersList) ||
-                      (href === "/orders" && sizeOrders)
+                      (title === "usuarios" && sizeUsers) ||
+                      (title === "clientes" && sizeCustomers) ||
+                      (title === "pedidos" && sizeOrdersList) ||
+                      (title === "ventas" && sizeOrders)
                     }
                   />
                 ))}

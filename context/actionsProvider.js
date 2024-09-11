@@ -31,7 +31,9 @@ export const ActionsProvider = ({ children }) => {
 
   // Opciones interfaz usuario
   const [navbar, setNavbar] = useState(false);
-  const [opcFactura, setOpcFactura] = useState(false);
+  const [opcInventory, setOpcInventory] = useState(false);
+  const [opcBusiness, setOpcBusiness] = useState(false);
+  const [opcAdmin, setOpcAdmin] = useState(false);
 
   // Datos Cuerpo Factura
   const [formulariosFactura, setFormulariosFactura] = useState([]);
@@ -57,9 +59,18 @@ export const ActionsProvider = ({ children }) => {
     localStorage.setItem("navbar", !navbar);
   };
 
-  const changeOpcFactura = () => {
-    setOpcFactura(!opcFactura);
-    localStorage.setItem("opcFactura", !opcFactura);
+  const changeOpcInventory = () => {
+    setOpcInventory(!opcInventory);
+    localStorage.setItem("opcInventory", !opcInventory);
+  };
+  const changeOpcAdmin = () => {
+    setOpcAdmin(!opcAdmin);
+    localStorage.setItem("opcAdmin", !opcAdmin);
+  };
+
+  const changeOpcBusiness = () => {
+    setOpcBusiness(!opcBusiness);
+    localStorage.setItem("opcBusiness", !opcBusiness);
   };
 
   const changeModalCategoria = () => {
@@ -148,7 +159,9 @@ export const ActionsProvider = ({ children }) => {
 
   useEffect(() => {
     setNavbar(JSON.parse(localStorage.getItem("navbar")) || false);
-    setOpcFactura(JSON.parse(localStorage.getItem("opcFactura")) || false);
+    setOpcInventory(JSON.parse(localStorage.getItem("opcInventory")) || false);
+    setOpcBusiness(JSON.parse(localStorage.getItem("opcBusiness")) || false);
+    setOpcAdmin(JSON.parse(localStorage.getItem("opcAdmin")) || false);
     setUsuario(JSON.parse(localStorage.getItem("user")) || []);
   }, []);
 
@@ -158,8 +171,12 @@ export const ActionsProvider = ({ children }) => {
         setNavbar,
         changeNavbar,
         navbar,
-        changeOpcFactura,
-        opcFactura,
+        changeOpcInventory,
+        changeOpcBusiness,
+        changeOpcAdmin,
+        opcInventory,
+        opcBusiness,
+        opcAdmin,
         changeModalCategoria,
         modalCategoria,
         setEditar,
