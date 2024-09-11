@@ -54,22 +54,37 @@ const OrdersPage = withSwal(({ swal }) => {
 
   const reduceQuantityProducts = async (order) => {
     const orderId = order._id;
+
+    if (!minimalProducts || minimalProducts.length === 0) {
+      return showNotification({
+        open: true,
+        msj: "Advertencia: Aun no se cargaron los datos necesarios.",
+        status: "warning",
+      });
+    }
+
     const productUpdates = order.line_items
       .map((item) => {
         const product = minimalProducts.find(
           (prod) => prod._id === item.info_order.product_data.id
         );
 
-        if (product) {
-          const newstock = product.quantity - item.quantity;
-          return {
-            quantity: newstock,
-            quantityUpdated: Date.now(),
-            _id: product._id,
-            title: product.title,
-          };
+        if (!product) {
+          showNotification({
+            open: true,
+            msj: `Error: No se encontró el producto con ID ${item.info_order.product_data.id}.`,
+            status: "error",
+          });
+          return null;
         }
-        return null;
+
+        const newstock = product.quantity - item.quantity;
+        return {
+          quantity: newstock,
+          quantityUpdated: Date.now(),
+          _id: product._id,
+          title: product.title,
+        };
       })
       .filter(Boolean);
 
@@ -80,7 +95,7 @@ const OrdersPage = withSwal(({ swal }) => {
 
     if (negativeStockProducts.length > 0) {
       const productNames = negativeStockProducts
-        .map((product) => product.title)
+        .map((product) => product._id)
         .join(", ");
 
       return showNotification({
@@ -90,46 +105,55 @@ const OrdersPage = withSwal(({ swal }) => {
       });
     }
 
-    swal.fire({
-      title: "Procesando...",
-      text: "Espere hasta que se termine de procesar",
-      allowOutsideClick: false,
-      didOpen: async () => {
-        swal.showLoading();
-        const response = await Promise.all(
-          productUpdates.map((update) =>
-            axios.put("/api/products/full", update)
-          )
-        );
-        const allSuccess = response.every((res) => res.status === 200);
-        if (allSuccess && orderId) {
-          const items = {
-            paid: true,
-            _id: orderId,
-          };
+    try {
+      swal.fire({
+        title: "Procesando...",
+        text: "Espere hasta que se termine de procesar",
+        allowOutsideClick: false,
+        didOpen: async () => {
+          swal.showLoading();
 
-          await axios.put("/api/orders/full", items);
-          mutateOrders();
+          const response = await Promise.allSettled(
+            productUpdates.map((update) =>
+              axios.put("/api/products/full", update)
+            )
+          );
 
-          showNotification({
-            open: true,
-            msj: "¡Pedido ha sido aprobado!",
-            status: "success",
-          });
+          const allSuccess = response.every(
+            (res) => res.status === "fulfilled" && res.value.status === 200
+          );
 
-          mutateProducts();
-          getMinimal();
-          swal.close();
-        } else {
-          swal.close();
-          showNotification({
-            open: true,
-            msj: "Error al confirmar el pedido.",
-            status: "error",
-          });
-        }
-      },
-    });
+          if (allSuccess && orderId) {
+            const items = {
+              paid: true,
+              _id: orderId,
+            };
+
+            await axios.put("/api/orders/full", items);
+            mutateOrders();
+
+            showNotification({
+              open: true,
+              msj: "¡Pedido ha sido aprobado!",
+              status: "success",
+            });
+
+            mutateProducts();
+            getMinimal();
+            swal.close();
+          } else {
+            throw new Error("Error al confirmar el pedido.");
+          }
+        },
+      });
+    } catch (error) {
+      swal.close();
+      showNotification({
+        open: true,
+        msj: error.message || "Error durante el proceso.",
+        status: "error",
+      });
+    }
   };
 
   const handleDeleteOrder = (item) => {
