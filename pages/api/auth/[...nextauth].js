@@ -53,10 +53,10 @@ export const authOptions = {
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
-  session: { strategy: "jwt", maxAge: 60 * 60 * 24 },
+  session: { strategy: "jwt", maxAge: 60 * 60 * 10 },
   jwt: {
     secret: process.env.NEXTAUTH_SECRET,
-    maxAge: 60 * 60 * 24,
+    maxAge: 60 * 60 * 10,
   },
   debug: process.env.NODE_ENV !== "production",
   pages: {
