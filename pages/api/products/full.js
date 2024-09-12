@@ -8,7 +8,7 @@ export default async function handle(req, res) {
   await moogoseConnect();
 
   //Obtener productos de sin imagen
-  /* if (method === "GET") {
+  /*  if (method === "GET") {
     try {
       if (req.query?.id) {
         const product = await Product.findOne({ _id: req.query.id }).select(
@@ -82,12 +82,21 @@ export default async function handle(req, res) {
         return res.status(400).json({ message: messages.error.needProps });
 
       //validar que no exista valores en negativo
-      if ((quantity || price || salePrice || minPrice || offerPrice) < 0) {
+      if (
+        quantity < 0 ||
+        price < 0 ||
+        salePrice < 0 ||
+        minPrice < 0 ||
+        offerPrice < 0
+      ) {
         return res
           .status(400)
           .json({ message: messages.error.unsupportedValue });
       }
-
+      //validar que el campo quantity por lo menos tenga un 0 NO DEBE DE SER VACIO
+      if (quantity == null || quantity === "") {
+        return res.status(400).json({ message: messages.error.emptyQuantity });
+      }
       const newProduct = await Product.create({
         title: title.toLowerCase(),
         code,

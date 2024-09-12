@@ -2,6 +2,7 @@ const messages = {
   error: {
     needProps: "Campos obligatorio vacío!",
     unsupportedValue: "Hay valores -1!",
+    emptyQuantity: "La cantidad no puede ir vacio, por lo menos agrege un (0)!",
     default: "Ocurrió un error desconocido!",
     requireCaracteres: "La contraseña debe de ser minimo de 6 caracteres!",
     notProduct: "Producto no encontrado o no se realizó ninguna modificación!",
