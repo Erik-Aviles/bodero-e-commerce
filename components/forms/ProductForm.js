@@ -1,6 +1,6 @@
 import { profitabilityToChoose, taxToChoose } from "@/resources/valuesToChoose";
 import { Autocomplete, AutocompleteItem, Input } from "@nextui-org/react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import NotificationContext from "@/context/NotificationContext";
 import ModalCategories from "../modals/ModalCategories";
 import ButtonClose from "../buttons/ButtonClose";
@@ -64,6 +64,10 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
 
   const [maxMInPrice, setMaxMInPrice] = useState(0);
   const [maxOffert, setMaxOffert] = useState(0);
+
+  const codeRef = useRef(null);
+  const codeWebRef = useRef(null);
+  const codeEnterpriseRef = useRef(null);
 
   const fetchDataCodes = async (signal) => {
     try {
@@ -172,12 +176,12 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
       setTax(0);
       setProfitability(0);
       setNetPrice("");
-      setSalePrice("");
-      setOfferPrice("");
+      setSalePrice(0);
+      setOfferPrice(0);
       setProfit("");
       setBrand("");
       setCategory("");
-      setQuantity("");
+      setQuantity(0);
       setLocation("");
       setCompatibility([]);
       setDescription("");
@@ -306,6 +310,18 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
 
   const resetCodesVerified = () => {
     setCodes(initialCodes);
+  };
+
+  const handleBarcodeScan = (e) => {
+    const scannedCode = e.target.value;
+
+    if (document.activeElement === codeRef.current) {
+      setCode(scannedCode);
+    } else if (document.activeElement === codeWebRef.current) {
+      setCodeWeb(scannedCode);
+    } else if (document.activeElement === codeEnterpriseRef.current) {
+      setCodeEnterprise(scannedCode);
+    }
   };
 
   function handleCompatibilityTitleChange(index, compatibility, newTitle) {
@@ -447,7 +463,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
                 isRequired={true}
                 placeholder="Código principal (*)"
                 onChange={handleChangeCode}
-                // onChange={(e) => setCode(e.target.value)}
+                onInput={handleBarcodeScan}
               />
             </div>
             {!verify ? (
@@ -463,6 +479,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
                 placeholder="Código"
                 labelPlacement="outside"
                 onChange={handleChangeCodeWeb}
+                onInput={handleBarcodeScan}
               />
             </div>
             {!verifyWeb || codeWeb.length === 0 ? (
@@ -480,6 +497,7 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
                 placeholder="Código"
                 labelPlacement="outside"
                 onChange={handleChangeCodeEnterprise}
+                onInput={handleBarcodeScan}
               />
             </div>
             {!verifyEnterprise || codeEnterprise.length === 0 ? (
