@@ -3,15 +3,15 @@ import { Autocomplete, AutocompleteItem, Input } from "@nextui-org/react";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import NotificationContext from "@/context/NotificationContext";
 import ModalCategories from "../modals/ModalCategories";
-import ButtonClose from "../buttons/ButtonClose";
 import { DeleteIcon, UpLoadIcon } from "../Icons";
+import useCategories from "@/hooks/useCategories";
+import ButtonClose from "../buttons/ButtonClose";
 import { ReactSortable } from "react-sortablejs";
 import useProducts from "@/hooks/useProducts";
 import { Loader } from "../snnipers/Loader";
 import useLoading from "@/hooks/useLoading";
 import { capitalize } from "@/utils/utils";
 import axios from "axios";
-import useCategories from "@/hooks/useCategories";
 
 const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
   const { isLoading, startLoading, finishtLoading } = useLoading();
@@ -66,8 +66,6 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
   const [maxOffert, setMaxOffert] = useState(0);
 
   const codeRef = useRef(null);
-  const codeWebRef = useRef(null);
-  const codeEnterpriseRef = useRef(null);
 
   const fetchDataCodes = async (signal) => {
     try {
@@ -189,6 +187,10 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
       setImages([]);
       setColor("");
       setSize("");
+
+      if (codeRef.current) {
+        codeRef.current.focus();
+      }
     } catch (error) {
       showNotification({
         open: true,
@@ -310,18 +312,6 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
 
   const resetCodesVerified = () => {
     setCodes(initialCodes);
-  };
-
-  const handleBarcodeScan = (e) => {
-    const scannedCode = e.target.value;
-
-    if (document.activeElement === codeRef.current) {
-      setCode(scannedCode);
-    } else if (document.activeElement === codeWebRef.current) {
-      setCodeWeb(scannedCode);
-    } else if (document.activeElement === codeEnterpriseRef.current) {
-      setCodeEnterprise(scannedCode);
-    }
   };
 
   function handleCompatibilityTitleChange(index, compatibility, newTitle) {
@@ -457,13 +447,14 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
             <div>
               <label className="block my-1">Código (*)</label>
               <Input
+                ref={codeRef}
                 type="text"
+                autoFocus
                 labelPlacement="outside"
                 value={code}
                 isRequired={true}
                 placeholder="Código principal (*)"
                 onChange={handleChangeCode}
-                onInput={handleBarcodeScan}
               />
             </div>
             {!verify ? (
@@ -479,7 +470,6 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
                 placeholder="Código"
                 labelPlacement="outside"
                 onChange={handleChangeCodeWeb}
-                onInput={handleBarcodeScan}
               />
             </div>
             {!verifyWeb || codeWeb.length === 0 ? (
@@ -497,7 +487,6 @@ const ProductForm = ({ product, titulo, textSmall, toggleModal }) => {
                 placeholder="Código"
                 labelPlacement="outside"
                 onChange={handleChangeCodeEnterprise}
-                onInput={handleBarcodeScan}
               />
             </div>
             {!verifyEnterprise || codeEnterprise.length === 0 ? (
