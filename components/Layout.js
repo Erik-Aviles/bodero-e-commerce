@@ -1,25 +1,10 @@
-import React, { useEffect } from "react";
-import { useSession } from "next-auth/react";
+import React from "react";
 import Header from "@/components/Header";
-import Loading from "./snnipers/Loading";
-import { useRouter } from "next/router";
+
 import Nav from "@/components/Nav";
 
 export default function Layout({ children }) {
-  const router = useRouter();
-  const { status } = useSession();
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/auth/login");
-    }
-  }, [status, router]);
-
-  if (status === "loading") {
-    return <Loading />;
-  }
-
-  if (status === "authenticated") {
     return (
       <div className="bg-grayLight min-h-screen">
         <div className="grid grid-cols-7 md:flex divide-y divide-gray-300 ">
@@ -32,6 +17,3 @@ export default function Layout({ children }) {
       </div>
     );
   }
-
-  return null;
-}
