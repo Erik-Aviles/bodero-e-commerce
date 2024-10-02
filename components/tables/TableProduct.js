@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { SearchIcon, ChevronDownIcon, DeleteRIcon } from "@/components/Icons";
 import ModalRegisterStockProduct from "../modals/ModalRegisterStockProduct";
 import { removeAccents, removePluralEnding } from "@/utils/normalized";
@@ -40,9 +46,9 @@ const INITIAL_VISIBLE_COLUMNS = [
 
 export default function TableProduct({ products, deleteProduct }) {
   const router = useRouter();
-  const path = router.pathname;
-
+  const inputRef = useRef(null); // Hook para mantener el ref del input
   const [filterValue, setFilterValue] = useState("");
+
   const [visibleColumns, setVisibleColumns] = useState(
     new Set(INITIAL_VISIBLE_COLUMNS)
   );
@@ -53,10 +59,16 @@ export default function TableProduct({ products, deleteProduct }) {
   });
   const [page, setPage] = useState(1);
 
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [filterValue]);
+
   const hasSearchFilter = Boolean(filterValue);
 
   const headerColumns = useMemo(() => {
-    if (visibleColumns === "all") return columns;
+    if (visibleColumns === "all") return columnsProduct;
 
     return columnsProduct.filter((column) =>
       Array.from(visibleColumns).includes(column.uid)
@@ -401,6 +413,7 @@ export default function TableProduct({ products, deleteProduct }) {
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-2 sm:flex-row justify-between items-end">
           <Input
+            ref={inputRef}
             autoFocus
             className={"order-1 focus:bg-default-200/50"}
             placeholder="Buscar por nombre, codigo o codigo web"
@@ -499,6 +512,7 @@ export default function TableProduct({ products, deleteProduct }) {
       classNames={{
         wrapper: "-z-1 sm:h-[calc(100vh-300px)] sm:overflow-auto scroll",
         th: "text-warning uppercase",
+        td: "outline-none",
       }}
       sortDescriptor={sortDescriptor}
       topContent={topContent}
