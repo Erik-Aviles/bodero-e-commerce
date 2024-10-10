@@ -12,70 +12,72 @@ import {
   AdminIcon,
   SystemIcon,
   BusinessIcon,
+  DebtsIcon,
 } from "@/components/Icons";
 
 export const routeList = [
   { id: "1", route: "Dashboard", path: "/", icon: <HomeIcon /> },
 
-  { id: "4", route: "Inventario", path: "inventory", icon: <InventoryIcon /> },
+  { id: "2", route: "Inventario", path: "inventory", icon: <InventoryIcon /> },
   {
-    id: "4a",
+    id: "2a",
     route: "Productos",
     path: "/inventory/products",
     icon: <ProductIcon />,
   },
   {
-    id: "4b",
+    id: "2b",
     route: "Categorias",
     path: "/inventory/categories",
     icon: <ListCategoryIcon />,
   },
   {
-    id: "4c",
+    id: "2c",
     route: "Stock Crítico",
     path: "/inventory/critical-stock",
     icon: <StockDownIcon />,
   },
   {
-    id: "4d",
+    id: "2d",
     route: "Bar Code",
     path: "/inventory/bar-code",
     icon: <BarCodeIcon />,
   },
 
   {
-    id: "6",
+    id: "3",
     route: "Negocio",
     path: "business",
     icon: <BusinessIcon />,
   },
   {
-    id: "2a",
+    id: "3a",
     route: "Pedidos",
     path: "/business/orderslist",
     icon: <OrderListIcon />,
   },
   { id: "3b", route: "Ventas", path: "/business/orders", icon: <OrderIcon /> },
+  { id: "3c", route: "Cobranza", path: "/business/debts", icon: <DebtsIcon /> },
   {
-    id: "5",
+    id: "4",
     route: "Administración",
     path: "admin",
     icon: <AdminIcon />,
   },
   {
-    id: "5a",
+    id: "4a",
     route: "Clientes",
     path: "/admin/customers",
     icon: <ClientsIcon />,
   },
   {
-    id: "5b",
+    id: "4b",
     route: "Usuarios",
     path: "/admin/users",
     icon: <UsersIcon />,
   },
   {
-    id: "5c",
+    id: "4c",
     route: "Sistema",
     path: "/admin/system",
     icon: <SystemIcon />,
