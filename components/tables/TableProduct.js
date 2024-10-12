@@ -59,11 +59,11 @@ export default function TableProduct({ products, deleteProduct }) {
   });
   const [page, setPage] = useState(1);
 
-  useEffect(() => {
+  const focusInput = () => {
     if (inputRef.current) {
-      inputRef.current.focus();
+      inputRef.current.focus(); // Enfocar el input cuando el modal se cierre
     }
-  }, [filterValue]);
+  };
 
   const hasSearchFilter = Boolean(filterValue);
 
@@ -368,8 +368,8 @@ export default function TableProduct({ products, deleteProduct }) {
                 />
               </span>
             </Tooltip>
-            <ModalProducts product={product} />
-            <ModalRegisterStockProduct product={product} />
+            <ModalProducts product={product} focusInput={focusInput} />
+            <ModalRegisterStockProduct product={product} focusInput={focusInput}/>
           </div>
         );
       default:
@@ -419,7 +419,7 @@ export default function TableProduct({ products, deleteProduct }) {
             placeholder="Buscar por nombre, codigo o codigo web"
             startContent={<SearchIcon className="mr-1" />}
             value={filterValue}
-            onClear={() => onClear()}
+            onClear={onClear}
             onValueChange={onSearchChange}
           />
           <div className="flex gap-3 sm:order-1">
@@ -450,7 +450,7 @@ export default function TableProduct({ products, deleteProduct }) {
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <ModalProducts />
+            <ModalProducts focusInput={focusInput}/>
           </div>
         </div>
         <div>
