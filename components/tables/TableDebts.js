@@ -1,8 +1,8 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { removeAccents, removePluralEnding } from "@/utils/normalized";
 import { statusColorMap, statusSVGMap } from "@/resources/statusMap";
 import ModalOrderListProduct from "../modals/ModalOrderListProduct";
-import { columnsOrdersList } from "@/resources/columnTables";
+import { columnsDebts } from "@/resources/columnTables";
 import { justFirstWord } from "@/utils/justFirstWord";
 import { stopwords } from "@/resources/stopwordsData";
 import { DeleteRIcon, SearchIcon } from "../Icons";
@@ -21,23 +21,21 @@ import {
   Chip,
 } from "@nextui-org/react";
 import BottomPaginationContent from "../BottomPaginationContent";
+import ModalDebts from "../modals/ModalDebts";
+import { formatPrice } from "@/utils/formatPrice";
 
-export default function TableDebts({
-  verifyOrderDelivery,
-  orders,
-  customers,
-  deleteOrder,
-}) {
+export default function TableDebts({ customers, debts, deleteDebts }) {
   const [filterValue, setFilterValue] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const inputRef = useRef(null);
 
   const [page, setPage] = useState(1);
 
   const hasSearchFilter = Boolean(filterValue);
 
   const filteredItems = useMemo(() => {
-    if (!orders) return [];
-    let resultadoFiltrado = [...orders];
+    if (!debts) return [];
+    let resultadoFiltrado = [...debts];
 
     const searchParts = removeAccents(filterValue.toLowerCase())
       .split(" ")
@@ -56,7 +54,7 @@ export default function TableDebts({
       });
     }
     return resultadoFiltrado;
-  }, [orders, filterValue]);
+  }, [debts, filterValue]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -67,90 +65,143 @@ export default function TableDebts({
     return filteredItems.slice(start, end);
   }, [page, filteredItems, rowsPerPage]);
 
-  const renderCell = useCallback((order, columnKey) => {
-    const cellValue = order[columnKey];
+  const renderCell = useCallback(
+    (debt, columnKey) => {
+      const cellValue = debt[columnKey];
 
-    const filteredResult = customers?.filter((objeto) =>
-      objeto?._id.includes(order?.customer)
-    );
+      const filteredResult = customers?.filter((objeto) =>
+        objeto?._id.includes(debt?.customer)
+      );
 
-    switch (columnKey) {
-      case "customer":
-        return (
-          <div className="flex flex-col ">
-            {filteredResult?.length > 0 ? (
-              <>
-                <p className="text-bold text-tiny text-primary-400 whitespace-nowrap">
-                  {`${justFirstWord(capitalize(filteredResult[0]?.name))} ` +
-                    `${justFirstWord(capitalize(filteredResult[0]?.lastname))}`}
+      console.log(debt);
+
+      switch (columnKey) {
+        case "customer":
+          return (
+            <div className="flex flex-col ">
+              {filteredResult?.length > 0 ? (
+                <>
+                  <p className="text-bold text-tiny text-primary-400 whitespace-nowrap">
+                    {`${justFirstWord(capitalize(filteredResult[0]?.name))} ` +
+                      `${justFirstWord(
+                        capitalize(filteredResult[0]?.lastname)
+                      )}`}
+                  </p>
+                  <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
+                    {filteredResult[0]?.phone
+                      ? filteredResult[0]?.phone
+                      : "Sin número telefónico"}
+                  </span>
+                </>
+              ) : (
+                <p className=" break-words text-error text-bold text-tiny capitalize">
+                  {"Cliente"}
                 </p>
-                <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
-                  {filteredResult[0]?.identifications
-                    ? filteredResult[0]?.identifications
-                    : "Sin cedula"}
-                </span>
-              </>
-            ) : (
-              <p className=" break-words text-error text-bold text-tiny capitalize">
-                {"Cliente"}
+              )}
+            </div>
+          );
+        case "amount":
+          return (
+            <div className="flex flex-col">
+              <p className="text-bold text-small ">{formatPrice(cellValue)}</p>
+            </div>
+          );
+        case "createdAt":
+          return (
+            <div className="flex flex-col">
+              <p className=" break-words text-bold text-tiny whitespace-nowrap">
+                {new Date(debt?.fullPaymentDate).toLocaleString()}
               </p>
-            )}
-          </div>
-        );
+            </div>
+          );
 
-      case "articulo":
-        return (
-          <div className="flex flex-col min-w-[150px] max-w-[315px]">
-            <p className=" break-words text-bold text-tiny capitalize">
-              {cellValue}
-            </p>
-          </div>
-        );
-      case "orderEntryDate":
-        return (
-          <div className="flex flex-col">
-            <p className=" break-words text-bold text-tiny whitespace-nowrap">
-              {new Date(order?.date).toLocaleString()}
-            </p>
-          </div>
-        );
-      case "delivered":
-        return (
-          <div className="flex flex-col gap-1">
-            {cellValue === true && (
-              <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
-                {new Date(order?.orderDeliveryDate).toLocaleString()}
-              </span>
-            )}
-            <Chip
-              className={`text-tiny cursor-pointer ${statusColorMap[cellValue]}`}
-              startContent={statusSVGMap[cellValue]}
-              variant="bordered"
-              isDisabled={cellValue}
-              onClick={() => verifyOrderDelivery(order?._id)}
-            >
-              {cellValue === false ? "Pendiente" : "Entregado"}
-            </Chip>
-          </div>
-        );
-      case "actions":
-        return (
-          <div className="flex items-center gap-3 ">
-            <ModalOrderListProduct order={order} />
-            <Tooltip className="text-error" content="Eliminar">
-              <span className="text-lg text-error cursor-pointer active:opacity-50">
-                <DeleteRIcon
-                  className=" w-[22px] h-[22px]"
-                  onClick={(e) => deleteOrder(order)}
-                />
-              </span>
-            </Tooltip>
-          </div>
-        );
-      default:
-        return cellValue;
+        case "concept":
+          return (
+            <div className="flex flex-col min-w-[150px] max-w-[315px]">
+              <p className=" break-words text-bold text-tiny capitalize">
+                {cellValue}
+              </p>
+            </div>
+          );
+        case "payments":
+          return (
+            <>
+              {cellValue.length > 0 &&
+                cellValue.map((item, index) => (
+                  <div
+                    key={index}
+                    className="min-w-[250px] max-w-[280px] flex gap-1 items-center"
+                  >
+                    <p className="text-bold text-small pr-1 capitalize">
+                      Abono: {formatPrice(item.payment) + ", "}
+                    </p>
+                    <p className="break-words text-bold text-tiny whitespace-nowrap">
+                      {new Date(item?.date).toLocaleString()}
+                    </p>
+                  </div>
+                ))}
+            </>
+          );
+        case "fullPaymentDate":
+          return (
+            <div className="flex flex-col">
+              <p
+                className={
+                  "break-words text-bold text-tiny whitespace-nowrap " +
+                  (cellValue !== null ? "text-success" : "text-warning")
+                }
+              >
+                {cellValue !== null
+                  ? new Date(cellValue).toISOString()
+                  : "Deuda pendiente"}
+              </p>
+            </div>
+          );
+        case "status":
+          return (
+            <div className="flex flex-col gap-1">
+              {cellValue === true && (
+                <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
+                  {new Date(debt).toLocaleString()}
+                </span>
+              )}
+              <Chip
+                className={`text-tiny cursor-pointer ${statusColorMap[cellValue]}`}
+                startContent={statusSVGMap[cellValue]}
+                variant="bordered"
+                isDisabled={cellValue}
+                onClick={() => verifyDelivery(debt?._id)}
+              >
+                {cellValue === "pendient" ? "Pendiente" : "Pagado"}
+              </Chip>
+            </div>
+          );
+        case "actions":
+          return (
+            <div className="flex items-center gap-3 ">
+              <ModalDebts debt={debt} focusInput={focusInput} />
+              <Tooltip className="text-error" content="Eliminar">
+                <span className="text-lg text-error cursor-pointer active:opacity-50">
+                  <DeleteRIcon
+                    className=" w-[22px] h-[22px]"
+                    onClick={() => deleteDebts(debt)}
+                  />
+                </span>
+              </Tooltip>
+            </div>
+          );
+        default:
+          return cellValue;
+      }
+    },
+    [deleteDebts]
+  );
+
+  const focusInput = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
     }
-  }, []);
+  };
 
   //siguiente
   const onNextPage = useCallback(() => {
@@ -183,15 +234,16 @@ export default function TableDebts({
       <div className=" flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
-            Total, {orders.length} Ordenes.
+            Total, {debts.length} Deudas.
           </span>
-          <ModalOrderListProduct />
+          <ModalDebts focusInput={focusInput} />
         </div>
 
         <Input
           isClearable
+          ref={inputRef}
           className="w-full sm:max-w-[45%] order-1"
-          placeholder="Búsqueda por nombre o cedula..."
+          placeholder="Búsqueda por nombre de cliente o fecha..."
           startContent={<SearchIcon className="mr-1" />}
           value={filterValue}
           onClear={() => onClear()}
@@ -199,11 +251,11 @@ export default function TableDebts({
         />
       </div>
     );
-  }, [filterValue, orders.length, onSearchChange, hasSearchFilter]);
+  }, [filterValue, debts.length, onSearchChange, hasSearchFilter]);
 
   return (
     <Table
-      aria-label="Es una tabla de pedidos"
+      aria-label="Es una tabla deudas"
       isHeaderSticky
       bottomContent={
         items.length > 0 ? (
@@ -220,12 +272,9 @@ export default function TableDebts({
       topContent={topContent}
       topContentPlacement="outside"
     >
-      <TableHeader columns={columnsOrdersList}>
+      <TableHeader columns={columnsDebts}>
         {(column) => (
-          <TableColumn
-            key={column.uid}
-            align={column.uid === "actions" ? "center" : "start"}
-          >
+          <TableColumn key={column.uid} align="start">
             {column.name}
           </TableColumn>
         )}

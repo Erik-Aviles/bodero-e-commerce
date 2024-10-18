@@ -1,3 +1,15 @@
+const columnsDebts = [
+  { name: "ESTADO", uid: "status" },
+  { name: "CLIENTE", uid: "customer" },
+  { name: "FECHA DE LA DEUDA", uid: "createdAt" },
+  { name: "FECHA DEL PAGO TOTAL", uid: "fullPaymentDate" },
+  { name: "DEUDA", uid: "amount" },
+  { name: "CONCEPTO", uid: "concept" },
+  { name: "VEHICULO", uid: "vehicle" },
+  { name: "PAGOS", uid: "payments" },
+  { name: "ACCION", uid: "actions" },
+];
+
 const columnsRolesPermissions = [
   { name: "Nombre del Rol", uid: "name" },
   { name: "Permisos", uid: "permissions" },
@@ -101,4 +113,5 @@ export {
   columnsBarCode,
   columnsCriticalStock,
   columnsRolesPermissions,
+  columnsDebts,
 };

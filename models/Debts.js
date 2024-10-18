@@ -1,16 +1,15 @@
-import mongoose, { Schema, model, models } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 const DebtsSchema = new Schema(
   {
     customer: { type: String, ref: "Customer" },
-    vehicle: { type: String, ref: "Vehicle" },
-    payments: [{ type: Object }],
+    vehicle: { type: String },
     concept: { type: String},
-    date: {
-      type: Date, default: Date.now
-    },
     document: { type: String},
+    amount: { type: Number},
+    debtBalance: { type: Number},
     fullPaymentDate: { type: Date },
+    payments: [{ type: Object }],
     status: { type: String, default: "pendient" },
   },
   {
