@@ -183,7 +183,8 @@ const Nav = () => {
                           .filter(
                             ({ path }) =>
                               path === "/business/orderslist" ||
-                              path === "/business/orders"
+                              path === "/business/orders" ||
+                              path === "/business/debts"
                           )
                           .map(({ id, route, path, icon }) => (
                             <NavLink
@@ -261,6 +262,7 @@ const Nav = () => {
                 path !== "/inventory/bar-code" &&
                 path !== "/business/orderslist" &&
                 path !== "/business/orders" &&
+                path !== "/business/debts" &&
                 path !== "/admin/users" &&
                 path !== "/admin/customers" &&
                 path !== "/admin/system"

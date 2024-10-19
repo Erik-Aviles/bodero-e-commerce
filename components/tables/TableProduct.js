@@ -369,7 +369,10 @@ export default function TableProduct({ products, deleteProduct }) {
               </span>
             </Tooltip>
             <ModalProducts product={product} focusInput={focusInput} />
-            <ModalRegisterStockProduct product={product} focusInput={focusInput}/>
+            <ModalRegisterStockProduct
+              product={product}
+              focusInput={focusInput}
+            />
           </div>
         );
       default:
@@ -450,7 +453,7 @@ export default function TableProduct({ products, deleteProduct }) {
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <ModalProducts focusInput={focusInput}/>
+            <ModalProducts focusInput={focusInput} />
           </div>
         </div>
         <div>
@@ -542,3 +545,4 @@ export default function TableProduct({ products, deleteProduct }) {
     </Table>
   );
 }
+

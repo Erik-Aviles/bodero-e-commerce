@@ -26,7 +26,6 @@ const ModalRegisterStockProduct = ({ product, focusInput }) => {
       focusInput(); // Enfoca el input cuando el modal se cierra
     }
   }, [showModal, focusInput]);
-
   const handleChange = (e) => {
     setStock(e.target.value);
   };

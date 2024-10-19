@@ -1,36 +1,30 @@
-import { useEffect, useState } from "react";
-import { EdithIcon, PlusIcon } from "../Icons";
+import React, { useState } from "react";
 import { Button, Tooltip } from "@nextui-org/react";
+import { EdithIcon, PlusIcon } from "../Icons";
+import DebtForm from "../forms/DebtForm";
 import { capitalize } from "@/utils/utils";
-import ProductForm from "../forms/ProductForm";
 
-const ModalProducts = ({ product, focusInput }) => {
-  const [showModal, setShowModal] = useState(false);
+const ModalDebts = ({ debt, focusInput }) => {
+  const [showModal, setShowOrderModal] = useState(false);
 
   const toggleModal = () => {
-    setShowModal(!showModal);
+    setShowOrderModal(!showModal);
     if (showModal) {
-      focusInput(); 
+      focusInput();
     }
   };
-
-    useEffect(() => {
-    if (!showModal && focusInput) {
-      focusInput(); 
-    }
-  }, [showModal, focusInput]);
 
   return (
     <div>
       <div>
-        {!product ? (
+        {!debt ? (
           <section className="w-fit md:py-0">
             <Button
               onClick={toggleModal}
               color="primary"
               startContent={<PlusIcon />}
             >
-              Producto
+              Agregar Deuda
             </Button>
           </section>
         ) : (
@@ -40,19 +34,22 @@ const ModalProducts = ({ product, focusInput }) => {
             </span>
           </Tooltip>
         )}
+
         {showModal && (
           <>
             <div className="fixed inset-0 z-40 bg-gray-500 bg-opacity-50"></div>
             <div className="fixed inset-0 z-50 flex items-center justify-center p-5 ">
               <div className="max-w-5xl max-h-[calc(100vh-100px)] lg:h-fit bg-white p-4 rounded-lg shadow-lg overflow-auto scroll">
-                <ProductForm
-                  titulo={!product ? "Registrar producto" : "Editar producto"}
-                  textSmall={
-                    !product
-                      ? "Los campos con (*) son obligatorios. "
-                      : `Editar el producto "${capitalize(product?.title)} `
+                <DebtForm
+                  titulo={
+                    !debt ? "Registrar deuda" : "Editar deuda o realizar Abono"
                   }
-                  product={product}
+                  textSmall={
+                    !debt
+                      ? "Los campos con (*) son obligatorios. "
+                      : `Editar la deuda de: "${capitalize(debt?.customer.fullname)} `
+                  }
+                  debt={debt}
                   toggleModal={toggleModal}
                 />
               </div>
@@ -64,4 +61,4 @@ const ModalProducts = ({ product, focusInput }) => {
   );
 };
 
-export default ModalProducts;
+export default ModalDebts;

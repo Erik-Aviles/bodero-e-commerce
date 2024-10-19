@@ -34,6 +34,10 @@ export default function Home() {
     "/api/orderslist/size",
     fetcher
   );
+  const { data: sizeDebts, isLoading: isLoadDebtsList } = useSWR(
+    "/api/debts/size",
+    fetcher
+  );
 
   return (
     <>
@@ -72,7 +76,8 @@ export default function Home() {
                       (title === "usuarios" && isLoadUsers) ||
                       (title === "clientes" && isLoadCustomers) ||
                       (title === "pedidos" && isLoadOrdersList) ||
-                      (title === "ventas" && isLoadOrders)
+                      (title === "ventas" && isLoadOrders) ||
+                      (title === "cobranzas" && isLoadDebtsList)
                     }
                     itemCount={
                       (title === "productos" && sizeProducts) ||
@@ -81,7 +86,8 @@ export default function Home() {
                       (title === "usuarios" && sizeUsers) ||
                       (title === "clientes" && sizeCustomers) ||
                       (title === "pedidos" && sizeOrdersList) ||
-                      (title === "ventas" && sizeOrders)
+                      (title === "ventas" && sizeOrders) ||
+                      (title === "cobranzas" && sizeDebts)
                     }
                   />
                 ))}
