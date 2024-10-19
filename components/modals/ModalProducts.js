@@ -1,16 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EdithIcon, PlusIcon } from "../Icons";
 import { Button, Tooltip } from "@nextui-org/react";
 import { capitalize } from "@/utils/utils";
 import ProductForm from "../forms/ProductForm";
 
-const ModalProducts = ({ product }) => {
+const ModalProducts = ({ product, focusInput }) => {
   const [showModal, setShowModal] = useState(false);
 
   const toggleModal = () => {
     setShowModal(!showModal);
+    if (showModal) {
+      focusInput(); 
+    }
   };
 
+    useEffect(() => {
+    if (!showModal && focusInput) {
+      focusInput(); 
+    }
+  }, [showModal, focusInput]);
   return (
     <div>
       <div>

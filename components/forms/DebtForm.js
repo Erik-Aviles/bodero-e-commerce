@@ -390,7 +390,7 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
                   />
                 </div>
                 <div className="basis-2/6">
-                  <label className="my-1 block">Pago</label>
+                  <label className="my-1 block">Pagado</label>
                   <Input
                     isReadOnly={true}
                     type="number"

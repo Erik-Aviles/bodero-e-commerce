@@ -1,12 +1,12 @@
 const columnsDebts = [
   { name: "ESTADO", uid: "status" },
   { name: "CLIENTE", uid: "customer" },
-  { name: "FECHA DE LA DEUDA", uid: "createdAt" },
-  { name: "FECHA DEL PAGO TOTAL", uid: "fullPaymentDate" },
-  { name: "DEUDA", uid: "amount" },
+  { name: "MONTO", uid: "amount" },
+  { name: "ABONOS", uid: "payments" },
+  { name: "PAGADO", uid: "pay" },
+  { name: "SALDO", uid: "debtBalance" },
   { name: "CONCEPTO", uid: "concept" },
   { name: "VEHICULO", uid: "vehicle" },
-  { name: "PAGOS", uid: "payments" },
   { name: "ACCION", uid: "actions" },
 ];
 

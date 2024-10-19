@@ -31,3 +31,11 @@ export const statusOptions = [
   { name: "critico", uid: "critico" },
   { name: "agotado", uid: "agotado" },
 ];
+export const statusOptionsDebts = [
+  { name: "pendiente", uid: "pendiente" },
+  { name: "critico", uid: "critico" },
+  { name: "bajo", uid: "bajo" },
+  { name: "media", uid: "media" },
+  { name: "avanzado", uid: "avanzado" },
+  { name: "pagado", uid: "pagado" },
+];

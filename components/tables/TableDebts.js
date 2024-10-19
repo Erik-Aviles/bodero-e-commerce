@@ -1,11 +1,15 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { removeAccents, removePluralEnding } from "@/utils/normalized";
-import { statusColorMap, statusSVGMap } from "@/resources/statusMap";
+import {
+  statusColorMap,
+  statusOptionsDebts,
+  statusSVGMap,
+} from "@/resources/statusMap";
 import ModalOrderListProduct from "../modals/ModalOrderListProduct";
 import { columnsDebts } from "@/resources/columnTables";
 import { justFirstWord } from "@/utils/justFirstWord";
 import { stopwords } from "@/resources/stopwordsData";
-import { DeleteRIcon, SearchIcon } from "../Icons";
+import { ChevronDownIcon, DeleteRIcon, SearchIcon } from "../Icons";
 import { capitalize } from "@/utils/utils";
 import {
   Table,
@@ -19,14 +23,23 @@ import {
   Button,
   Input,
   Chip,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from "@nextui-org/react";
 import BottomPaginationContent from "../BottomPaginationContent";
 import ModalDebts from "../modals/ModalDebts";
 import { formatPrice } from "@/utils/formatPrice";
 
-export default function TableDebts({ customers, debts, deleteDebts }) {
+export default function TableDebts({ debts, deleteDebts }) {
   const [filterValue, setFilterValue] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [sortDescriptor, setSortDescriptor] = useState({
+    column: "age",
+    direction: "ascending",
+  });
   const inputRef = useRef(null);
 
   const [page, setPage] = useState(1);
@@ -44,17 +57,34 @@ export default function TableDebts({ customers, debts, deleteDebts }) {
 
     if (hasSearchFilter) {
       resultadoFiltrado = resultadoFiltrado.filter((item) => {
-        const articulo = removeAccents(item.articulo.toLowerCase());
-        const customer = removeAccents(item.customer.toLowerCase());
+        const fullname = removeAccents(item?.customer?.fullname?.toLowerCase());
+        const vehicle = removeAccents(item?.vehicle?.toLowerCase());
+        const concept = removeAccents(item.concept?.toLowerCase());
+        const phone = removeAccents(item?.customer?.phone?.toLowerCase());
 
         const matchesAllParts = searchParts.every((part) => {
-          return articulo.includes(part) || customer.includes(part);
+          return (
+            fullname.includes(part) ||
+            vehicle.includes(part) ||
+            concept.includes(part) ||
+            phone.includes(part)
+          );
         });
         return matchesAllParts;
       });
     }
+    if (
+      statusFilter !== "all" &&
+      Array.from(statusFilter).length !== statusOptionsDebts.length
+    ) {
+      resultadoFiltrado = resultadoFiltrado.filter((debt) => {
+        const status = debt.status;
+        return status && Array.from(statusFilter).includes(status);
+      });
+    }
+
     return resultadoFiltrado;
-  }, [debts, filterValue]);
+  }, [debts, filterValue, , statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -64,6 +94,17 @@ export default function TableDebts({ customers, debts, deleteDebts }) {
 
     return filteredItems.slice(start, end);
   }, [page, filteredItems, rowsPerPage]);
+
+  const sortedItems = useMemo(() => {
+    if (!items) return [];
+    return [...items].sort((a, b) => {
+      const first = a[sortDescriptor.column];
+      const second = b[sortDescriptor.column];
+      const cmp = first < second ? -1 : first > second ? 1 : 0;
+
+      return sortDescriptor.direction === "descending" ? -cmp : cmp;
+    });
+  }, [sortDescriptor, items]);
 
   const renderCell = useCallback(
     (debt, columnKey) => {
@@ -86,23 +127,13 @@ export default function TableDebts({ customers, debts, deleteDebts }) {
         case "amount":
           return (
             <div className="flex flex-col">
-              <p className="text-bold text-small ">{formatPrice(cellValue)}</p>
-            </div>
-          );
-        case "createdAt":
-          return (
-            <div className="flex flex-col">
-              <p className=" break-words text-bold text-tiny whitespace-nowrap">
-                {new Date(debt?.createdAt).toLocaleString()}
+              <p className="text-bold text-tiny text-default-400 break-words whitespace-nowrap">
+                {new Date(debt?.createdAt).toLocaleString(
+                  ("es-ES", { timeZone: "America/Guayaquil" })
+                )}
               </p>
-            </div>
-          );
-
-        case "concept":
-          return (
-            <div className="flex flex-col min-w-[150px] max-w-[315px]">
-              <p className=" break-words text-bold text-tiny capitalize">
-                {cellValue}
+              <p className="text-bold text-tiny text-primary-400">
+                {formatPrice(cellValue)}
               </p>
             </div>
           );
@@ -111,52 +142,84 @@ export default function TableDebts({ customers, debts, deleteDebts }) {
             <>
               {cellValue.length > 0 &&
                 cellValue.map((item, index) => (
-                  <div
-                    key={index}
-                    className="min-w-[250px] max-w-[280px] flex gap-1 items-center"
-                  >
-                    <p className="text-bold text-small pr-1 capitalize">
-                      Abono: {formatPrice(item.payment) + ", "}
+                  <div key={index} className="flex items-center gap-2">
+                    <p className="text-primary-400 text-bold text-tiny break-words whitespace-nowrap capitalize">
+                      Abono:
+                      <span className="pl-2 text-default-400">
+                        {formatPrice(item?.amount) + ","}
+                      </span>
                     </p>
-                    <p className="break-words text-bold text-tiny whitespace-nowrap">
-                      {new Date(item?.date).toLocaleString()}
+                    <p className="text-primary-400 text-bold text-tiny break-words whitespace-nowrap capitalize">
+                      Fecha:
+                      <span className="pl-2 text-default-400">
+                        {item?.date}
+                      </span>
                     </p>
                   </div>
                 ))}
             </>
           );
-        case "fullPaymentDate":
+        case "pay":
           return (
             <div className="flex flex-col">
-              <p
-                className={
-                  "break-words text-bold text-tiny whitespace-nowrap " +
-                  (cellValue !== null ? "text-success" : "text-warning")
-                }
-              >
-                {cellValue !== null
-                  ? new Date(cellValue).toISOString()
-                  : "Deuda pendiente"}
+              <p className="text-default-400 text-bold text-tiny">
+                {formatPrice(cellValue)}
+              </p>
+            </div>
+          );
+        case "debtBalance":
+          return (
+            <div className="flex flex-col">
+              <p className="text-default-400 text-bold text-tiny">
+                {formatPrice(cellValue)}
+              </p>
+            </div>
+          );
+        case "concept":
+          return (
+            <div className="flex flex-col min-w-[150px] max-w-[315px]">
+              <p className=" break-words text-bold text-tiny capitalize">
+                {cellValue}
+              </p>
+            </div>
+          );
+        case "vehicle":
+          return (
+            <div className="flex flex-col min-w-[150px] max-w-[315px]">
+              <p className=" break-words text-bold text-tiny capitalize">
+                {cellValue}
               </p>
             </div>
           );
         case "status":
           return (
             <div className="flex flex-col gap-1">
-              {cellValue === true && (
+              {debt?.fullPaymentDate !== null && (
                 <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
-                  {new Date(debt).toLocaleString()}
+                  {new Date(debt?.fullPaymentDate).toLocaleString("es-ES", {
+                    timeZone: "America/Guayaquil",
+                  })}
                 </span>
               )}
-              <Chip
-                className={`text-tiny cursor-pointer ${statusColorMap[cellValue]}`}
+              <div
+                className={`max-w-fit py-1 px-2 flex items-center gap-1 capitalize rounded-2xl text-tiny cursor-default border ${
+                  cellValue === "pagado"
+                    ? "border-success text-success"
+                    : cellValue === "avanzado"
+                    ? "border-sky-500 text-sky-500"
+                    : cellValue === "bajo" || cellValue === "media"
+                    ? "border-warning text-warning"
+                    : cellValue === "critico" || cellValue === "pendiente"
+                    ? "border-error text-error"
+                    : "border-default-500 text-default-500"
+                }`}
                 startContent={statusSVGMap[cellValue]}
                 variant="bordered"
                 isDisabled={cellValue}
                 onClick={() => verifyDelivery(debt?._id)}
               >
-                {cellValue === "pendient" ? "Pendiente" : "Pagado"}
-              </Chip>
+                {cellValue}
+              </div>
             </div>
           );
         case "actions":
@@ -192,12 +255,18 @@ export default function TableDebts({ customers, debts, deleteDebts }) {
       setPage(page + 1);
     }
   }, [page, pages]);
+
   //anterior
   const onPreviousPage = useCallback(() => {
     if (page > 1) {
       setPage(page - 1);
     }
   }, [page]);
+
+  const onRowsPerPageChange = useCallback((e) => {
+    setRowsPerPage(Number(e.target.value));
+    setPage(1);
+  }, []);
 
   const onSearchChange = useCallback((value) => {
     if (value) {
@@ -214,27 +283,66 @@ export default function TableDebts({ customers, debts, deleteDebts }) {
 
   const topContent = useMemo(() => {
     return (
-      <div className=" flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row justify-between items-end">
+          <Input
+            isClearable
+            ref={inputRef}
+            className="w-full sm:max-w-[45%] order-1"
+            placeholder="Búsqueda..."
+            startContent={<SearchIcon className="mr-1" />}
+            value={filterValue}
+            onClear={() => onClear()}
+            onValueChange={onSearchChange}
+          />
+
+          <div className="flex gap-3 sm:order-1">
+            <Dropdown>
+              <DropdownTrigger>
+                <Button
+                  endContent={<ChevronDownIcon className="text-small" />}
+                  variant="flat"
+                >
+                  Estado
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="Table Columns"
+                closeOnSelect={false}
+                selectedKeys={statusFilter}
+                selectionMode="multiple"
+                onSelectionChange={setStatusFilter}
+              >
+                {statusOptionsDebts.map((status) => (
+                  <DropdownItem key={status.uid} className="capitalize">
+                    {capitalize(status.name)}
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </Dropdown>
+            <ModalDebts focusInput={focusInput} />
+          </div>
+        </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
-            Total, {debts.length} Deudas.
+            Total, {filteredItems.length} Deudas.
           </span>
-          <ModalDebts focusInput={focusInput} />
+          <label className="flex items-center text-default-400 text-small">
+            Filas:
+            <select
+              className="bg-transparent outline-none text-default-400 text-small ml-3"
+              onChange={onRowsPerPageChange}
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
+            </select>
+          </label>
         </div>
-
-        <Input
-          isClearable
-          ref={inputRef}
-          className="w-full sm:max-w-[45%] order-1"
-          placeholder="Búsqueda por nombre de cliente o fecha..."
-          startContent={<SearchIcon className="mr-1" />}
-          value={filterValue}
-          onClear={() => onClear()}
-          onValueChange={onSearchChange}
-        />
       </div>
     );
-  }, [filterValue, debts.length, onSearchChange, hasSearchFilter]);
+  }, [filterValue, statusFilter, debts.length, onSearchChange, hasSearchFilter]);
 
   return (
     <Table
@@ -262,7 +370,7 @@ export default function TableDebts({ customers, debts, deleteDebts }) {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={items}>
+      <TableBody emptyContent={"Sin registro..."} items={items}>
         {(item) => (
           <TableRow key={item._id}>
             {(columnKey) => (

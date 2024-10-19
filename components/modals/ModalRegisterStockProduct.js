@@ -1,13 +1,13 @@
 import NotificationContext from "@/context/NotificationContext";
 import useStockCritical from "@/hooks/useStockCritical";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Input, Tooltip } from "@nextui-org/react";
 import ButtonClose from "../buttons/ButtonClose";
 import useProducts from "@/hooks/useProducts";
 import { StockIcon } from "../Icons";
 import axios from "axios";
 
-const ModalRegisterStockProduct = ({ product }) => {
+const ModalRegisterStockProduct = ({ product, focusInput }) => {
   const { showNotification } = useContext(NotificationContext);
   const [showModal, setShowOrderModal] = useState(false);
   const { mutateStockCritical } = useStockCritical();
@@ -16,8 +16,16 @@ const ModalRegisterStockProduct = ({ product }) => {
 
   const toggleModal = () => {
     setShowOrderModal(!showModal);
+    if (showModal) {
+      focusInput(); // Enfoca el input cuando el modal se cierra
+    }
   };
 
+  useEffect(() => {
+    if (!showModal && focusInput) {
+      focusInput(); // Enfoca el input cuando el modal se cierra
+    }
+  }, [showModal, focusInput]);
   const handleChange = (e) => {
     setStock(e.target.value);
   };
