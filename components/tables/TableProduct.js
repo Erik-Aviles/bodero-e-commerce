@@ -545,3 +545,4 @@ export default function TableProduct({ products, deleteProduct }) {
     </Table>
   );
 }
+

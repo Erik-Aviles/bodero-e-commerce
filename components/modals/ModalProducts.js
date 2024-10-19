@@ -19,6 +19,7 @@ const ModalProducts = ({ product, focusInput }) => {
       focusInput(); 
     }
   }, [showModal, focusInput]);
+
   return (
     <div>
       <div>
