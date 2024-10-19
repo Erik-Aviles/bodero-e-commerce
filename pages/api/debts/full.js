@@ -36,6 +36,7 @@ export default async function handle(req, res) {
         concept,
         document,
         amount,
+        pay,
         debtBalance,
         fullPaymentDate,
         payments,
@@ -43,7 +44,7 @@ export default async function handle(req, res) {
       } = req.body;
 
       //validar que esten todos los campos necesarios
-      if (!amount || !concept)
+      if (!amount || !concept || !customer || !customer.fullname || !customer.phone)
         return res.status(400).json({ message: messages.error.needProps });
 
       const newDebt = await Debts.create({
@@ -53,6 +54,7 @@ export default async function handle(req, res) {
         document,
         amount,
         debtBalance,
+        pay,
         fullPaymentDate,
         payments,
         status,
@@ -79,6 +81,7 @@ export default async function handle(req, res) {
         document,
         amount,
         debtBalance,
+        pay,
         fullPaymentDate,
         payments,
         status,
@@ -96,6 +99,7 @@ export default async function handle(req, res) {
         document,
         amount,
         debtBalance,
+        pay,
         fullPaymentDate,
         payments,
         status,

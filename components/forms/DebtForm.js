@@ -11,6 +11,18 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
   const { mutateDebts } = useDebts();
   const { showNotification } = useContext(NotificationContext);
 
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0"); // Mes de 0 a 11, por eso sumamos 1
+  const day = String(today.getDate()).padStart(2, "0");
+
+  const hours = String(today.getHours()).padStart(2, "0");
+  const minutes = String(today.getMinutes()).padStart(2, "0");
+
+  const localFormattedDate = `${year}-${month}-${day}`;
+
+  const stringDate = `${localFormattedDate} ${hours}:${minutes}`;
+
   const [customer, setCustomer] = useState({
     fullname: debt?.customer?.fullname || "",
     phone: debt?.customer?.phone || "",
@@ -27,9 +39,8 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
 
   const [payments, setPayments] = useState(debt?.payments || []); //pagos realizados
   const [paymentAmount, setPaymentAmount] = useState("");
-  const [paymentDate, setPaymentDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
+  const [paymentDate, setPaymentDate] = useState(localFormattedDate);
+  const [pay, setPay] = useState("");
   const [editPaymentIndex, setEditPaymentIndex] = useState(null);
 
   //Actualizar el estado de la deuda
@@ -71,8 +82,15 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
       (acc, payment) => acc + payment.amount,
       0
     );
+    setPay(totalPaid);
     const newBalance = amount - totalPaid;
     setDebtBalance(newBalance);
+
+    if (totalPaid === amount) {
+      setFullPaymentDate(stringDate);
+    } else {
+      setFullPaymentDate("");
+    }
     updateDebtStatus(newBalance, amount);
   };
 
@@ -123,7 +141,7 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
     subtractFromBalance(parsedPaymentAmount);
 
     setPaymentAmount("");
-    setPaymentDate(new Date().toISOString().split("T")[0]);
+    setPaymentDate(localFormattedDate);
   };
 
   const handleCustomerChange = (e) => {
@@ -152,6 +170,7 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
     setDocument("");
     setAmount(0);
     setDebtBalance(0);
+    setPay("");
     setFullPaymentDate("");
     setStatus("");
     setPayments([]);
@@ -167,6 +186,7 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
       document,
       amount: parseFloat(amount),
       debtBalance,
+      pay,
       fullPaymentDate,
       status,
       payments,
@@ -194,6 +214,7 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
       vehicle,
       amount,
       debtBalance,
+      pay,
       payments,
       concept,
       document,
@@ -207,7 +228,9 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
       });
       showNotification({
         open: true,
-        msj: `Deuda de: ${capitalize(updatedDebt?.customer?.fullname)}, ${data.message}`,
+        msj: `Deuda de: ${capitalize(updatedDebt?.customer?.fullname)}, ${
+          data.message
+        }`,
         status: "success",
       });
       resetDebtForm();
@@ -258,7 +281,6 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
             <legend className="text-center text-secondary">
               INFORMACIÓN DEL CLIENTE
             </legend>
-
             <div>
               <label className="my-1 block">Nombres (*)</label>
               <Input
@@ -378,29 +400,39 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
                         <span className="text-default-400 text-sm">$</span>
                       </div>
                     }
-                    value={!amount ? 0 : debtBalance}
+                    value={pay}
                     placeholder="Sumatoria"
                     className="cursor-not-allowed"
                   />
                 </div>
               </div>
-              <div>
-                <label>Estado: </label>
-                <span
-                  className={`text-tiny font-bold capitalize ${
-                    status === "pagado"
-                      ? "text-success"
-                      : status === "avanzado"
-                      ? "text-sky-500"
-                      : status === "bajo" || status === "media"
-                      ? "text-warning"
-                      : status === "critico" || status === "pendiente"
-                      ? "text-error"
-                      : "text-default-500"
-                  }`}
-                >
-                  {status}
-                </span>
+              <div className="flex justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-end sm:gap-1">
+                  <label className="m-0 block">Estado: </label>
+                  <span
+                    className={`text-tiny font-bold capitalize ${
+                      status === "pagado"
+                        ? "text-success"
+                        : status === "avanzado"
+                        ? "text-sky-500"
+                        : status === "bajo" || status === "media"
+                        ? "text-warning"
+                        : status === "critico" || status === "pendiente"
+                        ? "text-error"
+                        : "text-default-500"
+                    }`}
+                  >
+                    {status}
+                  </span>
+                </div>
+                {(fullPaymentDate && payments.length > 0 ) && (
+                  <div className="flex flex-col sm:flex-row sm:items-end sm:gap-1">
+                    <label className="m-0 block">Fecha: </label>
+                    <span className="text-default-500 text-tiny">
+                      {fullPaymentDate}
+                    </span>
+                  </div>
+                )}
               </div>
             </fieldset>
             {/* AREA DONDE SE MUESTRA LOS ABONO REALIZADOS */}
