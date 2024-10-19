@@ -2,12 +2,12 @@ import { Schema, model, models } from "mongoose";
 
 const DebtsSchema = new Schema(
   {
-    customer: { type: String, ref: "Customer" },
+    customer: { type: Object },
     vehicle: { type: String },
-    concept: { type: String},
-    document: { type: String},
-    amount: { type: Number},
-    debtBalance: { type: Number},
+    concept: { type: String },
+    document: { type: String },
+    amount: { type: Number },
+    debtBalance: { type: Number },
     fullPaymentDate: { type: Date },
     payments: [{ type: Object }],
     status: { type: String, default: "pendient" },
@@ -18,5 +18,4 @@ const DebtsSchema = new Schema(
   }
 );
 
-export const Debts =
-  models?.Debts || model("Debts", DebtsSchema);
+export const Debts = models?.Debts || model("Debts", DebtsSchema);

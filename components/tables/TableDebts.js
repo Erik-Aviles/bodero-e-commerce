@@ -69,35 +69,18 @@ export default function TableDebts({ customers, debts, deleteDebts }) {
     (debt, columnKey) => {
       const cellValue = debt[columnKey];
 
-      const filteredResult = customers?.filter((objeto) =>
-        objeto?._id.includes(debt?.customer)
-      );
-
       console.log(debt);
 
       switch (columnKey) {
         case "customer":
           return (
             <div className="flex flex-col ">
-              {filteredResult?.length > 0 ? (
-                <>
-                  <p className="text-bold text-tiny text-primary-400 whitespace-nowrap">
-                    {`${justFirstWord(capitalize(filteredResult[0]?.name))} ` +
-                      `${justFirstWord(
-                        capitalize(filteredResult[0]?.lastname)
-                      )}`}
-                  </p>
-                  <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
-                    {filteredResult[0]?.phone
-                      ? filteredResult[0]?.phone
-                      : "Sin número telefónico"}
-                  </span>
-                </>
-              ) : (
-                <p className=" break-words text-error text-bold text-tiny capitalize">
-                  {"Cliente"}
-                </p>
-              )}
+              <p className="text-bold text-tiny text-primary-400 whitespace-nowrap uppercase">
+                {cellValue?.fullname}
+              </p>
+              <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
+                {cellValue?.phone}
+              </span>
             </div>
           );
         case "amount":
@@ -110,7 +93,7 @@ export default function TableDebts({ customers, debts, deleteDebts }) {
           return (
             <div className="flex flex-col">
               <p className=" break-words text-bold text-tiny whitespace-nowrap">
-                {new Date(debt?.fullPaymentDate).toLocaleString()}
+                {new Date(debt?.createdAt).toLocaleString()}
               </p>
             </div>
           );

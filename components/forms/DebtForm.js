@@ -1,20 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
 import NotificationContext from "@/context/NotificationContext";
-import { Autocomplete, AutocompleteItem, Input } from "@nextui-org/react";
 import axios from "axios";
-import { justFirstWord } from "@/utils/justFirstWord";
-import { capitalize } from "@/utils/utils";
-import useCustomers from "@/hooks/useCustomers";
 import useDebts from "@/hooks/useDebts";
 import ButtonClose from "../buttons/ButtonClose";
 import { DeleteIcon, EdithIcon } from "../Icons";
+import { Input } from "@nextui-org/react";
+import { capitalize } from "@/utils/utils";
 
 const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
   const { mutateDebts } = useDebts();
-  const { customers } = useCustomers();
   const { showNotification } = useContext(NotificationContext);
 
-  const [customer, setCustomer] = useState(debt?.customer || ""); //cliente
+  const [customer, setCustomer] = useState({
+    fullname: debt?.customer?.fullname || "",
+    phone: debt?.customer?.phone || "",
+  }); //cliente
   const [vehicle, setVehicle] = useState(debt?.vehicle || ""); //vehiculo
   const [concept, setConcept] = useState(debt?.concept || ""); //motivo de la deuda
   const [document, setDocument] = useState(debt?.document || ""); //documento que lo evidencia
@@ -126,6 +126,14 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
     setPaymentDate(new Date().toISOString().split("T")[0]);
   };
 
+  const handleCustomerChange = (e) => {
+    const { name, value } = e.target;
+    setCustomer((prevCustomer) => ({
+      ...prevCustomer,
+      [name]: value,
+    }));
+  };
+
   // Función para registrar el monto total de la deuda
   const handleAmountChange = (event) => {
     const parsedAmount = parseFloat(event.target.value);
@@ -136,10 +144,9 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
   };
 
   /** Funciones de manejo de API */
-
   // Restablecer campos de formulario
   const resetDebtForm = () => {
-    setCustomer("");
+    setCustomer({});
     setVehicle("");
     setConcept("");
     setDocument("");
@@ -200,7 +207,7 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
       });
       showNotification({
         open: true,
-        msj: `Deuda de: ${capitalize(rest.customer)}, ${data.message}`,
+        msj: `Deuda de: ${capitalize(updatedDebt?.customer?.fullname)}, ${data.message}`,
         status: "success",
       });
       resetDebtForm();
@@ -231,22 +238,57 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
       <div className="flex justify-end items-center">
         <ButtonClose onClick={toggleModal} />
       </div>
-      <header className=" sm:pb-4 sm:flex sm:items-center sm:justify-between sm:gap-4">
+      <div className="sm:flex sm:items-center sm:justify-between sm:gap-4">
         <div className="flex flex-col pb-2">
           <h3 className="text-lg font-semibold">{titulo}</h3>
-          <p className="text-primary text-xs">{textSmall}</p>
+          <div className="flex gap-1 flex-wrap text-primary text-xs">
+            <p>{`Nota: ${textSmall}`}</p>
+            <p>Usar la (,) para los decimales</p>
+          </div>
         </div>
-        {/* <ModalVehicle />  */}
-      </header>
+      </div>
       {/* Cuerpo de la informacion del pedido */}
       <form
         onSubmit={!debt ? handleSaveDebt : handleEditDebt}
-        className="w-fit flex flex-col gap-2 lg:grid lg:gap-5 lg:grid-cols-2 sm:border-container "
+        className="w-fit flex flex-col gap-5 sm:border-container lg:flex-row"
       >
-        <div>
+        {/* Columna de la informacion del cliente*/}
+        <div className="basis-1/2">
+          <fieldset className="bg-grayLight border-container ">
+            <legend className="text-center text-secondary">
+              INFORMACIÓN DEL CLIENTE
+            </legend>
+
+            <div>
+              <label className="my-1 block">Nombres (*)</label>
+              <Input
+                type="text"
+                isRequired={true}
+                name="fullname"
+                value={customer.fullname}
+                placeholder="Nombre y Apellido"
+                labelPlacement="outside"
+                className="mb-3.5 xs:mb-0"
+                onChange={handleCustomerChange}
+              />
+            </div>
+            <div>
+              <label className="my-1 block">Teléfono (*)</label>
+              <Input
+                type="text"
+                isRequired={true}
+                name="phone"
+                value={customer.phone}
+                placeholder="Número de contacto"
+                labelPlacement="outside"
+                className="mb-3.5 xs:mb-0"
+                onChange={handleCustomerChange}
+              />
+            </div>
+          </fieldset>
           <fieldset className="bg-grayLight flex flex-col border-container ">
             <legend className="text-center text-secondary">
-              DATOS PRINCIPALES
+              DATOS GENERAL
             </legend>
             <div>
               <label className="my-1 block">Concepto (*)</label>
@@ -258,32 +300,6 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
                 className="min-h-[60px] "
                 onChange={(e) => setConcept(e.target.value)}
               />
-            </div>
-            <div>
-              <label className="my-1 block">Seleccionar cliente (*)</label>
-              {customers && (
-                <div className="flex w-full flex-col">
-                  <Autocomplete
-                    isRequired={true}
-                    aria-label="Seleccion de cliente"
-                    defaultItems={customers?.sort((a, b) =>
-                      a.name.localeCompare(b.name)
-                    )}
-                    selectedKey={customer}
-                    onSelectionChange={setCustomer}
-                  >
-                    {(item) => (
-                      <AutocompleteItem key={item._id}>
-                        {`${justFirstWord(capitalize(item.name))} ` +
-                          ` ${justFirstWord(capitalize(item.lastname))} ` +
-                          (item?.phone
-                            ? `- ${item?.phone}`
-                            : "- Sin número telefónico")}
-                      </AutocompleteItem>
-                    )}
-                  </Autocomplete>
-                </div>
-              )}
             </div>
             <div>
               <label className="my-1 block">Vehículo</label>
@@ -309,31 +325,33 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
             </div>
           </fieldset>
         </div>
-        <div className="flex flex-col justify-between">
-          <div>
-            <fieldset className="bg-grayLight flex flex-col border-container ">
+
+        {/* Columna de la informacion del cliente*/}
+        <div className="basis-1/2 flex flex-col justify-between">
+          <div className="gap-2 flex flex-col">
+            {/* AREA DONDE SE MUESTRA el monto, el saldo y lo pagado */}
+            <fieldset className="bg-grayLight flex flex-col gap-2 border-container ">
               <legend className="text-center text-secondary">
                 INFORMACIÓN DE LA DEUDA
               </legend>
               <div className="flex gap-1">
-                <div className="basis-1/2">
+                <div className="basis-2/6">
                   <label className="my-1 block">Monto (*)</label>
                   <Input
-                    isRequired={true}
                     type="number"
-                    value={amount}
+                    labelPlacement="outside"
                     startContent={
                       <div className="flex items-center">
                         <span className="text-default-400 text-sm">$</span>
                       </div>
                     }
-                    placeholder="Monto de la deuda"
-                    labelPlacement="outside"
-                    className="mb-3.5 xs:mb-0"
+                    value={amount}
+                    isRequired={true}
                     onChange={handleAmountChange}
+                    placeholder="Monto de la deuda"
                   />
                 </div>
-                <div className="basis-1/2">
+                <div className="basis-2/6">
                   <label className="my-1 block">Saldo</label>
                   <Input
                     isReadOnly={true}
@@ -346,6 +364,22 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
                     }
                     value={!amount ? 0 : debtBalance}
                     placeholder="Saldo de la deuda"
+                    className="cursor-not-allowed"
+                  />
+                </div>
+                <div className="basis-2/6">
+                  <label className="my-1 block">Pago</label>
+                  <Input
+                    isReadOnly={true}
+                    type="number"
+                    labelPlacement="outside"
+                    startContent={
+                      <div className="flex items-center">
+                        <span className="text-default-400 text-sm">$</span>
+                      </div>
+                    }
+                    value={!amount ? 0 : debtBalance}
+                    placeholder="Sumatoria"
                     className="cursor-not-allowed"
                   />
                 </div>
@@ -444,6 +478,7 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
 
                 <Input
                   type="date"
+                  className="text-[9px]"
                   value={paymentDate}
                   onChange={(e) => setPaymentDate(e.target.value)}
                 />

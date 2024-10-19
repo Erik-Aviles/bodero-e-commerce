@@ -43,7 +43,7 @@ export default async function handle(req, res) {
       } = req.body;
 
       //validar que esten todos los campos necesarios
-      if (!customer || !amount || !concept)
+      if (!amount || !concept)
         return res.status(400).json({ message: messages.error.needProps });
 
       const newDebt = await Debts.create({

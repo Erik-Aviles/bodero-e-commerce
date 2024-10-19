@@ -47,7 +47,7 @@ const ModalDebts = ({ debt, focusInput }) => {
                   textSmall={
                     !debt
                       ? "Los campos con (*) son obligatorios. "
-                      : `Editar la deuda de: "${capitalize(debt?.customer)} `
+                      : `Editar la deuda de: "${capitalize(debt?.customer.fullname)} `
                   }
                   debt={debt}
                   toggleModal={toggleModal}

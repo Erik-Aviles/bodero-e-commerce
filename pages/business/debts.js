@@ -1,28 +1,55 @@
 import React, { useContext } from "react";
-import NotificationContext from "@/context/NotificationContext";
 import TableDebts from "@/components/tables/TableDebts";
 import Spinner from "@/components/snnipers/Spinner";
-import useDeleteItem from "@/hooks/useDeleteItem";
 import { withSwal } from "react-sweetalert2";
 import Layout from "@/components/Layout";
 import useDebts from "@/hooks/useDebts";
+import NotificationContext from "@/context/NotificationContext";
 import Head from "next/head";
 import axios from "axios";
 import useCustomers from "@/hooks/useCustomers";
+import { capitalize } from "@/utils/utils";
 
 const DebtsPage = withSwal(({ swal }) => {
+  const { showNotification } = useContext(NotificationContext);
   const { debts, isErrorDebts, isLoadingDebts, mutateDebts } = useDebts();
   const { customers, isLoadingCustomers } = useCustomers();
-  const deleteItem = useDeleteItem();
 
   const handleDeleteDebts = (item) => {
-    deleteItem({
-      swal,
-      getItems: mutateDebts,
-      item,
-      apiEndpoint: "debts",
-      itemNameKey: "customer",
-    });
+    const apiEndpoint = "debts";
+    const itemName = capitalize(item.customer.fullname);
+
+    swal
+      .fire({
+        title: "¿Estás seguro?",
+        text: `¿Realmente desea eliminar la deuda de "${
+          itemName?.length > 30 ? itemName.substring(0, 30) + "..." : itemName
+        }" de la base de datos? Esta acción no se puede deshacer.`,
+        showCancelButton: true,
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#fe0000",
+        confirmButtonText: "Sí, eliminar",
+        reverseButtons: true,
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            await axios.delete(`/api/${apiEndpoint}/full?_id=${item._id}`);
+            await mutateDebts();
+            showNotification({
+              open: true,
+              msj: `${
+                itemName.length > 30
+                  ? itemName.substring(0, 30) + "..."
+                  : itemName
+              }, eliminado con éxito!`,
+              status: "success",
+            });
+          } catch (error) {
+            console.error(`Error al eliminar el elemento:`, error);
+          }
+        }
+      });
   };
 
   return (
