@@ -7,6 +7,7 @@ const columnsDebts = [
   { name: "SALDO", uid: "debtBalance" },
   { name: "CONCEPTO", uid: "concept" },
   { name: "VEHICULO", uid: "vehicle" },
+  { name: "DOCUMENTO", uid: "document" },
   { name: "ACCION", uid: "actions" },
 ];
 

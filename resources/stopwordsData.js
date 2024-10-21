@@ -9,6 +9,7 @@ export const stopwords = [
   "en",
   "con",
   "para",
+  "por",
   "un",
   "una",
   "uno",

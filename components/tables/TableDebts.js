@@ -1,13 +1,7 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { removeAccents, removePluralEnding } from "@/utils/normalized";
-import {
-  statusColorMap,
-  statusOptionsDebts,
-  statusSVGMap,
-} from "@/resources/statusMap";
-import ModalOrderListProduct from "../modals/ModalOrderListProduct";
+import { statusOptionsDebts, statusSVGMap } from "@/resources/statusMap";
 import { columnsDebts } from "@/resources/columnTables";
-import { justFirstWord } from "@/utils/justFirstWord";
 import { stopwords } from "@/resources/stopwordsData";
 import { ChevronDownIcon, DeleteRIcon, SearchIcon } from "../Icons";
 import { capitalize } from "@/utils/utils";
@@ -22,7 +16,6 @@ import {
   Pagination,
   Button,
   Input,
-  Chip,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
@@ -58,16 +51,20 @@ export default function TableDebts({ debts, deleteDebts }) {
     if (hasSearchFilter) {
       resultadoFiltrado = resultadoFiltrado.filter((item) => {
         const fullname = removeAccents(item?.customer?.fullname?.toLowerCase());
-        const vehicle = removeAccents(item?.vehicle?.toLowerCase());
-        const concept = removeAccents(item.concept?.toLowerCase());
         const phone = removeAccents(item?.customer?.phone?.toLowerCase());
+        const model = removeAccents(item?.vehicle?.model?.toLowerCase());
+        const plate = removeAccents(item?.vehicle?.plate?.toLowerCase());
+        const concept = removeAccents(item?.concept?.toLowerCase());
+        const document = removeAccents(item?.document?.toLowerCase());
 
         const matchesAllParts = searchParts.every((part) => {
           return (
             fullname.includes(part) ||
-            vehicle.includes(part) ||
+            phone.includes(part) ||
+            model.includes(part) ||
+            plate.includes(part) ||
             concept.includes(part) ||
-            phone.includes(part)
+            document.includes(part)
           );
         });
         return matchesAllParts;
@@ -183,12 +180,23 @@ export default function TableDebts({ debts, deleteDebts }) {
               </p>
             </div>
           );
-        case "vehicle":
+        case "document":
           return (
-            <div className="flex flex-col min-w-[150px] max-w-[315px]">
+            <div className="flex flex-col min-w-[110px] max-w-[315px]">
               <p className=" break-words text-bold text-tiny capitalize">
                 {cellValue}
               </p>
+            </div>
+          );
+        case "vehicle":
+          return (
+            <div className="flex flex-col ">
+              <p className="text-bold text-tiny text-primary-400 whitespace-nowrap capitalize">
+                {cellValue?.model}
+              </p>
+              <span className="text-bold text-tiny text-default-400 whitespace-nowrap uppercase">
+                {cellValue?.plate}
+              </span>
             </div>
           );
         case "status":
@@ -342,7 +350,13 @@ export default function TableDebts({ debts, deleteDebts }) {
         </div>
       </div>
     );
-  }, [filterValue, statusFilter, debts.length, onSearchChange, hasSearchFilter]);
+  }, [
+    filterValue,
+    statusFilter,
+    debts.length,
+    onSearchChange,
+    hasSearchFilter,
+  ]);
 
   return (
     <Table

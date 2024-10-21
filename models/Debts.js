@@ -3,7 +3,7 @@ import { Schema, model, models } from "mongoose";
 const DebtsSchema = new Schema(
   {
     customer: { type: Object },
-    vehicle: { type: String },
+    vehicle: { type: Object },
     concept: { type: String },
     document: { type: String },
     amount: { type: Number },
@@ -11,7 +11,7 @@ const DebtsSchema = new Schema(
     pay: { type: Number },
     fullPaymentDate: { type: Date },
     payments: [{ type: Object }],
-    status: { type: String, default: "pendient" },
+    status: { type: String, default: "sin deuda" },
   },
   {
     timestamps: true,
