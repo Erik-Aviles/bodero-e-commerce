@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Autocomplete, AutocompleteItem, Input } from "@nextui-org/react";
 import NotificationContext from "@/context/NotificationContext";
 import ModalCustomers from "../modals/ModalCustomers";
@@ -6,7 +6,6 @@ import { justFirstWord } from "@/utils/justFirstWord";
 import ButtonClose from "../buttons/ButtonClose";
 import useCustomers from "@/hooks/useCustomers";
 import { capitalize } from "@/utils/utils";
-import moment from "moment";
 import axios from "axios";
 import useOrderList from "@/hooks/useOrderList";
 
@@ -15,30 +14,47 @@ const OrderListForm = ({ order, titulo, textSmall, toggleModal }) => {
   const { customers } = useCustomers();
   const { showNotification } = useContext(NotificationContext);
 
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+
+  const hours = String(today.getHours()).padStart(2, "0");
+  const minutes = String(today.getMinutes()).padStart(2, "0");
+  const seconds = String(today.getSeconds()).padStart(2, "0");
+
+  const formattedDate = `${year}-${month}-${day}`;
+
   const [customer, setCustomer] = useState(order?.customer || "");
   const [articulo, setArticulo] = useState(order?.articulo || "");
-  const [date, setDate] = useState(order?.date || "");
   const [orderEntryDate, setOrderEntryDate] = useState(
-    (order?.orderEntryDate &&
-      moment(order?.orderEntryDate)
-        .locale("en")
-        .format(moment.HTML5_FMT.DATE)) ||
-      ""
+    order?.orderEntryDate
+      .split("T")[0]
+      .split("-")
+      .map((parte, i) => (i === 2 ? parte.replace(/^0+/, "") : parte))
+      .join("-") || formattedDate
   );
   const [orderDeliveryDate, setOrderDeliveryDate] = useState(
     order?.orderDeliveryDate || ""
   );
 
-  //registrar pedido
-  async function saveOrder(e) {
+  const dateTimeFull = `${orderEntryDate}T${hours}:${minutes}:${seconds}`;
+
+  // Restablecer campos de formulario
+  const resetOrderListForm = () => {
+    setCustomer("");
+    setArticulo("");
+    setOrderEntryDate("");
+    setOrderDeliveryDate("");
+  };
+
+  //Registrar pedido
+  async function handleSaveCustomer(e) {
     e.preventDefault();
     let rest = {
       customer,
       articulo,
-      date,
-      orderEntryDate: !orderEntryDate
-        ? ""
-        : moment(orderEntryDate, moment.HTML5_FMT.DATE).locale("en").format(),
+      orderEntryDate: dateTimeFull,
       orderDeliveryDate,
     };
     try {
@@ -48,12 +64,8 @@ const OrderListForm = ({ order, titulo, textSmall, toggleModal }) => {
         msj: data.message,
         status: "success",
       });
+      resetOrderListForm();
       mutateOrderList();
-      setCustomer("");
-      setArticulo("");
-      setDate("");
-      setOrderEntryDate("");
-      setOrderDeliveryDate("");
       toggleModal();
     } catch (error) {
       showNotification({
@@ -64,16 +76,13 @@ const OrderListForm = ({ order, titulo, textSmall, toggleModal }) => {
     }
   }
 
-  //editar pedido
-  async function editCustomer(e) {
+  //Editar pedido
+  async function handleEditCustomer(e) {
     e.preventDefault();
     let rest = {
       customer,
       articulo,
-      date,
-      orderEntryDate: moment(orderEntryDate, moment.HTML5_FMT.DATE)
-        .locale("en")
-        .format(),
+      orderEntryDate: dateTimeFull,
       orderDeliveryDate,
     };
     const _id = order._id;
@@ -87,12 +96,8 @@ const OrderListForm = ({ order, titulo, textSmall, toggleModal }) => {
         msj: `Pedido: ${capitalize(rest.articulo)}, ${data.message}`,
         status: "success",
       });
+      resetOrderListForm();
       mutateOrderList();
-      setCustomer("");
-      setArticulo("");
-      setDate("");
-      setOrderEntryDate("");
-      setOrderDeliveryDate("");
       toggleModal();
     } catch (error) {
       showNotification({
@@ -102,16 +107,6 @@ const OrderListForm = ({ order, titulo, textSmall, toggleModal }) => {
       });
     }
   }
-
-  const handleDateChange = (e) => {
-    const ahora = new Date();
-    const horas = ahora.getHours().toString().padStart(2, "0");
-    const minutos = ahora.getMinutes().toString().padStart(2, "0");
-    const segundos = ahora.getSeconds().toString().padStart(2, "0");
-    const fechaHoraCompleta = `${e.target.value}T${horas}:${minutos}:${segundos}`;
-    setDate(fechaHoraCompleta);
-    setOrderEntryDate(e.target.value);
-  };
 
   return (
     <div className="relative w-full flex flex-col justify-center ">
@@ -127,7 +122,7 @@ const OrderListForm = ({ order, titulo, textSmall, toggleModal }) => {
       </header>
       {/* Cuerpo de la informacion del pedido */}
       <form
-        onSubmit={!order ? saveOrder : editCustomer}
+        onSubmit={!order ? handleSaveCustomer : handleEditCustomer}
         className="flex flex-col gap-2"
       >
         <fieldset className="bg-grayLight flex flex-col border-container ">
@@ -183,9 +178,8 @@ const OrderListForm = ({ order, titulo, textSmall, toggleModal }) => {
               value={orderEntryDate}
               labelPlacement="outside"
               isRequired={true}
-              onChange={handleDateChange}
+              onChange={(e) => setOrderEntryDate(e.target.value)}
             />
-            <input type="hidden" id="date" name="date" value={date} />
           </div>
         </fieldset>
         <div className="flex gap-1 my-1">

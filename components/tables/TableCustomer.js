@@ -16,7 +16,6 @@ import {
   Tooltip,
 } from "@nextui-org/react";
 import { SearchIcon, ChevronDownIcon, DeleteRIcon } from "@/components/Icons";
-
 import { columnsCustomer } from "@/resources/columnTables";
 import { capitalize } from "@/utils/utils";
 import { removeAccents } from "@/utils/normalized";
@@ -106,7 +105,7 @@ export default function TableCustomer({ customers, deleteCustomer }) {
               {cellValue}
             </p>
             <span className="text-bold text-tiny text-default-400 whitespace-nowrap capitalize">
-              {customer?.lastname}
+              {customer?.lastname ? customer?.lastname : "Sin apellido"}
             </span>
           </div>
         );
@@ -126,8 +125,9 @@ export default function TableCustomer({ customers, deleteCustomer }) {
           <div className="flex flex-col">
             <p className="text-bold text-small whitespace-nowrap">
               {cellValue}
+              {customer?.phone ? customer?.phone : "Sin teléfono"}
             </p>
-            <span className="text-bold text-tiny text-default-400 capitalize">
+            <span className="text-bold text-tiny text-default-400">
               {customer?.address ? customer?.address : "Sin dirección"}
             </span>
           </div>

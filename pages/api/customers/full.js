@@ -42,7 +42,7 @@ export default async function handle(req, res) {
       } = req.body;
 
       //validar que esten todos los campos
-      if (!name || !lastname || !identifications) {
+      if (!name ) {
         return res.status(400).json({ message: messages.error.needProps });
       }
 

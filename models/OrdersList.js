@@ -7,9 +7,6 @@ const OrdersListSchema = new Schema(
     orderEntryDate: {
       type: Date,
     },
-    date: {
-      type: Date,
-    },
     orderDeliveryDate: { type: Date },
     delivered: { type: Boolean, default: false },
   },

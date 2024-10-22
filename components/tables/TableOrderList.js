@@ -110,7 +110,9 @@ export default function TableOrderList({
         return (
           <div className="flex flex-col">
             <p className=" break-words text-bold text-tiny whitespace-nowrap">
-              {new Date(order?.date).toLocaleString()}
+              {new Date(order?.orderEntryDate).toLocaleString(
+                ("es-ES", { timeZone: "America/Guayaquil" })
+              )}
             </p>
           </div>
         );
@@ -119,7 +121,9 @@ export default function TableOrderList({
           <div className="flex flex-col gap-1">
             {cellValue === true && (
               <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
-                {new Date(order?.orderDeliveryDate).toLocaleString()}
+                {new Date(order?.orderDeliveryDate).toLocaleString(
+                  ("es-ES", { timeZone: "America/Guayaquil" })
+                )}
               </span>
             )}
             <Chip

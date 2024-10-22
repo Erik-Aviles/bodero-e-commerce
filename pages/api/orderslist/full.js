@@ -33,7 +33,6 @@ export default async function handle(req, res) {
       const {
         customer,
         articulo,
-        date,
         orderEntryDate,
         orderDeliveryDate,
         delivered,
@@ -46,7 +45,6 @@ export default async function handle(req, res) {
       const newOrderList = await OrdersList.create({
         customer,
         articulo,
-        date,
         orderEntryDate,
         orderDeliveryDate,
         delivered,
@@ -69,7 +67,6 @@ export default async function handle(req, res) {
       const {
         customer,
         articulo,
-        date,
         orderEntryDate,
         orderDeliveryDate,
         delivered,
@@ -83,7 +80,6 @@ export default async function handle(req, res) {
       const updateData = {
         customer,
         articulo,
-        date,
         orderEntryDate,
         orderDeliveryDate,
         delivered,

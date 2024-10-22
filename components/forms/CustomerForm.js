@@ -23,8 +23,19 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
     customer?.observations || ""
   );
 
-  //registrar cliente
-  async function saveCustomer(e) {
+  // Restablecer campos de formulario
+  const resetCustomerForm = () => {
+    setName("");
+    setLastname("");
+    setIdentifications("");
+    setAddress("");
+    setPhone("");
+    setEmail("");
+    setObservations("");
+  };
+
+  //Registrar cliente
+  async function handleSaveCustomer(e) {
     e.preventDefault();
     let rest = {
       name: name.toLowerCase(),
@@ -42,14 +53,9 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
         msj: data?.message,
         status: "success",
       });
+      resetCustomerForm();
       mutateCustomers();
-      setName("");
-      setLastname("");
-      setIdentifications("");
-      setAddress("");
-      setPhone("");
-      setEmail("");
-      setObservations("");
+
       toggleModal();
     } catch (error) {
       showNotification({
@@ -60,8 +66,8 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
     }
   }
 
-  //editar cliente
-  async function editCustomer(e) {
+  //Editar cliente
+  async function handleEditCustomer(e) {
     e.preventDefault();
     let rest = {
       name: name.toLowerCase(),
@@ -85,15 +91,9 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
         }`,
         status: "success",
       });
-      toggleModal();
+      resetCustomerForm();
       mutateCustomers();
-      setName("");
-      setLastname("");
-      setIdentifications("");
-      setAddress("");
-      setPhone("");
-      setEmail("");
-      setObservations("");
+      toggleModal();
     } catch (error) {
       showNotification({
         open: true,
@@ -112,7 +112,7 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
       <p className="text-primary text-xs pb-3">{textSmall}</p>
       <form
         className="flex flex-col gap-2 "
-        onSubmit={!customer ? saveCustomer : editCustomer}
+        onSubmit={!customer ? handleSaveCustomer : handleEditCustomer}
       >
         <div className="flex flex-col gap-2 w-full overflow-auto ">
           <div className="flex flex-col md:flex-row gap-2">
@@ -127,18 +127,17 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
                     type="text"
                     value={name}
                     isRequired={true}
-                    placeholder="Escribir Nombres"
+                    placeholder="Nombres"
                     labelPlacement="outside"
                     onChange={(e) => setName(e.target.value.toLowerCase())}
                   />
                 </div>
                 <div>
-                  <label className="block my-1">Apellidos (*)</label>
+                  <label className="block my-1">Apellidos </label>
                   <Input
                     type="text"
                     value={lastname}
-                    isRequired={true}
-                    placeholder="Escribir Apellidos"
+                    placeholder="Apellidos (opcional)"
                     labelPlacement="outside"
                     onChange={(e) => setLastname(e.target.value.toLowerCase())}
                   />
@@ -146,12 +145,11 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
               </div>
               <div className="xs:flex xs:gap-2">
                 <div className="">
-                  <label className="my-1 block">Teléfono (*)</label>
+                  <label className="my-1 block">Teléfono</label>
                   <Input
                     type="text"
                     value={phone}
-                    isRequired={true}
-                    placeholder="Escribir teléfono"
+                    placeholder="Teléfono (opcional)"
                     labelPlacement="outside"
                     onChange={(e) => setPhone(e.target.value.toLowerCase())}
                   />
@@ -161,7 +159,7 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
                   <Input
                     type="text"
                     value={identifications}
-                    placeholder="Escribir Cédula"
+                    placeholder="Cédula (opcional)"
                     labelPlacement="outside"
                     onChange={(e) =>
                       setIdentifications(e.target.value.toLowerCase())
@@ -175,7 +173,7 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
                   <Input
                     type="text"
                     value={address}
-                    placeholder="Escribir dirección"
+                    placeholder="Dirección (opcional)"
                     labelPlacement="outside"
                     onChange={(e) => setAddress(e.target.value.toLowerCase())}
                   />
@@ -186,7 +184,7 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
                   <Input
                     type="text"
                     value={email}
-                    placeholder="Escribir correo"
+                    placeholder="Correo (opcional)"
                     labelPlacement="outside"
                     onChange={(e) => setEmail(e.target.value.toLowerCase())}
                   />
@@ -198,7 +196,7 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
                   <textarea
                     rows={3}
                     maxLength={50}
-                    placeholder="Escribir observaciones"
+                    placeholder="Observaciones (opcional)"
                     value={observations}
                     className="min-h-[55px]"
                     onChange={(e) => setObservations(e.target.value)}

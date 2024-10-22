@@ -25,7 +25,7 @@ import BottomPaginationContent from "../BottomPaginationContent";
 import ModalDebts from "../modals/ModalDebts";
 import { formatPrice } from "@/utils/formatPrice";
 
-export default function TableDebts({ debts, deleteDebts }) {
+export default function TableDebts({ debts, deleteDebts, handleStatusDebt }) {
   const [filterValue, setFilterValue] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -106,8 +106,6 @@ export default function TableDebts({ debts, deleteDebts }) {
   const renderCell = useCallback(
     (debt, columnKey) => {
       const cellValue = debt[columnKey];
-
-      console.log(debt);
 
       switch (columnKey) {
         case "customer":
@@ -209,25 +207,23 @@ export default function TableDebts({ debts, deleteDebts }) {
                   })}
                 </span>
               )}
-              <div
-                className={`max-w-fit py-1 px-2 flex items-center gap-1 capitalize rounded-2xl text-tiny cursor-default border ${
+              <button
+                className={`max-w-fit py-1 px-2 flex items-center gap-1 capitalize rounded-2xl text-tiny border ${
                   cellValue === "pagado"
-                    ? "border-success text-success"
+                    ? "border-success text-success cursor-default"
                     : cellValue === "avanzado"
-                    ? "border-sky-500 text-sky-500"
+                    ? "border-sky-500 text-sky-500 cursor-pointer"
                     : cellValue === "bajo" || cellValue === "media"
-                    ? "border-warning text-warning"
+                    ? "border-warning text-warning cursor-pointer"
                     : cellValue === "critico" || cellValue === "pendiente"
-                    ? "border-error text-error"
-                    : "border-default-500 text-default-500"
+                    ? "border-error text-error cursor-pointer"
+                    : "border-default-500 text-default-500 cursor-pointer"
                 }`}
-                startContent={statusSVGMap[cellValue]}
-                variant="bordered"
-                isDisabled={cellValue}
-                onClick={() => verifyDelivery(debt?._id)}
+                disabled={cellValue === "pagado"}
+                onClick={() => handleStatusDebt(debt)}
               >
                 {cellValue}
-              </div>
+              </button>
             </div>
           );
         case "actions":

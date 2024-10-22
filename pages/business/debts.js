@@ -52,6 +52,34 @@ const DebtsPage = withSwal(({ swal }) => {
       });
   };
 
+  const handleStatusDebt = async (debt) => {
+    if (debt?._id) {
+      const items = {
+        status: "pagado",
+        debtBalance: 0, 
+        pay: debt?.amount,
+        fullPaymentDate: Date.now(),
+        _id: debt?._id,
+      };
+      try {
+        await axios.put("/api/debts/full", items);
+        mutateDebts();
+        showNotification({
+          open: true,
+          msj: "Deuda ha sido pagada!",
+          status: "success",
+        });
+      } catch (error) {
+        console.error(error);
+        showNotification({
+          open: true,
+          msj: "Error al marcar deuda como pagada.",
+          status: "error",
+        });
+      }
+    }
+  };
+
   return (
     <>
       <Head>
@@ -68,6 +96,7 @@ const DebtsPage = withSwal(({ swal }) => {
               customers={customers}
               debts={debts}
               deleteDebts={handleDeleteDebts}
+              handleStatusDebt={handleStatusDebt}
             />
           </section>
         )}
