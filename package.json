@@ -45,7 +45,8 @@
     "resend": "^2.0.0",
     "sortablejs": "^1.15.0",
     "swr": "^2.2.5",
-    "tailwindcss": "^3.4.4"
+    "tailwindcss": "^3.4.4",
+    "uuid": "^11.0.2"
   },
   "devDependencies": {
     "typescript": "^5.4.5"

@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { EdithIcon, PlusIcon } from "../Icons";
 import { Button, Tooltip } from "@nextui-org/react";
+import { EdithIcon, PlusIcon } from "../Icons";
+import BannerForm from "../forms/BannerForm";
 import { capitalize } from "@/utils/utils";
-import CustomerForm from "../forms/CustomerForm";
-import { justFirstWord } from "@/utils/justFirstWord";
 
-const ModalCustomers = ({ customer }) => {
+const ModalBanners = ({ banner, mutateBanner, companyId }) => {
   const [showModal, setShowModal] = useState(false);
 
   const toggleModal = () => {
@@ -15,15 +14,13 @@ const ModalCustomers = ({ customer }) => {
   return (
     <div>
       <div>
-        {!customer ? (
+        {!banner ? (
           <section className="w-fit md:py-0">
             <Button
               onClick={toggleModal}
               color="primary"
               startContent={<PlusIcon />}
-            >
-              Cliente
-            </Button>
+            />
           </section>
         ) : (
           <Tooltip color="primary" content="Editar">
@@ -37,18 +34,19 @@ const ModalCustomers = ({ customer }) => {
             <div className="fixed inset-0 z-40 bg-gray-500 bg-opacity-50"></div>
             <div className="fixed inset-0 z-50 flex items-center justify-center p-5 ">
               <div className="max-h-[calc(100vh-100px)] bg-white w-full max-w-[500px] p-4 rounded-lg shadow-lg overflow-auto scroll">
-                <CustomerForm
-                  titulo={!customer ? "Registrar cliente" : "Editar cliente"}
-                  textSmall={
-                    !customer
-                      ? "Los campos con (*) son obligatorios. "
-                      : `Editar cliente "${justFirstWord(
-                          capitalize(customer?.name)
-                        )} ` +
-                        `${justFirstWord(capitalize(customer?.lastname))}`
+                <BannerForm
+                  titulo={
+                    !banner ? "Agregar Banner" : "Editar Banner"
                   }
-                  customer={customer}
+                  textSmall={
+                    !banner
+                      ? "Los campos con (*) son obligatorios. "
+                      : `Editar el banner: "${capitalize(banner?.description)} `
+                  }
+                  banner={banner}
+                  companyId={companyId}
                   toggleModal={toggleModal}
+                  mutateBanner={mutateBanner}
                 />
               </div>
             </div>
@@ -59,4 +57,4 @@ const ModalCustomers = ({ customer }) => {
   );
 };
 
-export default ModalCustomers;
+export default ModalBanners;

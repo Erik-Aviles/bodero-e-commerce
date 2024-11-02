@@ -1,3 +1,9 @@
+const columnsBanners = [
+  { name: "ORDEN", uid: "sort" },
+  { name: "DESCRIPCION", uid: "description" },
+  { name: "IMAGEN", uid: "image" },
+  { name: "ACCION", uid: "actions" },
+];
 const columnsDebts = [
   { name: "ESTADO", uid: "status" },
   { name: "CLIENTE", uid: "customer" },
@@ -115,4 +121,5 @@ export {
   columnsCriticalStock,
   columnsRolesPermissions,
   columnsDebts,
+  columnsBanners,
 };

@@ -17,10 +17,11 @@ export default async function handler(req, res) {
       resolve({ fields, files });
     });
   });
-  const links = [];
+  const images  = [];
 
   for (const file of files.file) {
     const without = files.originalFilename;
+
     // Upload an image
     const uploadResult = await cloudinary.uploader
       .upload(file.path, {
@@ -30,11 +31,12 @@ export default async function handler(req, res) {
         console.log(error);
       });
 
-    const link = uploadResult.secure_url;
-    links.push(link);
+    images.push({
+      url: uploadResult.secure_url,
+      public_id: uploadResult.public_id, 
+    });
   }
-
-  return res.json({ links });
+  return res.json({ images });
 }
 
 export const config = {

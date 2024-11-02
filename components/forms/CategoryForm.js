@@ -91,15 +91,13 @@ const CategoryForm = ({ category, titulo, textSmall, toggleModal }) => {
     if (files?.length > 0) {
       setIsUploading(true);
       const data = new FormData();
-      for (const file of files) {
-        data.append("file", file);
-      }
+      data.append("file", files[0]);
+
       const res = await axios.post("/api/uploadcloudinary", data);
       setImage((oldImages) => {
-        return [...oldImages, ...res.data?.links];
+        return [...oldImages, res.data?.images[0].url];
       });
     }
-
     setIsUploading(false);
     finishtLoading();
   };

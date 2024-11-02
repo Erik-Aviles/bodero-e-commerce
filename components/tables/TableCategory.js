@@ -65,7 +65,7 @@ export default function TableCategory({ categories, deleteCaterory }) {
         );
       case "createdAt":
         return (
-          <div className="flex flex-col min-w-[140px]">
+          <div className="flex flex-col min-w-[200px]">
             <p className="text-bold text-small ">
               {new Date(category?.createdAt).toLocaleString()}
             </p>

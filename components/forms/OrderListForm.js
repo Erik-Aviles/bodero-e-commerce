@@ -113,7 +113,7 @@ const OrderListForm = ({ order, titulo, textSmall, toggleModal }) => {
       <div className="flex justify-end items-center">
         <ButtonClose onClick={toggleModal} />
       </div>
-      <header className=" sm:pb-4 sm:flex sm:items-center sm:justify-between sm:gap-4">
+      <header className="pb-4 flex items-center justify-between ">
         <div className="flex flex-col pb-2">
           <h3 className="text-lg font-semibold">{titulo}</h3>
           <p className="text-primary text-xs">{textSmall}</p>

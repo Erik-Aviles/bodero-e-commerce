@@ -116,12 +116,12 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
       >
         <div className="flex flex-col gap-2 w-full overflow-auto ">
           <div className="flex flex-col md:flex-row gap-2">
-            <fieldset className="bg-grayLight flex flex-col border-container">
+            <fieldset className="w-full bg-grayLight flex flex-col border-container">
               <legend className="text-center text-secondary">
                 DATOS PERSONALES
               </legend>
               <div className="xs:flex xs:gap-2">
-                <div className="">
+                <div className="w-full">
                   <label className="block my-1">Nombres (*)</label>
                   <Input
                     type="text"
@@ -132,7 +132,7 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
                     onChange={(e) => setName(e.target.value.toLowerCase())}
                   />
                 </div>
-                <div>
+                <div className="w-full">
                   <label className="block my-1">Apellidos </label>
                   <Input
                     type="text"
@@ -144,7 +144,7 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
                 </div>
               </div>
               <div className="xs:flex xs:gap-2">
-                <div className="">
+              <div className="w-full">
                   <label className="my-1 block">Teléfono</label>
                   <Input
                     type="text"
@@ -154,7 +154,7 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
                     onChange={(e) => setPhone(e.target.value.toLowerCase())}
                   />
                 </div>
-                <div className="">
+                <div className="w-full">
                   <label className="my-1 block">Cédula</label>
                   <Input
                     type="text"
@@ -168,7 +168,7 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
                 </div>
               </div>
               <div className="xs:flex xs:gap-2">
-                <div className="">
+              <div className="w-full">
                   <label className="my-1 block">Dirección </label>
                   <Input
                     type="text"
@@ -179,7 +179,7 @@ const CustomerForm = ({ customer, titulo, textSmall, toggleModal }) => {
                   />
                 </div>
 
-                <div className="">
+                <div className="w-full">
                   <label className="my-1 block">Correo</label>
                   <Input
                     type="text"

@@ -21,10 +21,9 @@ export default function useDeleteItem() {
           itemName.length > 30 ? itemName.substring(0, 30) + "..." : itemName
         }" de la base de datos? Esta acción no se puede deshacer.`,
         showCancelButton: true,
-        cancelButtonText: "Cancelar",
         confirmButtonColor: "#fe0000",
         confirmButtonText: "Sí, eliminar",
-        reverseButtons: true,
+        cancelButtonText: "Cancelar",
       })
       .then(async (result) => {
         if (result.isConfirmed) {

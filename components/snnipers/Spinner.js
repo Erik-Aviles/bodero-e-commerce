@@ -1,8 +1,8 @@
 import { ClipLoader } from "react-spinners";
 
-export default function Spinner() {
+export default function Spinner({className="pt-64 pb-10"}) {
   return (
-    <div className="w-full pt-64 pb-10 flex justify-center items-center">
+    <div className={`flex justify-center items-center w-full  ${className}`}>
       <ClipLoader color="#97a8bc" />
     </div>
   );

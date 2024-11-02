@@ -267,16 +267,14 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
 
   return (
     <div className="relative w-full flex flex-col justify-center ">
-      <div className="flex justify-end items-center">
-        <ButtonClose onClick={toggleModal} />
-      </div>
-      <div className="sm:flex sm:items-center sm:justify-between sm:gap-4">
-        <div className="flex flex-col pb-2">
+      <div className="">
+        <div className="flex flex-row justify-between">
           <h3 className="text-lg font-semibold">{titulo}</h3>
-          <div className="flex gap-1 flex-wrap text-primary text-xs">
-            <p>{`Nota: ${textSmall}`}</p>
-            <p>Usar la (,) para los decimales</p>
-          </div>
+          <ButtonClose onClick={toggleModal} />
+        </div>
+        <div className="flex gap-1 flex-wrap text-primary text-xs">
+          <p>{`Nota: ${textSmall}`}</p>
+          <p>Usar la (,) para los decimales</p>
         </div>
       </div>
       {/* Cuerpo de la informacion del pedido */}
@@ -357,7 +355,6 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
             <div>
               <label className="my-1 block">Concepto (*)</label>
               <textarea
-                isRequired={true}
                 placeholder="Escribir la razón de la deuda"
                 value={concept}
                 required={true}
@@ -521,6 +518,8 @@ const DebtForm = ({ debt, titulo, textSmall, toggleModal }) => {
                 </ul>
               </fieldset>
             )}
+
+            {/* AREA DONDE SE REGISTRAN LOS ABONO*/}
             <fieldset className="bg-grayLight flex flex-col border-container ">
               <legend className="text-center text-secondary uppercase">
                 {editPaymentIndex !== null ? "Editar Abono" : "Registrar Abono"}

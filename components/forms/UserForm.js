@@ -138,7 +138,7 @@ const UserForm = ({ user, titulo, textSmall, toggleModal }) => {
       >
         <div className="flex flex-col gap-2 w-full overflow-auto ">
           <div className="flex flex-col md:flex-row gap-2">
-            <fieldset className="bg-grayLight flex flex-col gap-2 border-container">
+            <fieldset className="w-full bg-grayLight flex flex-col gap-2 border-container">
               <legend className="text-center text-secondary">
                 CREDENCIALES
               </legend>
@@ -198,7 +198,7 @@ const UserForm = ({ user, titulo, textSmall, toggleModal }) => {
                     </p>
                   )}
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="w-full flex flex-col gap-2">
                   <div className="">
                     <label className="block my-1">Tipo de usuario</label>
                     <Autocomplete

@@ -28,6 +28,8 @@ const messages = {
     customersAlreadyExist: "Cedula ya existe!",
   },
   success: {
+    addedImage: "¡Imagen agregado con exito!",
+    addedInfo: "¡Información registrado con exito!",
     addedProduct: "¡Producto registrado con exito!",
     addedStock: "¡Stock registrado con exito!",
     addedOrderlist: "¡Pedido registrado con exito!",
