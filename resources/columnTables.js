@@ -1,9 +1,17 @@
+const columnsBrands = [
+  { name: "ORDEN", uid: "sort" },
+  { name: "NOMBRE", uid: "name" },
+  { name: "IMAGEN", uid: "image" },
+  { name: "ACCION", uid: "actions" },
+];
+
 const columnsBanners = [
   { name: "ORDEN", uid: "sort" },
   { name: "DESCRIPCION", uid: "description" },
   { name: "IMAGEN", uid: "image" },
   { name: "ACCION", uid: "actions" },
 ];
+
 const columnsDebts = [
   { name: "ESTADO", uid: "status" },
   { name: "CLIENTE", uid: "customer" },
@@ -123,4 +131,5 @@ export {
   columnsRolesPermissions,
   columnsDebts,
   columnsBanners,
+  columnsBrands,
 };

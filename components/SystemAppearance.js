@@ -8,6 +8,8 @@ import { withSwal } from "react-sweetalert2";
 import Spinner from "./snnipers/Spinner";
 import { capitalize } from "@/utils/utils";
 import axios from "axios";
+import ModalBrands from "./modals/ModalBrands";
+import TableBrand from "./tables/TableBrand";
 
 const SystemAppearance = withSwal(({ swal }) => {
   const apiUrl = "/api/companies/general";
@@ -21,6 +23,7 @@ const SystemAppearance = withSwal(({ swal }) => {
   const company = general?.at(0);
   const companyId = company?._id;
 
+  //Informacion de los banners
   const apiUrlBanner = companyId
     ? `/api/companies/banners?companyId=${companyId}`
     : null;
@@ -33,6 +36,20 @@ const SystemAppearance = withSwal(({ swal }) => {
 
   const dataBanners = data?.banners;
 
+  //Informacion de las marcas
+  const apiUrlBrand = companyId
+    ? `/api/companies/brands?companyId=${companyId}`
+    : null;
+
+  const {
+    data: allBrands,
+    isLoading: isLoadingBrands,
+    mutate: mutateBrand,
+  } = useSWR(apiUrlBrand, fetcher);
+
+  const dataBrands = allBrands?.brands;
+
+  // Eliminar Banner
   async function handleDeleteBanner(banner) {
     const bannerId = banner?.bannerId;
 
@@ -80,11 +97,59 @@ const SystemAppearance = withSwal(({ swal }) => {
     }
   }
 
+   // Eliminar Marca
+   async function handleDeleteBrand(brand) {
+    const brandId = brand?.brandId;
+
+    try {
+      const result = await swal.fire({
+        title: "¿Estás seguro?",
+        text: "Esta acción eliminará la imagen de forma permanente.",
+        text: `¿Realmente desea eliminar la imagen: "${
+          banner?.name > 30
+            ? capitalize(banner?.name).substring(0, 30) + "..."
+            : capitalize(banner?.name)
+        }" de la base de datos? Esta acción no se puede deshacer.`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#fe0000",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+      });
+
+      if (result.isConfirmed) {
+        const { data } = await axios.delete("/api/companies/brands", {
+          data: { brandId, companyId },
+        });
+        swal.fire({
+          title: "Eliminado!",
+          text: data.message,
+          icon: "success",
+        });
+        mutateBrand();
+      }
+    } catch (error) {
+      console.error(
+        `Error eliminando la marca: ${capitalize(brand?.name)}. `,
+        error
+      );
+      swal.fire({
+        title: "Error",
+        text: `No se pudo eliminar la Marca: ${
+          brand?.name > 30
+            ? capitalize(brand?.name).substring(0, 30) + "..."
+            : capitalize(brand?.name)
+        }.`,
+        icon: "error",
+      });
+    }
+  }
+
   return (
     <section className="flex flex-col gap-4">
+      
       {/* INFORMACION DE LA EMPRESA */}
-
-      <div className="p-6 bg-white shadow-lg rounded-lg text-sm">
+      <section className="p-6 bg-white shadow-lg rounded-lg text-sm">
         <div className="flex items-center gap-3">
           <h4 className="text-xl font-semibold text-primary m-0 border-b-1 border-gray-200">
             Información de la empresa
@@ -164,10 +229,10 @@ const SystemAppearance = withSwal(({ swal }) => {
             </>
           )}
         </div>
-      </div>
+      </section>
 
       {/* BANNER DE LA TIENDA */}
-      <div className="p-6 bg-white shadow-lg rounded-lg text-sm">
+      <section className="p-6 bg-white shadow-lg rounded-lg text-sm">
         <div className="flex items-center justify-between">
           <h4 className="text-xl font-semibold text-primary m-0 pb-2 border-b-1 border-gray-200">
             Banner de la tienda
@@ -188,7 +253,33 @@ const SystemAppearance = withSwal(({ swal }) => {
             </section>
           )}
         </div>
-      </div>
+      </section>
+
+      {/* MARCAS DE LA TIENDA */}
+      <section className="p-6 bg-white shadow-lg rounded-lg text-sm">
+        <div className="flex items-center justify-between">
+          <h4 className="text-xl font-semibold text-primary m-0 pb-2 border-b-1 border-gray-200">
+            Marcas de la tienda
+          </h4>
+          <ModalBrands mutateBrand={mutateBrand} companyId={companyId} />
+        </div>
+        <div className="border-b-1 py-2 border-gray-200 flex flex-col md:justify-between md:flex-row gap-5">
+          {isLoadingBrands || !allBrands ? (
+            <Spinner className="pt-3 pb-3" />
+          ) : (
+            <section className="w-full md:px-4 lg:px-8">
+              <TableBrand
+                brands={dataBrands}
+                handleDeleteBrand={handleDeleteBrand}
+                companyId={companyId}
+                mutateBrand={mutateBrand}
+              />
+            </section>
+          )}
+        </div>
+      </section>
+
+
     </section>
   );
 });

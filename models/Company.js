@@ -34,6 +34,7 @@ const CompanySchema = new Schema(
     },
     website: { type: String },
     socialMedia: [{ type: Object }],
+    brands: [{ type: Object }],
     banners: [{ type: Object }],
   },
   {

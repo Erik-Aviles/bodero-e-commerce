@@ -9,25 +9,30 @@ import {
   Tooltip,
   Image,
 } from "@nextui-org/react";
-import { columnsBanners } from "@/resources/columnTables";
 import { DeleteRIcon } from "../Icons";
-import ModalBanners from "../modals/ModalBanners";
+import ModalBrands from "../modals/ModalBrands";
+import { columnsBrands } from "@/resources/columnTables";
 
-export default function TableBanner({
-  banners,
-  mutateBanner,
-  handleDeleteBanner,
+export default function TableBrand({
+  brands,
+  mutateBrand,
+  handleDeleteBrand,
   companyId,
 }) {
-  const renderCell = useCallback((banner, columnKey) => {
-    const cellValue = banner[columnKey];
+
+  const renderCell = useCallback((brand, columnKey) => {
+    const cellValue = brand[columnKey];
 
     switch (columnKey) {
       case "sort":
-        return <span>{1}</span>;
-      case "description":
         return (
-          <div className="min-w-[80px] max-w-[130px] capitalize">
+          <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
+            {""}
+          </span>
+        );
+      case "name":
+        return (
+          <div className="min-w-[80px] max-w-[130px] uppercase">
             {cellValue}
           </div>
         );
@@ -36,27 +41,29 @@ export default function TableBanner({
           <div className="min-w-[230px]">
             <Image
               radius="sm"
-              width={350}
-              height={200}
-              alt={banner?.description}
+              width={90}
+              height={90}
+              alt={brand?.name}
               src={cellValue}
             />
-             <span className="text-bold text-tiny text-default-400 whitespace-nowrap">{banner?.public_id}</span>
+            <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
+              {brand?.public_id}
+            </span>
           </div>
         );
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
-            <ModalBanners
-              banner={banner}
+            <ModalBrands
+              brand={brand}
               companyId={companyId}
-              mutateBanner={mutateBanner}
+              mutateBrand={mutateBrand}
             />
-            <Tooltip color="danger" content="Eliminar banner">
+            <Tooltip color="danger" content="Eliminar marca">
               <span className="text-lg text-danger cursor-pointer active:opacity-50">
                 <DeleteRIcon
                   className=" w-[22px] h-[22px]"
-                  onClick={() => handleDeleteBanner(banner)}
+                  onClick={() => handleDeleteBrand(brand)}
                 />
               </span>
             </Tooltip>
@@ -69,7 +76,7 @@ export default function TableBanner({
 
   return (
     <Table aria-label="Example table with custom cells">
-      <TableHeader columns={columnsBanners}>
+      <TableHeader columns={columnsBrands}>
         {(column) => (
           <TableColumn
             key={column.uid}
@@ -79,9 +86,9 @@ export default function TableBanner({
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={"Sin registro..."} items={banners}>
+      <TableBody emptyContent={"Sin registro..."} items={brands}>
         {(item) => (
-          <TableRow key={item.bannerId}>
+          <TableRow key={item.brandId}>
             {(columnKey) => (
               <TableCell>{renderCell(item, columnKey)}</TableCell>
             )}
