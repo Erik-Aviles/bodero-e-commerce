@@ -41,6 +41,7 @@ export default function TableBanner({
               alt={banner?.description}
               src={cellValue}
             />
+             <span className="text-bold text-tiny text-default-400 whitespace-nowrap">{banner?.public_id}</span>
           </div>
         );
       case "actions":

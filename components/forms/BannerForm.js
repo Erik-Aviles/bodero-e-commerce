@@ -217,7 +217,6 @@ const BannerForm = withSwal(
               {stateBanner?.image && (
                 <div className="relative group w-full h-[118.83px] flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
                   <img
-                    name="image"
                     src={stateBanner?.image}
                     alt={`Imagen de ${stateBanner?.description}`}
                     className="rounded-sm p-2"

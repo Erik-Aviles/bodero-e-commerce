@@ -62,6 +62,7 @@ const columnsOrdersList = [
 const columnsCategory = [
   { name: "ACTIONS", uid: "actions" },
   { name: "NOMBRE", uid: "name" },
+  { name: "Imagen", uid: "image" },
   { name: "FECHA", uid: "createdAt" },
   { name: "DESCRIPCION", uid: "description" },
 ];

@@ -9,7 +9,7 @@ const CategorySchema = new Schema(
       type: String,
       maxlength: [50, "La descripción debe tener como máximo 50 caracteres."],
     },
-    image: [{ type: String }],
+    image: { type: Object },
   },
   {
     timestamps: true,

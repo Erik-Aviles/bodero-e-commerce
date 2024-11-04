@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -8,7 +8,7 @@ import {
   TableCell,
   Tooltip,
   Input,
-  User,
+  Image,
 } from "@nextui-org/react";
 
 import BottomPaginationContent from "../BottomPaginationContent";
@@ -19,10 +19,18 @@ import { DeleteRIcon, SearchIcon } from "../Icons";
 import { capitalize } from "@/utils/utils";
 
 export default function TableCategory({ categories, deleteCaterory }) {
+  const inpCatRef = useRef(null); // Hook para mantener el ref del input
+  
   const [filterValue, setFilterValue] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(6);
 
   const [page, setPage] = useState(1);
+
+  const focusInput = () => {
+    if (inpCatRef.current) {
+      inpCatRef.current.focus(); // Enfocar el input cuando el modal se cierre
+    }
+  };
 
   const hasSearchFilter = Boolean(filterValue);
 
@@ -50,18 +58,27 @@ export default function TableCategory({ categories, deleteCaterory }) {
 
   const renderCell = useCallback((category, columnKey) => {
     const cellValue = category[columnKey];
+    console.log(category)
 
     switch (columnKey) {
       case "name":
         return (
-          <User
-            className="flex flex-row-reverse justify-between whitespace-nowrap min-w-[100px] "
-            avatarProps={{ radius: "lg", src: category?.image?.[0] }}
-            description={""}
-            name={capitalize(cellValue)}
-          >
+          <div className="min-w-[80px] max-w-[130px] capitalize">
             {capitalize(cellValue)}
-          </User>
+          </div>
+        );
+      case "image":
+        return (
+          <div className="">
+            <Image
+              radius="sm"
+              width={90}
+              height={90}
+              alt={category?.name}
+              src={cellValue?.link}
+            />
+            <span className="text-bold text-tiny text-default-400 whitespace-nowrap">{category?.image?.publicId}</span>
+          </div>
         );
       case "createdAt":
         return (
@@ -89,11 +106,11 @@ export default function TableCategory({ categories, deleteCaterory }) {
               <span className="text-lg text-error cursor-pointer active:opacity-50">
                 <DeleteRIcon
                   className=" w-[22px] h-[22px]"
-                  onClick={(e) => deleteCaterory(category)}
+                  onClick={() => deleteCaterory(category)}
                 />
               </span>
             </Tooltip>
-            <ModalCategories category={category} />
+            <ModalCategories category={category} focusInput={focusInput}/>
           </div>
         );
       default:
@@ -135,9 +152,11 @@ export default function TableCategory({ categories, deleteCaterory }) {
             <span className="text-default-400 text-small">
               Total, {categories.length} Categorias.
             </span>
-            <ModalCategories />
+            <ModalCategories focusInput={focusInput} />
           </div>
           <Input
+            ref={inpCatRef}
+            autoFocus
             isClearable
             className="w-full sm:max-w-[45%] order-1"
             placeholder="Buscar categorias"

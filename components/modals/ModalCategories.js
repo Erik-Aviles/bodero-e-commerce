@@ -1,15 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EdithIcon, PlusIcon } from "../Icons";
 import { Button, Tooltip } from "@nextui-org/react";
 import CategoryForm from "../forms/CategoryForm";
 import { capitalize } from "@/utils/utils";
 
-const ModalCategories = ({ category }) => {
+const ModalCategories = ({ category, focusInput }) => {
   const [showModal, setShowModal] = useState(false);
 
   const toggleModal = () => {
     setShowModal(!showModal);
+    if (showModal) {
+      focusInput(); 
+    }
   };
+
+  useEffect(() => {
+    if (!showModal && focusInput) {
+      focusInput(); 
+    }
+  }, [showModal, focusInput]);
 
   return (
     <div>
