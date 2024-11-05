@@ -7,16 +7,23 @@ export default async function handle(req, res) {
   const { method } = req;
   await moogoseConnect();
 
-  //Obtener la informacion dela empresa
+  //Obtener la informacion de la empresa
   if (method === "GET") {
     try {
       if (req.query?.id) {
-        const general = await Company.findOne({ _id: req.query.id }, "-banners");
+        const general = await Company.findOne(
+          { _id: req.query.id },
+          "-banners -brands -backgroundImageBrands"
+        );
         return res.json(general);
       } else {
-        const general = await Company.find({}, "-banners", {
-          sort: { _id: -1 },
-        });
+        const general = await Company.find(
+          {},
+          "-banners -brands -backgroundImageBrands",
+          {
+            sort: { _id: -1 },
+          }
+        );
         return res.status(200).json(general);
       }
     } catch (error) {

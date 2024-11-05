@@ -58,7 +58,6 @@ export default function TableCategory({ categories, deleteCaterory }) {
 
   const renderCell = useCallback((category, columnKey) => {
     const cellValue = category[columnKey];
-    console.log(category)
 
     switch (columnKey) {
       case "name":

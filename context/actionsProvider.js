@@ -34,6 +34,10 @@ export const ActionsProvider = ({ children }) => {
   const [opcInventory, setOpcInventory] = useState(false);
   const [opcBusiness, setOpcBusiness] = useState(false);
   const [opcAdmin, setOpcAdmin] = useState(false);
+  const [opcCompany, setOpcCompany] = useState(false);
+  const [opcBanner, setOpcBanner] = useState(false);
+  const [opcBrand, setOpcBrand] = useState(false);
+  const [opcBackground, setOpcBackground] = useState(false);
 
   // Datos Cuerpo Factura
   const [formulariosFactura, setFormulariosFactura] = useState([]);
@@ -71,6 +75,26 @@ export const ActionsProvider = ({ children }) => {
   const changeOpcBusiness = () => {
     setOpcBusiness(!opcBusiness);
     localStorage.setItem("opcBusiness", !opcBusiness);
+  };
+
+  const changeOpcCompany = () => {
+    setOpcCompany(!opcCompany);
+    localStorage.setItem("opcCompany", !opcCompany);
+  };
+
+  const changeOpcBanner = () => {
+    setOpcBanner(!opcBanner);
+    localStorage.setItem("opcBanner", !opcBanner);
+  };
+
+  const changeOpcBrand = () => {
+    setOpcBrand(!opcBrand);
+    localStorage.setItem("opcBrand", !opcBrand);
+  };
+
+  const changeOpcBackground = () => {
+    setOpcBackground(!opcBackground);
+    localStorage.setItem("opcBackground", !opcBackground);
   };
 
   const changeModalCategoria = () => {
@@ -162,6 +186,10 @@ export const ActionsProvider = ({ children }) => {
     setOpcInventory(JSON.parse(localStorage.getItem("opcInventory")) || false);
     setOpcBusiness(JSON.parse(localStorage.getItem("opcBusiness")) || false);
     setOpcAdmin(JSON.parse(localStorage.getItem("opcAdmin")) || false);
+    setOpcCompany(JSON.parse(localStorage.getItem("opcCompany")) || false);
+    setOpcBanner(JSON.parse(localStorage.getItem("opcBanner")) || false);
+    setOpcBackground(JSON.parse(localStorage.getItem("opcBackground")) || false);
+    setOpcBrand(JSON.parse(localStorage.getItem("opcBrand")) || false);
     setUsuario(JSON.parse(localStorage.getItem("user")) || []);
   }, []);
 
@@ -174,9 +202,17 @@ export const ActionsProvider = ({ children }) => {
         changeOpcInventory,
         changeOpcBusiness,
         changeOpcAdmin,
+        changeOpcCompany,
+        changeOpcBanner,
+        changeOpcBrand,
+        changeOpcBackground,
         opcInventory,
         opcBusiness,
         opcAdmin,
+        opcCompany,
+        opcBanner,
+        opcBrand,
+        opcBackground,
         changeModalCategoria,
         modalCategoria,
         setEditar,

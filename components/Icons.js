@@ -1,7 +1,7 @@
 import * as React from "react";
 
-export const DebtsIcon = ({ size, height, width, className, ...props }) => (
-    <svg
+export const AddIcon = ({ size, height, width, className, ...props }) => (
+<svg
     xmlns="http://www.w3.org/2000/svg"
     className={className}
     width={size || width || 24}
@@ -11,14 +11,42 @@ export const DebtsIcon = ({ size, height, width, className, ...props }) => (
     {...props}
   >
     <path
-      stroke="#9F9F9F"
+      stroke="#39bd02"
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={2}
-      d="M10 19H6.2c-1.12 0-1.68 0-2.108-.218a2 2 0 0 1-.874-.874C3 17.48 3 16.92 3 15.8V8.2c0-1.12 0-1.68.218-2.108a2 2 0 0 1 .874-.874C4.52 5 5.08 5 6.2 5h11.6c1.12 0 1.68 0 2.108.218a2 2 0 0 1 .874.874C21 6.52 21 7.08 21 8.2v.3m-12 1v-1m0 1h2m-2 0c-1.117 0-1.998.126-2 1.332-.002.9 0 1.168 2 1.168s2 .206 2 1.167c0 .722 0 1.333-2 1.333m0 1v-1m0 0H7m7-4.5h3m-3 10 2.025-.405c.177-.035.265-.053.347-.085a.994.994 0 0 0 .207-.111c.073-.05.136-.114.264-.242L21 15a1.414 1.414 0 1 0-2-2l-4.157 4.157a2.098 2.098 0 0 0-.242.264.994.994 0 0 0-.11.207c-.033.082-.05.17-.086.347L14 20Z"
+      d="M13 4H8.8c-1.68 0-2.52 0-3.162.327a3 3 0 0 0-1.311 1.311C4 6.28 4 7.12 4 8.8v6.4c0 1.68 0 2.52.327 3.162a3 3 0 0 0 1.311 1.311C6.28 20 7.12 20 8.8 20h6.4c1.68 0 2.52 0 3.162-.327a3 3 0 0 0 1.311-1.311C20 17.72 20 16.88 20 15.2V11"
+    />
+    <path
+      stroke="#39bd02"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="m4 16 4.293-4.293a1 1 0 0 1 1.414 0L13 15m0 0 2.793-2.793a1 1 0 0 1 1.414 0L20 15m-7 0 2.25 2.25M18.5 3v2.5m0 2.5V5.5m0 0H16m2.5 0H21"
     />
   </svg>
 );
+
+export const DebtsIcon = ({ size, height, width, className, ...props }) => (
+  <svg
+  xmlns="http://www.w3.org/2000/svg"
+  className={className}
+  width={size || width || 24}
+  height={size || height || 24}
+  fill="none"
+  viewBox="0 0 24 24"
+  {...props}
+>
+  <path
+    stroke="#9F9F9F"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={2}
+    d="M10 19H6.2c-1.12 0-1.68 0-2.108-.218a2 2 0 0 1-.874-.874C3 17.48 3 16.92 3 15.8V8.2c0-1.12 0-1.68.218-2.108a2 2 0 0 1 .874-.874C4.52 5 5.08 5 6.2 5h11.6c1.12 0 1.68 0 2.108.218a2 2 0 0 1 .874.874C21 6.52 21 7.08 21 8.2v.3m-12 1v-1m0 1h2m-2 0c-1.117 0-1.998.126-2 1.332-.002.9 0 1.168 2 1.168s2 .206 2 1.167c0 .722 0 1.333-2 1.333m0 1v-1m0 0H7m7-4.5h3m-3 10 2.025-.405c.177-.035.265-.053.347-.085a.994.994 0 0 0 .207-.111c.073-.05.136-.114.264-.242L21 15a1.414 1.414 0 1 0-2-2l-4.157 4.157a2.098 2.098 0 0 0-.242.264.994.994 0 0 0-.11.207c-.033.082-.05.17-.086.347L14 20Z"
+  />
+</svg>
+);
+
 export const LeftArrowIcon = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"

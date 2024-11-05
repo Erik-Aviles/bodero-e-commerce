@@ -11,7 +11,7 @@ import { Input } from "@nextui-org/react";
 import axios from "axios";
 
 const CategoryForm = withSwal(
-  ({swal, category, titulo, textSmall, toggleModal }) => {
+  ({ swal, category, titulo, textSmall, toggleModal }) => {
     const { isLoading, startLoading, finishtLoading } = useLoading();
     const { mutateCategories } = useCategories();
     const { showNotification } = useContext(NotificationContext);
@@ -23,8 +23,6 @@ const CategoryForm = withSwal(
       publicId: category?.image?.publicId || "",
     });
     const [isUploading, setIsUploading] = useState(false);
-
-    console.log(image);
 
     const resetCategoryForm = () => {
       setName("");
@@ -117,6 +115,7 @@ const CategoryForm = withSwal(
 
     //eliminar imagen
     const deleteImage = async (public_id) => {
+      startLoading();
       try {
         const result = await swal.fire({
           title: "¿Estás seguro?",
@@ -134,6 +133,7 @@ const CategoryForm = withSwal(
         });
 
         if (result.isConfirmed) {
+          setIsUploading(true);
           const response = await axios.delete("/api/deleteImageCloudinary", {
             data: { public_id },
           });
@@ -150,8 +150,10 @@ const CategoryForm = withSwal(
             icon: "success",
           });
         }
+        setIsUploading(false);
+        finishtLoading();
       } catch (error) {
-        console.error(`Error eliminando la imagen: ${publicId}. `, error);
+        console.error(`Error eliminando la imagen: ${public_id}. `, error);
         swal.fire({
           title: "Error",
           text: `No se pudo eliminar solo la imagen. Debe eliminar el Banner: ${
@@ -234,15 +236,17 @@ const CategoryForm = withSwal(
                   <Loader />
                 </div>
               ) : (
-                <label className="w-28 h-28 flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
-                  <UpLoadIcon />
-                  <span>Subir imagen</span>
-                  <input
-                    type="file"
-                    onChange={handleUpload}
-                    className="hidden"
-                  />
-                </label>
+                !image.link && (
+                  <label className="w-28 h-28 flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
+                    <UpLoadIcon />
+                    <span>Subir imagen</span>
+                    <input
+                      type="file"
+                      onChange={handleUpload}
+                      className="hidden"
+                    />
+                  </label>
+                )
               )}
             </div>
           </div>
@@ -250,8 +254,9 @@ const CategoryForm = withSwal(
             <button
               onClick={toggleModal}
               className="bg-secundary basis-1/2 hover:bg-secundary/60 text-white font-bold py-2 px-4"
+              disabled={isLoading}
             >
-              Cerrar
+              {isLoading ? "Esperar..." : "Cerrar"}
             </button>
             <button
               type="submit"

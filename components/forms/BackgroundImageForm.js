@@ -6,107 +6,115 @@ import useLoading from "@/hooks/useLoading";
 import { Loader } from "../snnipers/Loader";
 import { withSwal } from "react-sweetalert2";
 import { capitalize } from "@/utils/utils";
-import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
-const BannerForm = withSwal(
+const BackgroundImageForm = withSwal(
   ({
     swal,
-    banner,
     titulo,
     textSmall,
-    toggleModal,
     companyId,
-    mutateBanner,
+    backgroundImage,
+    mutateBackgroundImage,
+    toggleModal,
   }) => {
     const { isLoading, startLoading, finishtLoading } = useLoading();
     const { showNotification } = useContext(NotificationContext);
     const [isUploading, setIsUploading] = useState(false);
 
-    const [stateBanner, setStateBanner] = useState({
-      bannerId: banner?.bannerId || "",
-      description: banner?.description || "",
-      image: banner?.image || "",
-      public_id: banner?.public_id || "",
-    });
+    const [description, setDescription] = useState(
+      backgroundImage?.description || ""
+    );
+    const [image, setImage] = useState(backgroundImage?.image || "");
+    const [publicId, setPublicId] = useState(backgroundImage?.publicId || "");
 
-    //Agregar banner
-    async function handleSaveBanner(e) {
+    //Agregar imagen de fondo
+    async function handleSaveBackgroundImage(e) {
       e.preventDefault();
 
-      const bannerData = {
+      const newdata = {
         companyId,
-        stateBanner: {
-          ...stateBanner,
-          bannerId: uuidv4(), 
-        },
+        description,
+        publicId,
+        image,
       };
 
       try {
-        const { data } = await axios.post("/api/companies/banners", bannerData);
+        const { data } = await axios.post(
+          "/api/companies/background-image-brands",
+          newdata
+        );
 
         showNotification({
           open: true,
           msj: data?.message,
           status: "success",
         });
-        mutateBanner();
-        setStateBanner({ image: "", public_id: "", description: "" });
+        mutateBackgroundImage();
+        setImage("");
+        setDescription("");
+        setPublicId("");
         toggleModal();
       } catch (error) {
         showNotification({
           open: true,
           msj:
             error.response.data.message ||
-            "Ocurrió un error al guardar el banner.",
+            "Ocurrió un error al guardar la imagen.",
           status: "error",
         });
       }
     }
 
-    // Editar banner
-    async function handleEdithBanner(e) {
+    // Editar imagen de fondo
+    async function handleEdithBackgroundImage(e) {
       e.preventDefault();
-      const bannerData = {
+
+      // Validar los campos necesarios antes de hacer la solicitud
+      if (!companyId || !description || !image) {
+        showNotification({
+          open: true,
+          msj: "Todos los campos son obligatorios.",
+          status: "error",
+        });
+        return;
+      }
+
+      const newData = {
         companyId,
-        stateBanner,
-        bannerId: banner.bannerId,
+        description,
+        publicId,
+        image,
       };
 
       try {
-        const { data } = await axios.put("/api/companies/banners", bannerData);
+        const { data } = await axios.put(
+          "/api/companies/background-image-brands",
+          newData
+        );
 
         showNotification({
           open: true,
-          msj: `Banner: ${stateBanner.description}, ${data?.message}`,
+          msj: `La imagen: ${description}, ${data?.message}`,
           status: "success",
         });
-        mutateBanner();
-        setStateBanner({
-          image: "",
-          public_id: "",
-          description: "",
-          bannerId: "",
-        });
+        mutateBackgroundImage();
+        setImage("");
+        setDescription("");
+        setPublicId("");
         toggleModal();
       } catch (error) {
         showNotification({
           open: true,
           msj:
-            error.response.data.message ||
-            "Ocurrió un error al actualizar el banner.",
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            "Ocurrió un error al actualizar la imagen.",
           status: "error",
         });
       }
     }
-
-    const handleBannerChange = (e) => {
-      const { name, value } = e.target;
-      setStateBanner((prevBanner) => ({
-        ...prevBanner,
-        [name]: value,
-      }));
-    };
 
     // Subir imagen a CLOUDINARY
     const handleUpload = async (e) => {
@@ -119,15 +127,10 @@ const BannerForm = withSwal(
         data.append("file", files[0]);
 
         const res = await axios.post("/api/uploadcloudinary", data);
-
         // Actualiza stateBanner con el link de la primera imagen
-        setStateBanner((prevState) => ({
-          ...prevState,
-          image: res.data?.images[0].url, // URL de la imagen
-          public_id: res.data?.images[0].public_id, // Public ID para eliminarla
-        }));
+        setImage(res.data?.images[0].url);
+        setPublicId(res.data?.images[0].public_id);
       }
-
       setIsUploading(false);
       finishtLoading();
     };
@@ -140,9 +143,9 @@ const BannerForm = withSwal(
           title: "¿Estás seguro?",
           text: "Esta acción eliminará la imagen de forma permanente.",
           text: `¿Realmente desea eliminar la imagen: "${
-            stateBanner?.description > 30
-              ? capitalize(stateBanner?.description).substring(0, 30) + "..."
-              : capitalize(stateBanner?.description)
+            description > 30
+              ? capitalize(description).substring(0, 30) + "..."
+              : capitalize(description)
           }" de la base de datos? Esta acción no se puede deshacer.`,
           icon: "warning",
           showCancelButton: true,
@@ -157,11 +160,8 @@ const BannerForm = withSwal(
             data: { public_id },
           });
 
-          setStateBanner((prevState) => ({
-            ...prevState,
-            image: "",
-            public_id: "",
-          }));
+          setImage("");
+          setPublicId("");
 
           swal.fire({
             title: "Eliminado!",
@@ -175,10 +175,10 @@ const BannerForm = withSwal(
         console.error(`Error eliminando la imagen: ${public_id}. `, error);
         swal.fire({
           title: "Error",
-          text: `No se pudo eliminar solo la imagen. Debe eliminar el Banner: ${
-            stateBanner?.description > 30
-              ? capitalize(stateBanner?.description).substring(0, 30) + "..."
-              : capitalize(stateBanner?.description)
+          text: `No se pudo eliminar solo la imagen: ${
+            description > 30
+              ? capitalize(description).substring(0, 30) + "..."
+              : capitalize(description)
           } completo.`,
           icon: "error",
         });
@@ -188,13 +188,21 @@ const BannerForm = withSwal(
     return (
       <div className="relative w-full flex flex-col justify-center ">
         <header className="flex flex-row justify-between">
-          <h3 className="text-lg font-semibold">{titulo}</h3>
-          <ButtonClose onClick={toggleModal} />
+          <h3 className="text-md font-semibold">{titulo}</h3>
+          <ButtonClose
+            onClick={toggleModal}
+            disabled={!image}
+            className={!image ? "opacity-50 cursor-not-allowed" : ""}
+          />
         </header>
         <p className="text-primary text-xs pb-3">{textSmall}</p>
         <form
           className="flex flex-col gap-2"
-          onSubmit={!banner ? handleSaveBanner : handleEdithBanner}
+          onSubmit={
+            !backgroundImage
+              ? handleSaveBackgroundImage
+              : handleEdithBackgroundImage
+          }
         >
           <div className=" flex flex-col gap-2 w-full">
             <div className="bg-grayLight flex flex-col border-container w-full">
@@ -203,11 +211,11 @@ const BannerForm = withSwal(
                 maxLength={50}
                 name="description"
                 placeholder="Escribir breve descripción"
-                value={stateBanner?.description}
+                value={description}
                 className="min-h-[55px]"
-                onChange={handleBannerChange}
+                onChange={(e) => setDescription(e.target.value)}
               />
-              {stateBanner?.description.length === 50 ? (
+              {description.length === 50 ? (
                 <span className="pt-1 text-success text-[10px] ">
                   A llegado al limite de caracteres.
                 </span>
@@ -218,18 +226,15 @@ const BannerForm = withSwal(
 
             <div className="bg-grayLight flex flex-col border-container w-full">
               <label className="block my-1">Imagen (*)</label>
-              {stateBanner?.image && (
-                <div className="relative group w-full h-[118.83px] flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
+              {image && (
+                <div className="relative group w-full flex flex-col gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
                   <img
-                    src={stateBanner?.image}
-                    alt={`Imagen de ${stateBanner?.description}`}
-                    className="rounded-sm p-2"
+                    src={image}
+                    alt={`Imagen de ${description}`}
+                    className="object-cover rounded-sm p-2"
                   />
                   <div className="absolute top-2 right-2 cursor-pointer opacity-0  group-hover:opacity-100 ">
-                    <button
-                      type="button"
-                      onClick={() => deleteImage(stateBanner?.public_id)}
-                    >
+                    <button type="button" onClick={() => deleteImage(publicId)}>
                       <DeleteIcon className="w-6 h-6 text-red stroke-2 bg-white rounded-full" />
                     </button>
                   </div>
@@ -240,8 +245,8 @@ const BannerForm = withSwal(
                   <Loader />
                 </div>
               ) : (
-                !stateBanner?.image && (
-                  <label className="w-full h-[118.83px] flex flex-col m-0 gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
+                !image && (
+                  <label className="w-full h-[200px] flex flex-col m-0 gap-1 justify-center items-center cursor-pointer text-xs text-grayDark rounded-lg bg-gray-100 shadow-md">
                     <UpLoadIcon />
                     <span>Subir imagen</span>
                     <input
@@ -257,10 +262,15 @@ const BannerForm = withSwal(
           <div className="flex gap-1 mb-1">
             <button
               onClick={toggleModal}
-              className="bg-secundary basis-1/2 hover:bg-secundary/60 text-white font-bold py-2 px-4"
-              disabled={isLoading}
-              >
-                {isLoading ? "Esperar..." : "Cerrar"}
+              className={`bg-secundary basis-1/2 text-white font-bold py-2 px-4 
+              ${
+                !image
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-secundary/60"
+              }`}
+              disabled={isLoading || !image}
+            >
+              {isLoading ? "Esperar..." : "Cerrar"}
             </button>
             <button
               type="submit"
@@ -276,4 +286,4 @@ const BannerForm = withSwal(
   }
 );
 
-export default BannerForm;
+export default BackgroundImageForm;

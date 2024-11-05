@@ -84,7 +84,7 @@ export default async function handle(req, res) {
       }
 
       if (!stateBrand.image) {
-        return res.status(400).json({ message: "La imagen del banner es requerida." });
+        return res.status(400).json({ message: "La imagen de la marca es requerida." });
       }
 
       company.brands[brandIndex] = {
@@ -132,7 +132,7 @@ export default async function handle(req, res) {
       await company.save();
 
       return res.status(200).json({
-        message: "Marca eliminadA exitosamente.",
+        message: "Marca eliminada exitosamente.",
         brands: company.brands,
       });
     } catch (error) {

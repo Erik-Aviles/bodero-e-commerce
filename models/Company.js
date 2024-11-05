@@ -29,7 +29,10 @@ const CompanySchema = new Schema(
     mainlogo: {
       type: String,
     },
-    secondarylogo: {
+    backgroundImageBrands: {
+      type: Object,
+    },
+    bag: {
       type: String,
     },
     website: { type: String },

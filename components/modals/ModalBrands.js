@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button, Tooltip } from "@nextui-org/react";
-import { EdithIcon, PlusIcon } from "../Icons";
+import { Tooltip } from "@nextui-org/react";
+import { AddIcon, EdithIcon} from "../Icons";
 import { capitalize } from "@/utils/utils";
 import BrandsForm from "../forms/BrandsForm";
 
@@ -15,15 +15,13 @@ const ModalBrands = ({ brand, mutateBrand, companyId }) => {
     <div>
       <div>
         {!brand ? (
-          <section className="w-fit md:py-0">
-            <Button
-              onClick={toggleModal}
-              color="primary"
-              startContent={<PlusIcon />}
-            />
-          </section>
+        <Tooltip color="success" content="Agregar Marca">
+        <span className="text-lg cursor-pointer active:opacity-50">
+          <AddIcon className=" w-[22px] h-[22px]" onClick={toggleModal} />
+        </span>
+      </Tooltip>
         ) : (
-          <Tooltip color="primary" content="Editar">
+          <Tooltip color="primary" content="Editar Marca">
             <span className="text-lg text-primary cursor-pointer active:opacity-50">
               <EdithIcon className=" w-[22px] h-[22px]" onClick={toggleModal} />
             </span>

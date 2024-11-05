@@ -1,14 +1,15 @@
+import React from "react";
+import Head from "next/head";
+import axios from "axios";
 import TableCategory from "@/components/tables/TableCategory";
+import deleteImgCloudinary from "@/utils/deleteImgCloudinary";
 import Spinner from "@/components/snnipers/Spinner";
 import useCategories from "@/hooks/useCategories";
-import useDeleteItem from "@/hooks/useDeleteItem";
+import { capitalize } from "@/utils/utils";
 import { withSwal } from "react-sweetalert2";
 import Layout from "@/components/Layout";
-import Head from "next/head";
-import React from "react";
 
 const CategoriesPage = withSwal(({ swal }) => {
-  const deleteItem = useDeleteItem();
   const {
     categories,
     isErrorSCategories,
@@ -16,15 +17,54 @@ const CategoriesPage = withSwal(({ swal }) => {
     mutateCategories,
   } = useCategories();
 
-  const handleDeleteCategory = (item) => {
-    deleteItem({
-      swal,
-      getItems: mutateCategories,
-      item,
-      apiEndpoint: "categories",
-      itemNameKey: "name",
-    });
-  };
+  async function handleDeleteCategory(item) {
+    const name = item?.name;
+    const _id = item?._id;
+    const public_id = item?.image?.publicId;
+    try {
+      const result = await swal.fire({
+        title: "¿Estás seguro?",
+        text: "Esta acción eliminará la categoria de forma permanente.",
+        text: `¿Realmente desea eliminar categoria: "${
+          name > 30
+            ? capitalize(name).substring(0, 30) + "..."
+            : capitalize(name)
+        }" de la base de datos? Esta acción no se puede deshacer.`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#fe0000",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+      });
+
+      if (result.isConfirmed) {
+        await axios.delete(`/api/categories/full?_id=${_id}`);
+
+        await deleteImgCloudinary(public_id);
+
+        swal.fire({
+          title: "Eliminado!",
+          text: "Categoria eliminada exitosamente",
+          icon: "success",
+        });
+        await mutateCategories();
+      }
+    } catch (error) {
+      console.error(
+        `Error eliminando la Categoria: ${name}. `,
+        error
+      );
+      swal.fire({
+        title: "Error",
+        text: `No se pudo eliminar la Categoria: ${
+          name > 30
+            ? capitalize(name).substring(0, 30) + "..."
+            : capitalize(name)
+        }.`,
+        icon: "error",
+      });
+    }
+  }
 
   return (
     <>

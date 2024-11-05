@@ -12,6 +12,7 @@ const messages = {
     errorUpdatedCategory: "Error al modificar la categoria!",
     errorUpdatedOrderList: "Error al modificar el pedido!",
     errorUpdatedDebt: "Error al modificar la deuda!",
+    errorUpdatedImage: "Error al modificar la imagen!",
     identificationTooLong: "La cedula debe tener solo 10 dígitos!",
     errorUpdatedOrder: "Error al actualizar el pedido!",
     idNotValid: "Se requiere un ID válido!",
