@@ -59,7 +59,7 @@ export default function SystemPage() {
             </ul>
           </nav>
         </div>
-        <section className="py-5">
+        <section className="py-5 mx-auto lg:w-[80%]">
           {section === "roles-permissions" && <RoleAndPermissions />}
           {section === "system-appearance" && <SystemAppearance />}
           {section === "account" && <Acccount />}

@@ -206,7 +206,7 @@ const BackgroundImageForm = withSwal(
         >
           <div className=" flex flex-col gap-2 w-full">
             <div className="bg-grayLight flex flex-col border-container w-full">
-              <label className="block my-1">Descripción</label>
+              <label className="block my-1">Descripción (*)</label>
               <textarea
                 maxLength={50}
                 name="description"

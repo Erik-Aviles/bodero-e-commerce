@@ -27,6 +27,16 @@ const BrandsForm = withSwal(
     async function handleSaveBrand(e) {
       e.preventDefault();
 
+      // Validar los campos necesarios antes de hacer la solicitud
+      if (!companyId || !stateBrand.name || !stateBrand.image) {
+        showNotification({
+          open: true,
+          msj: "Todos los campos son obligatorios.",
+          status: "error",
+        });
+        return;
+      }
+
       const brandData = {
         companyId,
         stateBrand: {

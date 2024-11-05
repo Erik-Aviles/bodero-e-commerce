@@ -185,7 +185,11 @@ const SystemAppearance = withSwal(({ swal }) => {
   return (
     <section className="flex flex-col gap-2">
       {/* INFORMACION DE LA EMPRESA */}
-      <section className="p-5 bg-white shadow-md rounded-lg ">
+      <section
+        className={`p-5 bg-white shadow-lg rounded-lg transition-all duration-500 ${
+          opcCompany ? " bg-white/70 border-l-4 border-warning" : ""
+        }`}
+      >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <h4 className="text-sm md:text-lg font-semibold text-primary m-0 border-b-1 border-gray-200">
@@ -196,7 +200,7 @@ const SystemAppearance = withSwal(({ swal }) => {
 
           <Tooltip
             color="warning"
-            content={!opcCompany ? "Expandir" : "Extraer"}
+            content={!opcCompany ? "Expandir" : "Contraer"}
           >
             <span
               className="border-1 border-warning p-2 text-lg cursor-pointer active:opacity-50"
@@ -213,7 +217,7 @@ const SystemAppearance = withSwal(({ swal }) => {
         </div>
 
         {opcCompany && (
-          <div className="border-b-1 py-2 border-gray-200 flex flex-col md:justify-between md:flex-row gap-5 transition-transform duration-700">
+          <div className="border-b-1 py-2 border-gray-200 flex flex-col md:justify-between md:flex-row gap-5 transition-all duration-500">
             {isLoadingGeneral || !general ? (
               <Spinner className="pt-3 pb-3" />
             ) : (
@@ -289,7 +293,7 @@ const SystemAppearance = withSwal(({ swal }) => {
       </section>
 
       {/* BANNER DE LA TIENDA */}
-      <section className="p-5 bg-white shadow-lg rounded-lg ">
+      <section className={`p-5 bg-white shadow-lg rounded-lg transition-all duration-500 ${opcBanner ? ' bg-white/70 border-l-4 border-green-400' : ''}`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <h4 className="text-sm md:text-lg font-semibold text-primary m-0 border-b-1 border-gray-200">
@@ -299,7 +303,7 @@ const SystemAppearance = withSwal(({ swal }) => {
           </div>
           <Tooltip
             color="warning"
-            content={!opcBanner ? "Expandir" : "Extraer"}
+            content={!opcBanner ? "Expandir" : "Contraer"}
           >
             <span
               className="border-1 border-warning p-2 text-lg cursor-pointer active:opacity-50"
@@ -333,7 +337,7 @@ const SystemAppearance = withSwal(({ swal }) => {
       </section>
 
       {/* MARCAS DE LA TIENDA */}
-      <section className="p-5 bg-white shadow-lg rounded-lg ">
+      <section className={`p-5 bg-white shadow-lg rounded-lg transition-all duration-500 ${opcBrand ? ' bg-white/70 border-l-4 border-yellow' : ''}`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <h4 className="text-sm md:text-lg font-semibold text-primary m-0 border-b-1 border-gray-200">
@@ -341,10 +345,7 @@ const SystemAppearance = withSwal(({ swal }) => {
             </h4>
             <ModalBrands mutateBrand={mutateBrand} companyId={companyId} />
           </div>
-          <Tooltip
-            color="warning"
-            content={!opcBrand ? "Expandir" : "Extraer"}
-          >
+          <Tooltip color="warning" content={!opcBrand ? "Expandir" : "Contraer"}>
             <span
               className="border-1 border-warning p-2 text-lg cursor-pointer active:opacity-50"
               onClick={changeOpcBrand}
@@ -377,7 +378,7 @@ const SystemAppearance = withSwal(({ swal }) => {
       </section>
 
       {/* FONDO EN LAS MARCAS DE LA TIENDA */}
-      <section className="p-5 bg-white shadow-lg rounded-lg ">
+      <section className={`p-5 bg-white shadow-lg rounded-lg transition-all duration-500 ${opcBackground ? ' bg-white/70 border-l-4 border-blue-400' : ''}`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <h4 className="text-sm md:text-lg font-semibold text-primary m-0 border-b-1 border-gray-200">
@@ -391,7 +392,7 @@ const SystemAppearance = withSwal(({ swal }) => {
           </div>
           <Tooltip
             color="warning"
-            content={!opcBackground ? "Expandir" : "Extraer"}
+            content={!opcBackground ? "Expandir" : "Contraer"}
           >
             <span
               className="border-1 border-warning p-2 text-lg cursor-pointer active:opacity-50"
