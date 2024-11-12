@@ -116,7 +116,7 @@ export default function TableCustomer({ customers, deleteCustomer }) {
               {cellValue ? cellValue : "Sin cedula"}
             </p>
             <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
-              {customer?.email ? customer?.email : "Sin correo "}
+              {customer?.email ? customer?.email : "Sin correo"}
             </span>
           </div>
         );
@@ -124,11 +124,10 @@ export default function TableCustomer({ customers, deleteCustomer }) {
         return (
           <div className="flex flex-col">
             <p className="text-bold text-small whitespace-nowrap">
-              {cellValue}
-              {customer?.phone ? customer?.phone : "Sin teléfono"}
+              {cellValue ? cellValue : "Sin teléfono"}
             </p>
             <span className="text-bold text-tiny text-default-400">
-              {customer?.address ? customer?.address : "Sin dirección"}
+              {customer?.address ? capitalize(customer?.address) : "Sin dirección"}
             </span>
           </div>
         );
@@ -136,7 +135,7 @@ export default function TableCustomer({ customers, deleteCustomer }) {
         return (
           <div className="flex flex-col ">
             <p className="min-w-[250px] max-w-[280px] break-words text-bold text-small">
-              {cellValue ? cellValue : "Sin observaciones"}
+              {cellValue ? cellValue : "Sin observación"}
             </p>
           </div>
         );
