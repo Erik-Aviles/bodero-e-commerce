@@ -9,7 +9,7 @@ const CustomerSchema = new Schema(
       type: String,
     },
 
-    identifications: { type: String, trim: true, unique: true },
+    identifications: { type: String, trim: true },
     email: {
       type: String,
       trim: true,

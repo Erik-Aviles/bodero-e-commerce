@@ -41,25 +41,26 @@ export default async function handle(req, res) {
         observations,
       } = req.body;
 
-      //validar que esten todos los campos
+      //validar que este el campo requerido
       if (!name ) {
-        return res.status(400).json({ message: messages.error.needProps });
+        return res.status(400).json({ message: "El campo 'Nombre', es requerido.", });
       }
 
-      // Validar que "identifications" tenga al menos 10 dígitos
-      if (identifications.length > 10) {
-        return res.status(400).json({
-          message: messages.error.identificationTooLong,
-        });
-      }
+      // Validar que `identifications` tenga exactamente 10 dígitos, si está presente
+      if (identifications && identifications.trim() !== "") {
+        if (identifications.length !== 10) {
+          return res.status(400).json({
+            message: "El campo 'Cédula', debe tener exactamente 10 dígitos.",
+          });
+        }
 
-      const customerFind = await Customer.findOne({ identifications });
-
-      // validar si existe un cliente con la misma identificación en la base de datos
-      if (customerFind) {
-        res.status(400).json({
-          message: messages.error.customersAlreadyExist,
-        });
+        // Verificar duplicado solo si `identifications` tiene 10 dígitos
+        const existingCustomer = await Customer.findOne({ identifications });
+        if (existingCustomer) {
+          return res.status(400).json({
+            message: messages.error.customersAlreadyExist,
+          });
+        }
       }
 
       const newCustomer = await Customer.create({
