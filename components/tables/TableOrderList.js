@@ -67,94 +67,110 @@ export default function TableOrderList({
     return filteredItems.slice(start, end);
   }, [page, filteredItems, rowsPerPage]);
 
-  const renderCell = useCallback((order, columnKey) => {
-    const cellValue = order[columnKey];
+  const renderCell = useCallback(
+    (order, columnKey) => {
+      const cellValue = order[columnKey];
 
-    const filteredResult = customers?.filter((objeto) =>
-      objeto?._id.includes(order?.customer)
-    );
+      const filteredResult = customers?.filter((objeto) =>
+        objeto?._id.includes(order?.customer)
+      );
 
-    switch (columnKey) {
-      case "customer":
-        return (
-          <div className="flex flex-col ">
-            {filteredResult?.length > 0 ? (
-              <>
-                <p className="text-bold text-tiny text-primary-400 whitespace-nowrap">
-                  {`${justFirstWord(capitalize(filteredResult[0]?.name))} ` +
-                    `${justFirstWord(capitalize(filteredResult[0]?.lastname))}`}
+      switch (columnKey) {
+        case "customer":
+          return (
+            <div className="flex flex-col ">
+              {filteredResult?.length > 0 ? (
+                <>
+                  <p className="text-bold text-tiny text-primary-400 whitespace-nowrap">
+                    {`${justFirstWord(capitalize(filteredResult[0]?.name))} ` +
+                      `${justFirstWord(
+                        capitalize(filteredResult[0]?.lastname)
+                      )}`}
+                  </p>
+                  <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
+                    {filteredResult[0]?.phone
+                      ? `Cel: ${filteredResult[0].phone}`
+                      : "Sin teléfono"}
+                  </span>
+                  <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
+                    {filteredResult[0]?.identifications
+                      ? `ID: ${capitalize(filteredResult[0]?.identifications)}`
+                      : "Sin cedula"}
+                  </span>
+                  <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
+                    <span className="text-bold text-tiny text-default-400"></span>
+                    {filteredResult[0]?.address
+                      ? `Dir: ${capitalize(filteredResult[0]?.address)}`
+                      : "Sin dirección"}
+                  </span>
+                </>
+              ) : (
+                <p className=" break-words text-error text-bold text-tiny capitalize">
+                  {"Cliente"}
                 </p>
-                <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
-                  {filteredResult[0]?.identifications
-                    ? filteredResult[0]?.identifications
-                    : "Sin cedula"}
-                </span>
-              </>
-            ) : (
-              <p className=" break-words text-error text-bold text-tiny capitalize">
-                {"Cliente"}
-              </p>
-            )}
-          </div>
-        );
-
-      case "articulo":
-        return (
-          <div className="flex flex-col min-w-[150px] max-w-[315px]">
-            <p className=" break-words text-bold text-tiny capitalize">
-              {cellValue}
-            </p>
-          </div>
-        );
-      case "orderEntryDate":
-        return (
-          <div className="flex flex-col">
-            <p className=" break-words text-bold text-tiny whitespace-nowrap">
-              {new Date(order?.orderEntryDate).toLocaleString(
-                ("es-ES", { timeZone: "America/Guayaquil" })
               )}
-            </p>
-          </div>
-        );
-      case "delivered":
-        return (
-          <div className="flex flex-col gap-1">
-            {cellValue === true && (
-              <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
-                {new Date(order?.orderDeliveryDate).toLocaleString(
+            </div>
+          );
+
+        case "articulo":
+          return (
+            <div className="flex flex-col min-w-[150px] max-w-[315px]">
+              <p className=" break-words text-bold text-tiny capitalize">
+                {cellValue}
+              </p>
+            </div>
+          );
+        case "orderEntryDate":
+          return (
+            <div className="flex flex-col">
+              <p className=" break-words text-bold text-tiny whitespace-nowrap">
+                {new Date(order?.orderEntryDate).toLocaleString(
                   ("es-ES", { timeZone: "America/Guayaquil" })
                 )}
-              </span>
-            )}
-            <Chip
-              className={`text-tiny cursor-pointer ${statusColorMap[cellValue]}`}
-              startContent={statusSVGMap[cellValue]}
-              variant="bordered"
-              isDisabled={cellValue}
-              onClick={() => verifyOrderDelivery(order?._id)}
-            >
-              {cellValue === false ? "Pendiente" : "Entregado"}
-            </Chip>
-          </div>
-        );
-      case "actions":
-        return (
-          <div className="flex items-center gap-3 ">
-            <ModalOrderListProduct order={order} />
-            <Tooltip className="text-error" content="Eliminar">
-              <span className="text-lg text-error cursor-pointer active:opacity-50">
-                <DeleteRIcon
-                  className=" w-[22px] h-[22px]"
-                  onClick={(e) => deleteOrder(order)}
-                />
-              </span>
-            </Tooltip>
-          </div>
-        );
-      default:
-        return cellValue;
-    }
-  }, []);
+              </p>
+            </div>
+          );
+        case "delivered":
+          return (
+            <div className="flex flex-col gap-1">
+              {cellValue === true && (
+                <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
+                  {new Date(order?.orderDeliveryDate).toLocaleString(
+                    ("es-ES", { timeZone: "America/Guayaquil" })
+                  )}
+                </span>
+              )}
+              <Chip
+                className={`text-tiny cursor-pointer ${statusColorMap[cellValue]}`}
+                startContent={statusSVGMap[cellValue]}
+                variant="bordered"
+                isDisabled={cellValue}
+                onClick={() => verifyOrderDelivery(order?._id)}
+              >
+                {cellValue === false ? "Pendiente" : "Entregado"}
+              </Chip>
+            </div>
+          );
+        case "actions":
+          return (
+            <div className="flex items-center gap-3 ">
+              <ModalOrderListProduct order={order} />
+              <Tooltip className="text-error" content="Eliminar">
+                <span className="text-lg text-error cursor-pointer active:opacity-50">
+                  <DeleteRIcon
+                    className=" w-[22px] h-[22px]"
+                    onClick={(e) => deleteOrder(order)}
+                  />
+                </span>
+              </Tooltip>
+            </div>
+          );
+        default:
+          return cellValue;
+      }
+    },
+    [customers]
+  );
 
   //siguiente
   const onNextPage = useCallback(() => {

@@ -149,19 +149,19 @@ const OrderListForm = ({ order, titulo, textSmall, toggleModal }) => {
                 isRequired={true}
                 aria-label="Seleccion de clientes"
                 label="Clientes"
-                defaultItems={customers?.sort((a, b) =>
-                  a.name.localeCompare(b.name)
-                )}
+                defaultItems={customers}
                 selectedKey={customer}
                 onSelectionChange={setCustomer}
               >
                 {(item) => (
                   <AutocompleteItem key={item._id}>
                     {`${justFirstWord(capitalize(item.name))} ` +
-                      ` ${justFirstWord(capitalize(item.lastname))} ` +
+                      `${justFirstWord(capitalize(item.lastname))} ` +
+                      (item?.phone ? `- ${item.phone}` : "") +
+                      (item?.address ? ` - ${capitalize(item.address)}` : "") +
                       (item?.identifications
-                        ? `- ${item?.identifications}`
-                        : "- Sin cedula")}
+                        ? ` - ${item.identifications}`
+                        : "")}
                   </AutocompleteItem>
                 )}
               </Autocomplete>
