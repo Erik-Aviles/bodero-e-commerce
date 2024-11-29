@@ -1,3 +1,10 @@
+const columnsSalesHistoryProdutc = [
+  { name: "CLIENTE", uid: "customer" },
+  { name: "FECHA", uid: "updatedAt" },
+  { name: "CANTIDAD", uid: "quantity" },
+  { name: "PRECIO VENTA", uid: "price" },
+  { name: "NUMERO DE ORDEN", uid: "order" },
+];
 const columnsBrands = [
   { name: "ORDEN", uid: "sort" },
   { name: "NOMBRE", uid: "name" },
@@ -132,4 +139,5 @@ export {
   columnsDebts,
   columnsBanners,
   columnsBrands,
+  columnsSalesHistoryProdutc,
 };

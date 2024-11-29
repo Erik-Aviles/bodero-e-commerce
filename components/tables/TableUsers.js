@@ -137,22 +137,22 @@ export default function TableUser({ users, deleteUser }) {
   const topContent = useMemo(() => {
     return (
       <div className=" flex flex-col gap-4">
-        <div className="flex flex-col sm:flex-row justify-between gap-3 items-end">
-          <div className=" flex items-end gap-4">
-            <span className="text-default-400 text-small">
-              Total, {users.length} Usuarios.
-            </span>
+        <div className="flex flex-col gap-4 pt-2">
+          <div className="flex flex-col-reverse md:flex-row gap-2 md:justify-between lg:items-center">
+            <Input
+              isClearable
+              className="w-full sm:max-w-[45%]"
+              placeholder="Buscar nombre"
+              startContent={<SearchIcon className="mr-1" />}
+              value={filterValue}
+              onClear={() => onClear()}
+              onValueChange={onSearchChange}
+            />
             <ModalUsers />
           </div>
-          <Input
-            isClearable
-            className="w-full sm:max-w-[45%] order-1"
-            placeholder="Buscar nombre"
-            startContent={<SearchIcon className="mr-1" />}
-            value={filterValue}
-            onClear={() => onClear()}
-            onValueChange={onSearchChange}
-          />
+          <span className="text-default-400 text-tiny text-end">
+            Total, {users.length} Usuarios.
+          </span>
         </div>
       </div>
     );
@@ -171,7 +171,7 @@ export default function TableUser({ users, deleteUser }) {
       }
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 sm:h-[calc(100vh-300px)] scroll",
+        wrapper: "-z-1 sm:h-[calc(100vh-290px)] scroll",
         th: "text-warning uppercase",
       }}
       topContent={topContent}

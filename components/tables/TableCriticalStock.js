@@ -327,7 +327,7 @@ export default function TableCriticalStock({ products }) {
       }
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 sm:h-[calc(100vh-300px)] sm:overflow-auto scroll",
+        wrapper: "-z-1 sm:h-[calc(100vh-280px)] sm:overflow-auto scroll",
         th: "text-warning uppercase",
       }}
       sortDescriptor={sortDescriptor}

@@ -183,7 +183,7 @@ const Nav = () => {
                           .filter(
                             ({ path }) =>
                               path === "/business/orderslist" ||
-                              path === "/business/orders" ||
+                              path === "/business/sales" ||
                               path === "/business/debts"
                           )
                           .map(({ id, route, path, icon }) => (
@@ -261,7 +261,7 @@ const Nav = () => {
                 path !== "/inventory/critical-stock" &&
                 path !== "/inventory/bar-code" &&
                 path !== "/business/orderslist" &&
-                path !== "/business/orders" &&
+                path !== "/business/sales" &&
                 path !== "/business/debts" &&
                 path !== "/admin/users" &&
                 path !== "/admin/customers" &&

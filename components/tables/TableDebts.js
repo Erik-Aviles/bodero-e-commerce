@@ -207,23 +207,25 @@ export default function TableDebts({ debts, deleteDebts, handleStatusDebt }) {
                   })}
                 </span>
               )}
-              <button
-                className={`max-w-fit py-1 px-2 flex items-center gap-1 capitalize rounded-2xl text-tiny border ${
-                  cellValue === "pagado"
-                    ? "border-success text-success cursor-default"
-                    : cellValue === "avanzado"
-                    ? "border-sky-500 text-sky-500 cursor-pointer"
-                    : cellValue === "bajo" || cellValue === "media"
-                    ? "border-warning text-warning cursor-pointer"
-                    : cellValue === "critico" || cellValue === "pendiente"
-                    ? "border-error text-error cursor-pointer"
-                    : "border-default-500 text-default-500 cursor-pointer"
-                }`}
-                disabled={cellValue === "pagado"}
-                onClick={() => handleStatusDebt(debt)}
-              >
-                {cellValue}
-              </button>
+              <Tooltip className="text-success" content={cellValue !== "pagado" && "Pago total"}>
+                <button
+                  className={`max-w-fit py-1 px-2 flex items-center gap-1 capitalize rounded-2xl text-tiny border ${
+                    cellValue === "pagado"
+                      ? "border-success text-success cursor-default"
+                      : cellValue === "avanzado"
+                      ? "border-sky-500 text-sky-500 cursor-pointer"
+                      : cellValue === "bajo" || cellValue === "media"
+                      ? "border-warning text-warning cursor-pointer"
+                      : cellValue === "critico" || cellValue === "pendiente"
+                      ? "border-error text-error cursor-pointer"
+                      : "border-default-500 text-default-500 cursor-pointer"
+                  }`}
+                  disabled={cellValue === "pagado"}
+                  onClick={() => handleStatusDebt(debt)}
+                >
+                  {cellValue}
+                </button>
+              </Tooltip>
             </div>
           );
         case "actions":
@@ -367,7 +369,7 @@ export default function TableDebts({ debts, deleteDebts, handleStatusDebt }) {
       }
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 sm:h-[calc(100vh-315px)] sm:overflow-auto scroll",
+        wrapper: "-z-1 sm:h-[calc(100vh-300px)] sm:overflow-auto scroll",
         th: "text-warning uppercase",
       }}
       topContent={topContent}

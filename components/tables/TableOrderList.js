@@ -140,15 +140,17 @@ export default function TableOrderList({
                   )}
                 </span>
               )}
-              <Chip
-                className={`text-tiny cursor-pointer ${statusColorMap[cellValue]}`}
-                startContent={statusSVGMap[cellValue]}
-                variant="bordered"
-                isDisabled={cellValue}
-                onClick={() => verifyOrderDelivery(order?._id)}
-              >
-                {cellValue === false ? "Pendiente" : "Entregado"}
-              </Chip>
+              <Tooltip className="text-success" content="Confirmar">
+                <Chip
+                  className={`text-tiny cursor-pointer ${statusColorMap[cellValue]}`}
+                  startContent={statusSVGMap[cellValue]}
+                  variant="bordered"
+                  isDisabled={cellValue}
+                  onClick={() => verifyOrderDelivery(order?._id)}
+                >
+                  {cellValue === false ? "Pendiente" : "Entregado"}
+                </Chip>
+              </Tooltip>
             </div>
           );
         case "actions":
@@ -200,23 +202,24 @@ export default function TableOrderList({
 
   const topContent = useMemo(() => {
     return (
-      <div className=" flex flex-col gap-4">
-        <div className="flex justify-between items-center">
-          <span className="text-default-400 text-small">
-            Total, {orders.length} Ordenes.
-          </span>
-          <ModalOrderListProduct />
+      <div className="flex flex-col gap-4 pt-2">
+        <div className="flex flex-col-reverse md:flex-row gap-2 md:justify-between lg:items-center">
+          <Input
+            isClearable
+            className="w-full sm:max-w-[45%]"
+            placeholder="Búsqueda por nombre o cedula..."
+            startContent={<SearchIcon className="mr-1" />}
+            value={filterValue}
+            onClear={() => onClear()}
+            onValueChange={onSearchChange}
+          />
+          <div className="flex justify-end">
+            <ModalOrderListProduct />
+          </div>
         </div>
-
-        <Input
-          isClearable
-          className="w-full sm:max-w-[45%] order-1"
-          placeholder="Búsqueda por nombre o cedula..."
-          startContent={<SearchIcon className="mr-1" />}
-          value={filterValue}
-          onClear={() => onClear()}
-          onValueChange={onSearchChange}
-        />
+        <span className="text-default-400 text-tiny text-end">
+          Total, {orders.length} Ordenes.
+        </span>
       </div>
     );
   }, [filterValue, orders.length, onSearchChange, hasSearchFilter]);
@@ -234,7 +237,7 @@ export default function TableOrderList({
       }
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 sm:h-[calc(100vh-315px)] sm:overflow-auto scroll",
+        wrapper: "-z-1 sm:h-[calc(100vh-290px)] sm:overflow-auto scroll",
         th: "text-warning uppercase",
       }}
       topContent={topContent}

@@ -20,7 +20,7 @@ import { capitalize } from "@/utils/utils";
 
 export default function TableCategory({ categories, deleteCaterory }) {
   const inpCatRef = useRef(null); // Hook para mantener el ref del input
-  
+
   const [filterValue, setFilterValue] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(6);
 
@@ -76,7 +76,9 @@ export default function TableCategory({ categories, deleteCaterory }) {
               alt={category?.name}
               src={cellValue?.link}
             />
-            <span className="text-bold text-tiny text-default-400 whitespace-nowrap">{category?.image?.publicId}</span>
+            <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
+              {category?.image?.publicId}
+            </span>
           </div>
         );
       case "createdAt":
@@ -109,7 +111,7 @@ export default function TableCategory({ categories, deleteCaterory }) {
                 />
               </span>
             </Tooltip>
-            <ModalCategories category={category} focusInput={focusInput}/>
+            <ModalCategories category={category} focusInput={focusInput} />
           </div>
         );
       default:
@@ -146,24 +148,24 @@ export default function TableCategory({ categories, deleteCaterory }) {
   const topContent = useMemo(() => {
     return (
       <div className=" flex flex-col gap-4">
-        <div className="flex flex-col sm:flex-row justify-between gap-3 items-end">
-          <div className=" flex items-end gap-4">
-            <span className="text-default-400 text-small">
-              Total, {categories.length} Categorias.
-            </span>
-            <ModalCategories focusInput={focusInput} />
+        <div className="flex flex-col gap-4 pt-2">
+          <div className="flex flex-col-reverse md:flex-row gap-2 md:justify-between lg:items-center">
+            <Input
+              ref={inpCatRef}
+              autoFocus
+              isClearable
+              className="w-full sm:max-w-[45%]"
+              placeholder="Buscar categorias"
+              startContent={<SearchIcon className="mr-1" />}
+              value={filterValue}
+              onClear={() => onClear()}
+              onValueChange={onSearchChange}
+            />
+            <div className="flex justify-end"><ModalCategories focusInput={focusInput} /></div>
           </div>
-          <Input
-            ref={inpCatRef}
-            autoFocus
-            isClearable
-            className="w-full sm:max-w-[45%] order-1"
-            placeholder="Buscar categorias"
-            startContent={<SearchIcon className="mr-1" />}
-            value={filterValue}
-            onClear={() => onClear()}
-            onValueChange={onSearchChange}
-          />
+          <span className="text-default-400 text-tiny text-end">
+            Total, {categories.length} Categorias.
+          </span>
         </div>
       </div>
     );
@@ -182,7 +184,7 @@ export default function TableCategory({ categories, deleteCaterory }) {
       }
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 sm:h-[calc(100vh-250px)] sm:overflow-auto scroll",
+        wrapper: "-z-1 sm:h-[calc(100vh-290px)] sm:overflow-auto scroll",
         th: "text-warning uppercase",
       }}
       topContent={topContent}

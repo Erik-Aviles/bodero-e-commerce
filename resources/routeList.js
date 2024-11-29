@@ -56,7 +56,7 @@ export const routeList = [
     path: "/business/orderslist",
     icon: <OrderListIcon />,
   },
-  { id: "3b", route: "Ventas", path: "/business/orders", icon: <OrderIcon /> },
+  { id: "3b", route: "Ventas", path: "/business/sales", icon: <OrderIcon /> },
   { id: "3c", route: "Cobranzas", path: "/business/debts", icon: <DebtsIcon /> },
   {
     id: "4",

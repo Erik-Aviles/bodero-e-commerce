@@ -413,7 +413,7 @@ export default function TableProduct({ products, deleteProduct }) {
 
   const topContent = useMemo(() => {
     return (
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 pt-2">
         <div className="flex flex-col gap-2 sm:flex-row justify-between items-end">
           <Input
             ref={inputRef}
@@ -513,7 +513,7 @@ export default function TableProduct({ products, deleteProduct }) {
       }
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 sm:h-[calc(100vh-300px)] sm:overflow-auto scroll",
+        wrapper: "-z-1 sm:h-[calc(100vh-310px)] sm:overflow-auto scroll",
         th: "text-warning uppercase",
         td: "outline-none",
       }}

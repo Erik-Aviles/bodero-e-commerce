@@ -39,7 +39,7 @@ export const dashList = [
   {
     id: "4",
     title: "ventas",
-    href: "/business/orders",
+    href: "/business/sales",
     alt: "Cajita de ventas",
     src: orderImage,
   },

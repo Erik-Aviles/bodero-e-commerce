@@ -29,7 +29,6 @@ const BarCodeForm = ({
       <div className="relative ">
         <form className="flex flex-col-reverse md:flex-row gap-3 bg-white items-end border-container mt-3">
           <div className="w-full basis-1/2">
-            <label className="text-small block mb-2">Nombre del producto</label>
             <Input
               isClearable={query}
               value={query}

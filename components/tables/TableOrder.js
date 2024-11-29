@@ -110,15 +110,17 @@ export default function TableOrder({
           );
         case "paid":
           return (
-            <Chip
-              className={`text-tiny capitalize cursor-pointer ${statusColorMap[cellValue]}`}
-              startContent={statusSVGMap[cellValue]}
-              variant="bordered"
-              isDisabled={cellValue}
-              onClick={() => reduceQuantityProducts(order)}
-            >
-              {cellValue === false ? "Pendiente" : "Confirmado"}
-            </Chip>
+            <Tooltip className="text-success" content="Confirmar">
+              <Chip
+                className={`text-tiny capitalize cursor-pointer ${statusColorMap[cellValue]}`}
+                startContent={statusSVGMap[cellValue]}
+                variant="bordered"
+                isDisabled={cellValue}
+                onClick={() => reduceQuantityProducts(order)}
+              >
+                {cellValue === false ? "Pendiente" : "Confirmado"}
+              </Chip>
+            </Tooltip>
           );
         case "actions":
           return (
@@ -128,7 +130,7 @@ export default function TableOrder({
                 <span className="text-lg text-error cursor-pointer active:opacity-50">
                   <DeleteRIcon
                     className=" w-[22px] h-[22px]"
-                    onClick={(e) => deleteOrder(order)}
+                    onClick={() => deleteOrder(order)}
                   />
                 </span>
               </Tooltip>
@@ -169,12 +171,11 @@ export default function TableOrder({
 
   const topContent = useMemo(() => {
     return (
-      <div className=" flex flex-col gap-4">
-        <div className="flex justify-between items-center">
-          <span className="text-default-400 text-small">
-            Total, {orders.length} Ordenes.
-          </span>
-          {/*  <Tooltip className="text-primary-400" content="Resfrescar">
+      <div className="flex justify-end text-tiny">
+        <span className="text-default-400 ">
+          Total, {orders.length} Ordenes.
+        </span>
+        {/*  <Tooltip className="text-primary-400" content="Resfrescar">
             <Button
               className={
                 "bg-transparent border border-primary-400 text-primary-400"
@@ -184,9 +185,7 @@ export default function TableOrder({
             >
               <RefreshIcon className=" w-[25px] h-[25px] " />
             </Button>
-          </Tooltip> */}
-        </div>
-        {/*   <div className="flex flex-col sm:flex-row justify-between gap-3 items-end">
+          </Tooltip>    <div className="flex flex-col sm:flex-row justify-between gap-3 items-end">
           <div className="flex gap-3 ">
        <Input
             isClearable
@@ -204,7 +203,7 @@ export default function TableOrder({
 
   return (
     <Table
-      aria-label="Es una tabla de ventas"
+      aria-label="Tabla de Ordenes"
       isHeaderSticky
       bottomContent={
         items.length > 0 ? (
@@ -215,8 +214,9 @@ export default function TableOrder({
       }
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 sm:h-[calc(100vh-225px)] scroll",
+        wrapper: "-z-1 sm:h-[calc(100vh-340px)] scroll",
         th: "text-warning uppercase",
+        td: "text-tiny",
       }}
       topContent={topContent}
       topContentPlacement="outside"

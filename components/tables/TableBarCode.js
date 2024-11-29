@@ -127,7 +127,7 @@ export default function TableBarCode({ products }) {
       }
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "-z-1 sm:h-[calc(100vh-350px)] sm:overflow-auto scroll",
+        wrapper: "-z-1 sm:h-[calc(100vh-310px)] sm:overflow-auto scroll",
         th: "text-warning uppercase",
         td: "border-b border-warning",
       }}

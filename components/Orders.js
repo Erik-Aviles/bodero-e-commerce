@@ -12,7 +12,7 @@ import Head from "next/head";
 import axios from "axios";
 import useSWR from "swr";
 
-const OrdersPage = withSwal(({ swal }) => {
+const Orders = withSwal(({ swal }) => {
   const { orders, isErrorOrders, isLoadingOrders, mutateOrders } = useOrder();
   const { showNotification } = useContext(NotificationContext);
   const { mutateProducts } = useProducts();
@@ -176,37 +176,18 @@ const OrdersPage = withSwal(({ swal }) => {
 
   return (
     <>
-      <Head>
-        <title>Panel | Ordenes</title>
-      </Head>
-      <Layout>
-        <h3>Panel de ordenes</h3>
-
-        {isLoadingOrders || !orders ? (
-          <Spinner />
-        ) : (
-          <section className="w-full md:px-4 lg:px-8">
-            <TableOrder
-              refreshOrders={refreshOrders}
-              reduceQuantityProducts={reduceQuantityProducts}
-              deleteOrder={handleDeleteOrder}
-              downloadPdf={downloadPdf}
-              orders={orders}
-            />
-          </section>
-        )}
-      </Layout>
+      {isLoadingOrders || !orders ? (
+        <Spinner className="pt-3 pb-3" />
+      ) : (
+        <TableOrder
+          refreshOrders={refreshOrders}
+          reduceQuantityProducts={reduceQuantityProducts}
+          deleteOrder={handleDeleteOrder}
+          downloadPdf={downloadPdf}
+          orders={orders}
+        />
+      )}
     </>
   );
 });
-export default OrdersPage;
-
-/* if (product) {
-  const newstock = product.quantity - item.quantity;
-  return {
-    quantity: newstock,
-    quantityUpdated: Date.now(),
-    _id: product._id,
-    title: product.title,
-  };
-} */
+export default Orders;
