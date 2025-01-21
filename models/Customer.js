@@ -1,6 +1,5 @@
-// const { Schema, model, models } = require("mongoose");
-
-import mongoose, { Schema, model, models } from "mongoose";
+import { Schema, model, models } from "mongoose";
+import { OrderSchema } from "./Order";
 
 const CustomerSchema = new Schema(
   {
@@ -8,22 +7,25 @@ const CustomerSchema = new Schema(
     lastname: {
       type: String,
     },
-
-    identifications: { type: String, trim: true },
+    idDocument: { type: String, trim: true },
     email: {
+      type: String,
+      trim: true,
+    },
+    phone: {
       type: String,
       trim: true,
     },
     address: {
       type: String,
     },
-    phone: {
+    typeclient: {
       type: String,
-      trim: true,
+      default: "locale",
     },
     myVehicles_list: { type: Object, ref: "Vehicles" },
     myProductOrder_list: { type: Object, ref: "OrdersList" },
-    myShopping_list: [{ type: Object }],
+    orders: [OrderSchema],
     observations: {
       type: String,
       maxlength: [80, "La observación debe tener como máximo 80 caracteres."],

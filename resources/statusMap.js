@@ -39,3 +39,11 @@ export const statusOptionsDebts = [
   { name: "avanzado", uid: "avanzado" },
   { name: "pagado", uid: "pagado" },
 ];
+
+export const statusOrder = {
+  delivered: "text-success",
+  sending: "text-purple-500",
+  processing: "text-blue-500",
+  pending: "text-warning",
+  canceled: "text-error",
+};

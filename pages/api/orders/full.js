@@ -13,14 +13,62 @@ export default async function handle(req, res) {
     } else {
       try {
         await moogoseConnect();
-        const order = await Order.find({}, null, {
-          sort: { _id: -1 },
-        });
-        return res.status(200).json(order);
+        const orders = await Order.aggregate([
+          {
+            $lookup: {
+              from: "customers", // Nombre de la colección de clientes
+              localField: "customerId", // Campo en la colección de órdenes que conecta con el cliente
+              foreignField: "_id", // Campo en la colección de clientes (debe ser ObjectId)
+              as: "customer", // Alias para el cliente relacionado
+            },
+          },
+          {
+            $unwind: {
+              path: "$customer",
+              preserveNullAndEmptyArrays: true, // Para incluir órdenes sin cliente relacionado
+            },
+          },
+          {
+            $sort: {
+              createdAt: -1, // Orden descendente por fecha de creación
+            },
+          },
+          {
+            $project: {
+              city: 1,
+              country: 1,
+              createdAt: 1,
+              email: 1,
+              idDocument: 1,
+              lastname: 1,
+              line_items: 1,
+              name: 1,
+              orderNumber: 1,
+              paid: 1,
+              phone: 1,
+              postal: 1,
+              province: 1,
+              status: 1,
+              streetAddress: 1,
+              updatedAt: 1,
+              customerId: 1,
+              _id: 1,
+              // Información del cliente relacionada
+              customerName: "$customer.name",
+              customerLastName: "$customer.lastname",
+              customerIdDocument: "$customer.idDocument",
+              customerDateOfBirth: "$customer.dateOfBirth",
+              customerPhone: "$customer.phone",
+              customerBillingAddress: "$customer.billingAddress",
+            },
+          },
+        ]);
+
+        res.status(200).json(orders);
       } catch (error) {
-        return res
+        res
           .status(500)
-          .json({ message: messages.error.default, error: error.message });
+          .json({ error: "Error fetching orders with customers." });
       }
     }
   }
@@ -37,6 +85,7 @@ export default async function handle(req, res) {
         line_items,
         name,
         paid,
+        status,
         phone,
         streetAddress,
         updatedAt,
@@ -55,6 +104,7 @@ export default async function handle(req, res) {
         line_items,
         name,
         paid,
+        status,
         phone,
         streetAddress,
         updatedAt,

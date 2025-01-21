@@ -49,7 +49,7 @@ const columnsCriticalStock = [
 ];
 
 const columnsBarCode = [
-  { name: "ESTADO", uid: "status" },
+  { name: "Estado", uid: "status" },
   { name: "Nombre del producto", uid: "title" },
   { name: "Código", uid: "code" },
   { name: "Código de barra", uid: "barCode" },
@@ -58,12 +58,17 @@ const columnsBarCode = [
 ];
 
 const columnsOrder = [
-  { name: "ESTADO", uid: "paid" },
-  { name: "CLIENTE", uid: "name" },
-  { name: "FECHA", uid: "createdAt" },
-  { name: "MONTO", uid: "amount" },
-  { name: "CANTIDAD", uid: "quantity" },
-  { name: "ACCION", uid: "actions" },
+  { name: "Procesos", uid: "processes" },
+  { name: "Pago", uid: "paid" },
+  { name: "Estado", uid: "status" },
+  { name: "Código de orden", uid: "orderNumber" },
+  { name: "Datos del cliente", uid: "customerName" },
+  { name: "Información de envío", uid: "name" },
+  { name: "Información de facturación", uid: "customerBillingAddress" },
+  { name: "Fecha", uid: "createdAt" },
+  { name: "Monto", uid: "amount" },
+  { name: "Cantidad", uid: "quantity" },
+  { name: "Acción", uid: "actions" },
 ];
 
 const columnsOrdersList = [
@@ -109,13 +114,14 @@ const columnsProduct = [
 const columnsCustomer = [
   { name: "Acción", uid: "actions" },
   { name: "Nombres", uid: "name", sortable: true },
-  { name: "Cédula", uid: "identifications" },
+  { name: "Tipo", uid: "typeclient", sortable: true },
+  { name: "Cédula", uid: "idDocument" },
   { name: "Fechas", uid: "createdAt" },
   { name: "Dirección", uid: "address" },
   { name: "Teléfono", uid: "phone" },
-  { name: "Vehículos", uid: "myVehicles_list" },
+  { name: "Compras", uid: "orders" },
+  // { name: "Vehículos", uid: "myVehicles_list" },
   // { name: "Pedidos", uid: "myProductOrder_list" },
-  { name: "Compras", uid: "myShopping_list" },
   { name: "Observaciones", uid: "observations" },
 ];
 

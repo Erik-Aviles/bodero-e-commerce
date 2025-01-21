@@ -1,34 +1,38 @@
-/* import { NextResponse } from "next/server";
-import { jwtVerify } from "jose";
-
-export default async function middleware(req) {
-  const token = req.cookies.get("myTokenName");
-
-  if (token === undefined) {
-    return NextResponse.redirect(new URL("/auth/login", req.url));
-  }
-  try {
-    const tokenValue = token?.value;
-    jwtVerify(tokenValue, new TextEncoder().encode(process.env.SECRET));
-    return NextResponse.next();
-  } catch (error) {
-    console.error(error);
-    return NextResponse.redirect(new URL("/auth/login", req.url));
-  }
-} */
 export { default } from "next-auth/middleware";
 
 export const config = {
   matcher: [
     "/",
-    "/inventory/products",
-    "/inventory/categories",
-    "/inventory/critical-stock",
-    "/inventory/bar-code",
-    "/business/orders",
-    "/business/orderslist",
-    "/admin/customers",
-    "/admin/users",
-    "/admin/system",
+    "/inventory/:path*",
+    "/business/:path*",
+    "/admin/:path*",
   ],
 };
+
+
+/* import { getToken } from "next-auth/jwt";
+import { NextResponse } from "next/server";
+
+export async function middleware(req) {
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+  if (!token) {
+    return NextResponse.redirect(new URL("/auth/login", req.url));
+  }
+
+  // Verifica roles o permisos
+  if (req.nextUrl.pathname.startsWith("/admin") && token.role !== "admin") {
+    return NextResponse.redirect(new URL("/unauthorized", req.url));
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: [
+    "/",
+    "/inventory/:path*",
+    "/business/:path*",
+    "/admin/:path*",
+  ],
+}; */

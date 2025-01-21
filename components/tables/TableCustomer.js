@@ -21,15 +21,19 @@ import { capitalize } from "@/utils/utils";
 import { removeAccents } from "@/utils/normalized";
 import ModalCustomers from "../modals/ModalCustomers";
 import BottomPaginationContent from "../BottomPaginationContent";
+import { statusOrder } from "@/resources/statusMap";
+import { calcularQuantity, calcularTotal } from "@/utils/order/calculations";
+import { formatToCurrency } from "@/utils/formatToCurrency";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "actions",
+  "typeclient",
   "name",
-  "identifications",
+  "idDocument",
   "phone",
+  "orders",
   "myVehicles_list",
   "myProductOrder_list",
-  "myShopping_list",
 ];
 
 export default function TableCustomer({ customers, deleteCustomer }) {
@@ -65,7 +69,7 @@ export default function TableCustomer({ customers, deleteCustomer }) {
           removeAccents(customer.name.toLowerCase()).includes(
             removeAccents(filterValue.toLowerCase())
           ) ||
-          removeAccents(customer.identifications.toLowerCase()).includes(
+          removeAccents(customer.idDocument.toLowerCase()).includes(
             removeAccents(filterValue.toLowerCase())
           )
       );
@@ -109,7 +113,7 @@ export default function TableCustomer({ customers, deleteCustomer }) {
             </span>
           </div>
         );
-      case "identifications":
+      case "idDocument":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-small whitespace-nowrap">
@@ -127,8 +131,67 @@ export default function TableCustomer({ customers, deleteCustomer }) {
               {cellValue ? cellValue : "Sin teléfono"}
             </p>
             <span className="text-bold text-tiny text-default-400">
-              {customer?.address ? capitalize(customer?.address) : "Sin dirección"}
+              {customer?.address
+                ? capitalize(customer?.address)
+                : "Sin dirección"}
             </span>
+          </div>
+        );
+      case "orders":
+        return (
+          <div className="flex flex-col gap-2">
+            {customer?.orders?.length > 0 ? (
+              customer.orders.map((item) => (
+                <div key={item.orderNumber} className="flex flex-col ">
+                  <p className="text-primary-400 text-bold text-tiny break-words whitespace-nowrap capitalize">
+                    Codigo:
+                    <span className="pl-2 text-default-600">
+                      {item.orderNumber}
+                    </span>
+                  </p>
+                  <p className="text-primary-400 text-bold text-tiny break-words whitespace-nowrap capitalize">
+                    Monto:
+                    <span className="pl-2 text-default-400">
+                      {formatToCurrency(calcularTotal(item?.line_items))}
+                    </span>
+                  </p>
+                  <p className="text-primary-400 text-bold text-tiny break-words whitespace-nowrap capitalize">
+                    Fecha:
+                    <span className="pl-2 text-default-400">
+                      {new Date(item?.createdAt).toLocaleString()}
+                    </span>
+                  </p>
+
+                  <p className="text-primary-400 text-bold text-tiny break-words whitespace-nowrap capitalize">
+                    Cantidad:
+                    <span className="pl-2 text-default-400">
+                      {calcularQuantity(item?.line_items)}
+                    </span>
+                  </p>
+
+                  <p className="text-primary-400 text-bold text-tiny break-words whitespace-nowrap capitalize">
+                    Estado:
+                    <span
+                      className={`pl-2 text-default-600 ${
+                        statusOrder[item?.status]
+                      }`}
+                    >
+                      {item?.status === "delivered"
+                        ? "Entregado"
+                        : item?.status === "sending"
+                        ? "Enviado"
+                        : item?.status === "processing"
+                        ? "Procesado"
+                        : item?.status === "pending"
+                        ? "Pendiente"
+                        : "Cancelado"}
+                    </span>
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p className="text-small text-gray-500">Sin compras en línea</p>
+            )}
           </div>
         );
       case "observations":
@@ -296,7 +359,7 @@ export default function TableCustomer({ customers, deleteCustomer }) {
       </TableHeader>
       <TableBody emptyContent={"Sin registro..."} items={sortedItems}>
         {(item) => (
-          <TableRow key={item._id}>
+          <TableRow key={item._id} className="border-b border-warning">
             {(columnKey) => (
               <TableCell>{renderCell(item, columnKey)}</TableCell>
             )}

@@ -3,6 +3,7 @@ import { DeleteIcon, EyeIcon } from "../Icons";
 import { formatToCurrency } from "@/utils/formatToCurrency";
 import { Tooltip } from "@nextui-org/react";
 import ButtonClose from "../buttons/ButtonClose";
+import { calcularTotal } from "@/utils/order/calculations";
 
 const ShowOrderDetail = ({ order }) => {
   const [showOrderModal, setShowOrderModal] = useState(false);
@@ -11,13 +12,7 @@ const ShowOrderDetail = ({ order }) => {
     setShowOrderModal(!showOrderModal);
   };
 
-  function calcularTotal(lineItems) {
-    let total = 0;
-    lineItems.forEach((pro) => {
-      total += pro.info_order.unit_amount;
-    });
-    return total;
-  }
+
 
   // Obtener el total
   const total = calcularTotal(order.line_items);

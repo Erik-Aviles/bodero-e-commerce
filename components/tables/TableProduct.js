@@ -45,7 +45,6 @@ const INITIAL_VISIBLE_COLUMNS = [
 ];
 
 export default function TableProduct({ products, deleteProduct }) {
-  const router = useRouter();
   const inputRef = useRef(null); // Hook para mantener el ref del input
   const [filterValue, setFilterValue] = useState("");
 

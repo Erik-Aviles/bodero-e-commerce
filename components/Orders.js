@@ -6,14 +6,16 @@ import useDeleteItem from "@/hooks/useDeleteItem";
 import useProducts from "@/hooks/useProducts";
 import { withSwal } from "react-sweetalert2";
 import { fetcher } from "@/utils/fetcher";
-import Layout from "@/components/Layout";
 import useOrder from "@/hooks/useOrder";
-import Head from "next/head";
 import axios from "axios";
 import useSWR from "swr";
+import useCustomers from "@/hooks/useCustomers";
+import { updateOrderStatus } from "@/utils/order/updateOrderStatus";
+import { updateCustomerOrderStatus } from "@/utils/order/updateCustomerOrderStatus";
 
 const Orders = withSwal(({ swal }) => {
   const { orders, isErrorOrders, isLoadingOrders, mutateOrders } = useOrder();
+  const { mutateCustomers } = useCustomers();
   const { showNotification } = useContext(NotificationContext);
   const { mutateProducts } = useProducts();
   const deleteItem = useDeleteItem();
@@ -23,37 +25,36 @@ const Orders = withSwal(({ swal }) => {
     mutate: getMinimal,
   } = useSWR("/api/products/minimal", fetcher);
 
-  const refreshOrders = async () => {
-    try {
-      swal.fire({
-        title: "Actualizando...",
-        text: "Espere mientras se refrescan los datos!",
-        allowOutsideClick: false,
-        didOpen: async () => {
-          swal.showLoading();
-          await mutateProducts();
-          await mutateOrders();
-          await getMinimal();
-          swal.close();
-          showNotification({
-            open: true,
-            msj: "Datos han sido actualizados correctamente!",
-            status: "success",
-          });
-        },
-      });
-    } catch (error) {
-      swal.close();
-      showNotification({
-        open: true,
-        msj: "Error al actualizar los Datos.",
-        status: "error",
-      });
-    }
-  };
+    const updateStateChanges = async (orderId, statusOrder, customerId, orderNumber, paidOrder) => {
+      try {
+        await updateOrderStatus(orderId, statusOrder, paidOrder);
+    
+        await updateCustomerOrderStatus(customerId, orderNumber, statusOrder);
+    
+        // Mostrar mensaje de éxito si ambas funciones se completan
+        swal.fire({
+          title: "Éxito",
+          text: "Los estados de la orden y el cliente se actualizaron correctamente.",
+          icon: "success",
+        });
+    
+        mutateOrders();
+        mutateCustomers();
+      } catch (error) {
+        swal.fire({
+          title: "Error",
+          text: error || "Ocurrió un problema al actualizar los estados.",
+          icon: "error",
+        });
+      }
+    };
 
   const reduceQuantityProducts = async (order) => {
-    const orderId = order._id;
+    const orderId = order?._id;
+    const orderNumber = order?.orderNumber;
+    const statusOrder = "processing";
+    const customerId = order?.customerId;
+    const paidOrder = true;
 
     if (!minimalProducts || minimalProducts.length === 0) {
       return showNotification({
@@ -124,20 +125,7 @@ const Orders = withSwal(({ swal }) => {
           );
 
           if (allSuccess && orderId) {
-            const items = {
-              paid: true,
-              _id: orderId,
-            };
-
-            await axios.put("/api/orders/full", items);
-            mutateOrders();
-
-            showNotification({
-              open: true,
-              msj: "¡Pedido ha sido aprobado!",
-              status: "success",
-            });
-
+            updateStateChanges(orderId, statusOrder, customerId, orderNumber, paidOrder);
             mutateProducts();
             getMinimal();
             swal.close();
@@ -162,17 +150,10 @@ const Orders = withSwal(({ swal }) => {
       getItems: mutateOrders,
       item,
       apiEndpoint: "orders",
-      itemNameKey: "name",
-    });
+      itemNameKey: "orderNumber",
+      });
   };
 
-  function downloadPdf() {
-    showNotification({
-      open: true,
-      msj: `Descargando pdf!`,
-      status: "success",
-    });
-  }
 
   return (
     <>
@@ -180,11 +161,10 @@ const Orders = withSwal(({ swal }) => {
         <Spinner className="pt-3 pb-3" />
       ) : (
         <TableOrder
-          refreshOrders={refreshOrders}
           reduceQuantityProducts={reduceQuantityProducts}
           deleteOrder={handleDeleteOrder}
-          downloadPdf={downloadPdf}
           orders={orders}
+          updateStateChanges={updateStateChanges}
         />
       )}
     </>

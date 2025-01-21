@@ -1,15 +1,25 @@
 import { Schema, model, models } from "mongoose";
 
-const OrderSchema = new Schema(
+export const OrderSchema = new Schema(
   {
+    orderNumber: { type: String, unique: true },
+    customerId: {
+      type: Schema.Types.ObjectId,
+      ref: "Customer",
+    },
     line_items: Object,
-    name: { type: String, required: true },
-    email: String,
-    phone: { type: String, required: true },
-    city: { type: String, required: true },
+    name: { type: String },
+    lastname: { type: String },
+    email: { type: String },
+    idDocument: { type: String },
+    phone: { type: String },
+    country: { type: String },
+    province: { type: String },
+    city: { type: String },
     streetAddress: String,
-    country: String,
-    paid: Boolean,
+    postal: { type: String },
+    paid: { type: Boolean, default: false },
+    status: { type: String, default: "pending" },
   },
   {
     timestamps: true,

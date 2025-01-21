@@ -93,8 +93,8 @@ export default function TableOrderList({
                       : "Sin teléfono"}
                   </span>
                   <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
-                    {filteredResult[0]?.identifications
-                      ? `ID: ${capitalize(filteredResult[0]?.identifications)}`
+                    {filteredResult[0]?.idDocument
+                      ? `ID: ${capitalize(filteredResult[0]?.idDocument)}`
                       : "Sin cedula"}
                   </span>
                   <span className="text-bold text-tiny text-default-400 whitespace-nowrap">
