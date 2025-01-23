@@ -33,7 +33,7 @@ const Acccount = () => {
           </p>
           <p className="text-gray-600">
             <span className="font-bold text-primary-800">Nombre Completo:</span>{" "}
-            {fullname.toUpperCase()}
+            {fullname?.toUpperCase()}
           </p>
           <p className="text-gray-600">
             <span className="font-bold text-primary-800">
@@ -68,7 +68,7 @@ const Acccount = () => {
           </p>
           <p className="text-gray-600">
             <span className="font-bold text-primary-800">Nombre Completo:</span>{" "}
-            {fullname.toUpperCase()}
+            {fullname?.toUpperCase()}
           </p>
           <p className="text-gray-600">
             <span className="font-bold text-primary-800">

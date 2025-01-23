@@ -23,7 +23,6 @@ const CategoryForm = withSwal(
       publicId: category?.image?.publicId || "",
     });
     const [isUploading, setIsUploading] = useState(false);
-
     const resetCategoryForm = () => {
       setName("");
       setDescription("");
@@ -41,6 +40,7 @@ const CategoryForm = withSwal(
 
       try {
         const { data } = await axios.post("/api/categories/full", rest);
+
         showNotification({
           open: true,
           msj: data?.message,
@@ -94,27 +94,70 @@ const CategoryForm = withSwal(
     //subir imagen
     const handleUpload = async (e) => {
       e.preventDefault();
-      startLoading();
-      const files = e.target?.files;
-      if (files?.length > 0) {
+      try {
+        startLoading();
+
+        const files = e.target?.files;
+        if (
+          !files?.length ||
+          !["image/jpeg", "image/png", "image/gif"].includes(files[0]?.type)
+        ) {
+          swal.fire({
+            icon: "warning",
+            title: "Archivo no válido",
+            text: "Por favor, elige un archivo de imagen válido (JPEG, PNG o GIF).",
+          });
+          return;
+        }
+
         setIsUploading(true);
+
         const data = new FormData();
         data.append("file", files[0]);
 
         const res = await axios.post("/api/uploadcloudinary", data);
-        setImage((prevState) => ({
-          ...prevState,
-          link: res.data?.images[0].url, // URL de la imagen
-          publicId: res.data?.images[0].public_id, // Public ID para eliminarla
-        }));
-        console.log(image);
-      }
-      setIsUploading(false);
-      finishtLoading();
-    };
 
+        if (res?.status === 200 && res.data?.images?.[0]) {
+          const { url, public_id } = res.data.images[0];
+          setImage((prevState) => ({
+            ...prevState,
+            link: url,
+            publicId: public_id,
+          }));
+          swal.fire({
+            icon: "success",
+            title: "Carga exitosa",
+            text: "Tu imagen ha sido cargada correctamente.",
+          });
+        } else {
+          swal.fire({
+            icon: "error",
+            title: "Error de carga",
+            text: "No se pudo cargar la imagen. Por favor, intenta nuevamente.",
+          });
+        }
+      } catch (error) {
+        swal.fire({
+          icon: "error",
+          title: "Error inesperado",
+          text: "Ocurrió un problema durante la carga. Por favor, inténtalo de nuevo más tarde.",
+        });
+        console.error("Error:", error);
+      } finally {
+        setIsUploading(false);
+        finishtLoading();
+      }
+    };
     //eliminar imagen
     const deleteImage = async (public_id) => {
+      if (!public_id) {
+        await swal.fire({
+          icon: "error",
+          title: "Error al eliminar la imagen",
+          text: "Faltan datos requeridos. No se puede eliminar la imagen sin un identificador público.",
+        });
+        return;
+      }
       startLoading();
       try {
         const result = await swal.fire({
@@ -134,35 +177,40 @@ const CategoryForm = withSwal(
 
         if (result.isConfirmed) {
           setIsUploading(true);
+
           const response = await axios.delete("/api/deleteImageCloudinary", {
             data: { public_id },
           });
 
-          setImage((prevState) => ({
-            ...prevState,
-            link: "",
-            publicId: "",
-          }));
+          if (response?.status === 200) {
+            setImage((prevState) => ({
+              ...prevState,
+              link: "",
+              publicId: "",
+            }));
 
-          swal.fire({
-            title: "Eliminado!",
-            text: response.data.message,
-            icon: "success",
-          });
+            swal.fire({
+              title: "Eliminado!",
+              text: response.data.message,
+              icon: "success",
+            });
+            mutateCategories();
+          }
         }
-        setIsUploading(false);
-        finishtLoading();
       } catch (error) {
         console.error(`Error eliminando la imagen: ${public_id}. `, error);
         swal.fire({
           title: "Error",
-          text: `No se pudo eliminar solo la imagen. Debe eliminar el Banner: ${
+          text: `No se pudo eliminar solo la imagen: ${
             name > 30
               ? capitalize(name).substring(0, 30) + "..."
               : capitalize(name)
           } completo.`,
           icon: "error",
         });
+      } finally {
+        setIsUploading(false);
+        finishtLoading();
       }
     };
 

@@ -24,7 +24,7 @@ const columnsDebts = [
   { name: "CLIENTE", uid: "customer" },
   { name: "MONTO", uid: "amount" },
   { name: "ABONOS", uid: "payments" },
-  { name: "PAGADO", uid: "pay" },
+  { name: "T. ABONADOS", uid: "pay" },
   { name: "SALDO", uid: "debtBalance" },
   { name: "CONCEPTO", uid: "concept" },
   { name: "VEHICULO", uid: "vehicle" },

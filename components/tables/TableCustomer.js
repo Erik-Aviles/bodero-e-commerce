@@ -12,7 +12,6 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownItem,
-  Pagination,
   Tooltip,
 } from "@nextui-org/react";
 import { SearchIcon, ChevronDownIcon, DeleteRIcon } from "@/components/Icons";
@@ -30,8 +29,8 @@ const INITIAL_VISIBLE_COLUMNS = [
   "typeclient",
   "name",
   "idDocument",
+  "createdAt",
   "phone",
-  "orders",
   "myVehicles_list",
   "myProductOrder_list",
 ];
@@ -137,16 +136,26 @@ export default function TableCustomer({ customers, deleteCustomer }) {
             </span>
           </div>
         );
+      case "createdAt":
+        return (
+          <div className="flex flex-col">
+            <p className=" break-words text-bold text-tiny whitespace-nowrap">
+              {new Date(cellValue).toLocaleString(
+                ("es-ES", { timeZone: "America/Guayaquil" })
+              )}
+            </p>
+          </div>
+        );
       case "orders":
         return (
           <div className="flex flex-col gap-2">
             {customer?.orders?.length > 0 ? (
-              customer.orders.map((item) => (
+              customer?.orders?.map((item) => (
                 <div key={item.orderNumber} className="flex flex-col ">
                   <p className="text-primary-400 text-bold text-tiny break-words whitespace-nowrap capitalize">
                     Codigo:
                     <span className="pl-2 text-default-600">
-                      {item.orderNumber}
+                      {item?.orderNumber}
                     </span>
                   </p>
                   <p className="text-primary-400 text-bold text-tiny break-words whitespace-nowrap capitalize">

@@ -9,7 +9,6 @@ import { UpArrowIcon } from "../Icons";
 const CompanyInformation = () => {
   const { company, isLoadingGeneral, mutateGeneral } = useCompany();
 
-  console.log(company?.qrImage);
   const { changeOpcCompany, opcCompany } = useActions();
   return (
     <section
@@ -123,7 +122,7 @@ const CompanyInformation = () => {
               </div>
               <div className="flex justify-evenly basis-[20%]">
                 {company?.socialMedia.length > 0 &&
-                  company?.socialMedia.map((item, index) => (
+                  company?.socialMedia?.map((item, index) => (
                     <a
                       key={index}
                       href={item?.link}

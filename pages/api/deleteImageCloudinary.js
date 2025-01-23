@@ -14,13 +14,13 @@ export const config = {
 
 export default async function handler(req, res) {
   if (req.method !== "DELETE") {
-    return res.status(405).json({ message: "Method Not Allowed" });
+    return res.status(405).json({ message: "Método no permitido" });
   }
 
   const { public_id } = req.body;
 
   if (!public_id) {
-    return res.status(400).json({ message: "Public ID is required" });
+    return res.status(400).json({ message: "Se requiere identificación pública" });
   }
 
   try {

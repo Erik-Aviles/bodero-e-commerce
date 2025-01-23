@@ -76,9 +76,7 @@ export default function TableSaledHistoryProduct({ orders, products }) {
 
   const handleSearchInOrders = () => {
     if (query) {
-      console.log("Buscando en las órdenes con:", query);
       setQuery("");
-
       setIsSearchPerformed(true); // Marca la búsqueda como realizada
     }
 

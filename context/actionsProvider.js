@@ -132,51 +132,6 @@ export const ActionsProvider = ({ children }) => {
   const changeToggle = () => {
     setToggle(!toggle);
   };
-  /* 
-  const crearFormProducto = (producto) => {
-    setProductos([...productos, producto]);
-    setFormulariosFactura([...formulariosFactura, generarId()]);
-  }; */
-
-  /*  const eliminarFormStock = async (
-    idForm,
-    idCuerpoFactura,
-    idStock,
-    cantidad
-  ) => {
-    Swal.fire({
-      title: "¿Estas seguro de eliminar este producto de la lista?",
-      showDenyButton: true,
-      confirmButtonText: "Si",
-      denyButtonText: `Cancelar`,
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        const nuevoFormFact = formulariosFactura.filter((fp) => fp !== idForm);
-        const nuevoPro = productos.filter((p) => p.id !== idForm);
-
-        setFormulariosFactura(nuevoFormFact);
-        setProductos(nuevoPro);
-
-        const URL = process.env.NEXT_PUBLIC_URL;
-        const urlDevolverStock = axios.put(
-          `${URL}/factura/devolver-stock/${idStock}/${usuario.token}`,
-          { cantidad }
-        );
-        const urlEliminarCuerpoFactura = axios.delete(
-          `${URL}/factura/eliminar-cuerpo-factura/${idCuerpoFactura}/${usuario.token}`
-        );
-
-        try {
-          await Promise.all([urlDevolverStock, urlEliminarCuerpoFactura]);
-        } catch (error) {
-          console.log(error);
-        }
-      } else if (result.isDenied) {
-        return;
-      }
-    });
-  }; */
-
   const cerrarSesion = () => {
     signOut({ callbackUrl: "/" });
   };

@@ -63,7 +63,7 @@ const Header = () => {
                 isBordered
                 as="button"
                 className="transition-transform"
-                src={user?.avatar[0] ? user?.avatar[0] : avatarLocal}
+                src={user?.avatar ? user?.avatar[0] : avatarLocal}
               />
             </DropdownTrigger>
             <DropdownMenu
@@ -85,7 +85,7 @@ const Header = () => {
                     <Avatar
                       isBordereds
                       className="w-20 h-20 text-large"
-                      src={user?.avatar[0] ? user?.avatar[0] : avatarLocal}
+                      src={user?.avatar ? user?.avatar[0] : avatarLocal}
                     />
                   </span>
                   <p className="font-bold text-success text-center capitalize">
